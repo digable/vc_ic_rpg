@@ -228,8 +228,8 @@
     <div id="title-screen">
       <div class="title">IOWA CITY<br>QUEST</div>
       <div class="subtitle">A Modern RPG Adventure</div>
-      <div class="start-text">PRESS SPACE TO START</div>
-      <div class="controls">
+      <div class="start-text" id="start-text">PRESS SPACE TO START</div>
+      <div class="controls" id="controls-text">
         ARROW KEYS: Move | SPACE: Action/Advance Text | ESC: Menu
       </div>
     </div>
@@ -863,6 +863,10 @@
     if (isMobile) {
       document.getElementById('mobile-controls').classList.add('active');
       
+      // Update title screen text for mobile
+      document.getElementById('start-text').textContent = 'PRESS A BUTTON TO START';
+      document.getElementById('controls-text').textContent = 'D-PAD: Move | A: Action | M: Menu';
+      
       // Handle touch events for virtual buttons
       document.querySelectorAll('.dpad-btn, .action-btn').forEach(btn => {
         btn.addEventListener('touchstart', (e) => {
@@ -877,6 +881,12 @@
           else if (key === 'action') {
             keys[' '] = true;
             spacePressed = true;
+            
+            // Handle title screen start on mobile
+            if (game.state === 'title') {
+              document.getElementById('title-screen').classList.add('hidden');
+              game.state = 'explore';
+            }
           }
           else if (key === 'menu') keys['Escape'] = true;
         });
