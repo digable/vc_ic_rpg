@@ -40,6 +40,8 @@
       image-rendering: -moz-crisp-edges;
       image-rendering: crisp-edges;
       -ms-interpolation-mode: nearest-neighbor;
+      position: relative;
+      z-index: 1;
     }
     
     @media (min-width: 769px) {
@@ -61,6 +63,11 @@
         margin: 0;
         overflow: hidden;
       }
+      
+      #container {
+        height: 60vh;
+        position: relative;
+      }
     }
     
     .mobile-controls {
@@ -74,6 +81,7 @@
       touch-action: none;
       user-select: none;
       -webkit-user-select: none;
+      z-index: 1000;
     }
     
     .mobile-controls.active {
@@ -102,6 +110,7 @@
       color: white;
       font-weight: bold;
       touch-action: none;
+      z-index: 1001;
     }
     
     .dpad-btn:active {
@@ -119,6 +128,7 @@
       bottom: 20px;
       width: 140px;
       height: 80px;
+      z-index: 1001;
     }
     
     .action-btn {
@@ -136,6 +146,7 @@
       font-weight: bold;
       touch-action: none;
       font-family: 'Press Start 2P', monospace;
+      z-index: 1002;
     }
     
     .action-btn:active {
