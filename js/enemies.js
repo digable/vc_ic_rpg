@@ -6,7 +6,7 @@ export const enemies = [
     attack: 3, 
     exp: 10, 
     gold: 25, 
-    color: COLORS.gray,
+    
     outdoor: true,
     specialAttack: null
   },
@@ -17,7 +17,7 @@ export const enemies = [
     attack: 5, 
     exp: 15, 
     gold: 35, 
-    color: COLORS.red,
+    
     outdoor: false,
     specialAttack: null
   },
@@ -28,7 +28,7 @@ export const enemies = [
     attack: 8, 
     exp: 25, 
     gold: 50, 
-    color: COLORS.purple,
+    
     outdoor: false,
     specialAttack: { name: 'Stress Wave', damage: 12, mpCost: 0 }
   },
@@ -39,7 +39,7 @@ export const enemies = [
     attack: 12, 
     exp: 40, 
     gold: 75, 
-    color: COLORS.orange,
+    
     outdoor: false,
     specialAttack: { name: 'Deadline Pressure', damage: 18, mpCost: 0 }
   },
@@ -50,7 +50,7 @@ export const enemies = [
     attack: 7, 
     exp: 20, 
     gold: 30, 
-    color: COLORS.darkGray,
+    
     outdoor: true,
     specialAttack: { name: 'Trash Attack', damage: 10, mpCost: 0 }
   },
@@ -61,7 +61,7 @@ export const enemies = [
     attack: 10, 
     exp: 30, 
     gold: 60, 
-    color: COLORS.brown,
+    
     outdoor: false,
     specialAttack: { name: 'Fatigue', damage: 15, mpCost: 0, effect: 'drainMP', drainAmount: 5 }
   },
@@ -72,7 +72,7 @@ export const enemies = [
     attack: 20, 
     exp: 100, 
     gold: 200, 
-    color: COLORS.blue,
+    
     outdoor: false,
     specialAttack: { name: 'Citation Storm', damage: 30, mpCost: 0 }
   }
