@@ -141,11 +141,7 @@ document.addEventListener('keyup', (e) => {
 
 console.log('Iowa City Quest - Modular version loading...');
 console.log('Data modules imported successfully!');
-// Input handling
-const keys = {};
-let lastKeyTime = 0;
-const keyDelay = 150;
-let spacePressed = false;
+// Input handling section continues from above (keys, lastKeyTime, keyDelay, spacePressed already declared)
 
 // Mobile touch control setup
 if (isMobile) {
