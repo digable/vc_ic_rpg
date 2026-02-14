@@ -62,7 +62,7 @@ export function handleShopPurchase() {
     
     // Show purchase confirmation
     startDialogue([`Purchased ${item.name}!`, item.description]);
-    game.state = 'explore';
+    game.state = 'dialogue';
     game.shopOpen = false;
   }
 }

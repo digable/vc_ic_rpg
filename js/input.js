@@ -259,6 +259,16 @@ export function handleInput() {
     if (keys[' ']) {
       if (now - lastKeyTime > keyDelay) {
         advanceDialogue();
+        if (!game.dialogue) {
+          game.state = 'explore';
+        }
+        lastKeyTime = now;
+      }
+    }
+    if (keys['Escape']) {
+      if (now - lastKeyTime > keyDelay) {
+        game.dialogue = null;
+        game.state = 'explore';
         lastKeyTime = now;
       }
     }
