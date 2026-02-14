@@ -22,7 +22,7 @@ export const game = {
   inventory: ['Campus ID', 'Bus Pass', 'Coffee'],
   consumables: [], // Consumable items inventory
   skills: [],
-  spells: ['Fire Bolt'], // Starting spell
+  spells: [],
   enemyEncounterSteps: 0,
   dialogue: null,
   battleState: null,

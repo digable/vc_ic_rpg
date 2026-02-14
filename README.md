@@ -8,7 +8,7 @@ A retro NES-style RPG adventure set in Iowa City! Explore campus, complete quest
 
 ## 🕹️ Play Now
 
-**[Play on GitHub Pages](https://yourusername.github.io/iowa-city-quest/)**
+**[Play on GitHub Pages](https://digable.github.io/iowa-city-quest/)**
 
 ## ✨ Features
 
@@ -72,46 +72,59 @@ Each vendor has their own menu:
 
 ### Play Locally
 
-1. Clone the repository:
+1. Navigate to the project folder:
 ```bash
-git clone https://github.com/yourusername/iowa-city-quest.git
-cd iowa-city-quest
+cd "c:\Users\digable\source\repos\digable\vc_ic_rpg"
 ```
 
-2. Start a local server:
+2. Start a local server (choose one):
+
+**Python 3** (built-in on Windows)
 ```bash
-# Python 3
-python3 -m http.server 8000
-
-# Node.js
-npx serve
-
-# PHP
-php -S localhost:8000
+python -m http.server 8000
 ```
+
+**Node.js** (if installed)
+```bash
+npx http-server -p 8000
+```
+
+**VS Code Live Server** (if extension installed)
+- Right-click `index.html` → "Open with Live Server"
 
 3. Open in browser:
 ```
-http://localhost:8000
+http://localhost:8000/index.html
 ```
 
-**Note:** ES6 modules require a web server (can't open index.html directly).
+**Note:** ES6 modules require a web server (can't open index.html directly with file://).
 
 ## 📁 Project Structure
 
 ```
-iowa-city-quest/
-├── index.html              # Main HTML file
-├── game.css                # All styles
-├── js/                     # Modular JavaScript
-│   ├── constants.js        # Game configuration
-│   ├── data.js             # Items, spells, shops
-│   ├── quests.js           # Quest database
-│   ├── enemies.js          # Enemy definitions
-│   ├── maps.js             # Map layouts
-│   ├── game-state.js       # Game state
-│   └── main-working.js     # Game logic
-└── README.md
+vc_ic_rpg/
+├── index.html              # Main HTML - Canvas & mobile controls
+├── game.css                # Pixel-perfect NES-style graphics
+├── DEPLOYMENT.md           # Modularization documentation
+├── LICENSE                 # MIT License
+├── README.md               # This file
+├── .gitignore              # Git ignore rules
+└── js/                     # Modular JavaScript (~4000 lines total)
+    ├── main.js             # Game loop & rendering pipeline (92 lines)
+    ├── game-state.js       # Global game state & initialization (48 lines)
+    ├── constants.js        # Game configuration & colors
+    ├── data.js             # Items, spells, shops, routes (~150 lines)
+    ├── quests.js           # Quest database with 8 side quests (~160 lines)
+    ├── quests-logic.js     # Quest system & NPC interactions (170 lines)
+    ├── maps.js             # Map layouts & NPC positions (350 lines)
+    ├── enemies.js          # Enemy definitions & encounters
+    ├── battle.js           # Combat system & spell execution (200+ lines)
+    ├── rendering.js        # All canvas drawing functions (1505 lines)
+    ├── input.js            # Keyboard/touch input handling (426 lines)
+    ├── interactions.js     # NPC & vendor interactions (226 lines)
+    ├── dialogue.js         # Dialogue system with message flow
+    └── world.js            # World mechanics (collisions, fast travel)
+```
 ```
 
 ## 🛠️ Technical Details
@@ -195,10 +208,36 @@ Contributions are welcome! Feel free to:
 
 This project is open source and available under the [MIT License](LICENSE).
 
-## 🙏 Acknowledgments
+## � Troubleshooting
+
+**Modules not loading?**
+- Ensure you're using a local HTTP server (not file://)
+- Clear browser cache with Ctrl+F5
+
+**Items not showing in vendor menu?**
+- Verify vendor name matches in `data.js`
+- Check food cart NPC has `type: 'food_cart'`
+
+**Quest not updating?**
+- Confirm vendor name spelling matches quest objectives
+- Check quest objectives match vendor types
+
+**Mobile controls not working?**
+- Ensure device has touch events enabled
+- Try landscape orientation for better UX
+
+## 🔄 Recent Updates
+
+- ✅ Fixed dialogue system (Escape to close, Space to advance)
+- ✅ Added Chef vendor to Pentacrest
+- ✅ Fixed unreachable vendors on Northside
+- ✅ Made vendor matching case-insensitive for robust item sales
+- ✅ Fixed menu toggle (Escape key now works reliably)
+
+## �🙏 Acknowledgments
 
 - Inspired by classic NES RPGs
-- Built for Iowa City college students
+- Built for Iowa City folks
 - Retro pixel art aesthetic
 - Modern web technologies
 
