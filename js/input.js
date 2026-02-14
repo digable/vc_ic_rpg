@@ -147,6 +147,28 @@ export function handleInput() {
     return;
   }
   
+  // Escape key should always work to toggle menu or exit dialogs
+  if (game.state === 'explore' && keys['Escape']) {
+    if (now - lastKeyTime > keyDelay) {
+      game.menuOpen = !game.menuOpen;
+      if (game.menuOpen) {
+        game.menuSelection = 0;
+        game.menuTab = 0;
+      }
+      lastKeyTime = now;
+    }
+    return;
+  }
+  
+  if (game.state === 'dialogue' && keys['Escape']) {
+    if (now - lastKeyTime > keyDelay) {
+      game.dialogue = null;
+      game.state = 'explore';
+      lastKeyTime = now;
+    }
+    return;
+  }
+  
   if (now - lastKeyTime < keyDelay) return;
 
   if (game.state === 'explore') {
@@ -222,17 +244,6 @@ export function handleInput() {
       }
     }
 
-    if (keys['Escape']) {
-      if (now - lastKeyTime > keyDelay) {
-        game.menuOpen = !game.menuOpen;
-        if (game.menuOpen) {
-          game.menuSelection = 0;
-          game.menuTab = 0;
-        }
-        lastKeyTime = now;
-      }
-    }
-    
     if (game.menuOpen) {
       if (keys['ArrowLeft']) {
         game.menuTab = Math.max(0, game.menuTab - 1);
@@ -264,13 +275,6 @@ export function handleInput() {
         if (!game.dialogue) {
           game.state = 'explore';
         }
-        lastKeyTime = now;
-      }
-    }
-    if (keys['Escape']) {
-      if (now - lastKeyTime > keyDelay) {
-        game.dialogue = null;
-        game.state = 'explore';
         lastKeyTime = now;
       }
     }
