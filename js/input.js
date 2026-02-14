@@ -215,7 +215,7 @@ export function handleInput() {
           } else if (npc.type === 'cambus') {
             openCambus();
           } else if (npc.type === 'food_cart') {
-            openFoodCart();
+            openFoodCart(npc.name);
           }
         }
         lastKeyTime = now;
