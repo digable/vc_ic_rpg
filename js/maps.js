@@ -187,7 +187,7 @@ export const maps = {
     ],
     npcs: [
       { x: 64, y: 48, name: 'Restaurant Owner', type: 'food_cart', dialogue: ['Best food in town!', 'Fresh ingredients daily!'] },
-      { x: 128, y: 48, name: 'Chef', dialogue: ['The kitchen is busy tonight!', 'Everything is made to order.'] },
+      { x: 128, y: 48, name: 'Chef', type: 'food_cart', dialogue: ['The kitchen is busy tonight!', 'Everything is made to order.'] },
       { x: 192, y: 48, name: 'Food Cart Vendor', type: 'food_cart', dialogue: ['Street tacos!', 'Authentic flavors!'] },
       { x: 96, y: 112, name: 'Diner', dialogue: ['The ramen here is amazing!', 'You should try it.'] },
       { x: 160, y: 112, name: 'Food Critic', hasQuest: 'food_critic_challenge', dialogue: ['I review all the restaurants.', 'Northside has the best variety.'] },
