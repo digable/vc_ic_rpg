@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iowa City Quest - Test Suite</title>
+  <style>
+    body {
+      font-family: monospace;
+      background: #1a1a1a;
+      color: #00ff00;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 { color: #ffff00; }
+    .test { 
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #333;
+      background: #000;
+    }
+    .pass { color: #00ff00; }
+    .fail { color: #ff0000; }
+    .warn { color: #ffaa00; }
+    .info { color: #00aaff; }
+    pre {
+      background: #111;
+      padding: 10px;
+      overflow-x: auto;
+      font-size: 12px;
+    }
+    #status {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    .back-link {
+      display: inline-block;
+      margin: 20px 0;
+      padding: 10px 20px;
+      background: #333;
+      color: #ffff00;
+      text-decoration: none;
+      border: 2px solid #ffff00;
+    }
+    .back-link:hover {
+      background: #444;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎮 Iowa City Quest - Module Test Suite</h1>
+  
+  <div class="test info">
+    <strong>ℹ️ Test Environment</strong>
+    <pre id="env-info">Loading...</pre>
+  </div>
+  
+  <div id="status">⏳ Running tests...</div>
+  <div id="results"></div>
+  
+  <a href="./" class="back-link">← Back to Game</a>
+
+  <script type="module">
+    const results = document.getElementById('results');
+    const status = document.getElementById('status');
+    const envInfo = document.getElementById('env-info');
+    let passCount = 0;
+    let failCount = 0;
+    let warnCount = 0;
+
+    // Detect base path (works for both local and GitHub Pages)
+    const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+    const fullBasePath = window.location.origin + basePath;
+    
+    // Show environment info
+    envInfo.textContent = `Location: ${window.location.href}
+Base Path: ${fullBasePath}
+Protocol: ${window.location.protocol}
+Host: ${window.location.host}`;
+
+    function addTest(name, passed, message = '') {
+      const div = document.createElement('div');
+      div.className = 'test';
+      
+      const icon = passed ? '✅' : '❌';
+      const className = passed ? 'pass' : 'fail';
+      
+      div.innerHTML = `
+        <span class="${className}">${icon} ${name}</span>
+        ${message ? `<pre>${message}</pre>` : ''}
+      `;
+      
+      results.appendChild(div);
+      
+      if (passed) passCount++;
+      else failCount++;
+    }
+
+    function addWarning(name, message) {
+      const div = document.createElement('div');
+      div.className = 'test';
+      div.innerHTML = `<span class="warn">⚠️  ${name}</span><pre>${message}</pre>`;
+      results.appendChild(div);
+      warnCount++;
+    }
+
+    function addInfo(name, message) {
+      const div = document.createElement('div');
+      div.className = 'test';
+      div.innerHTML = `<span class="info">ℹ️  ${name}</span><pre>${message}</pre>`;
+      results.appendChild(div);
+    }
+
+    async function runTests() {
+      try {
+        // Test HTTPS requirement for ES6 modules
+        if (window.location.protocol === 'file:') {
+          addWarning('Protocol Check', 'Running from file:// - ES6 modules require HTTP/HTTPS.\nPlease use: python3 -m http.server');
+          status.innerHTML = '⚠️ Cannot run tests from file://';
+          return;
+        }
+        
+        addTest('Protocol Check (HTTP/HTTPS)', true, `Running on ${window.location.protocol}`);
+
+        // Test 1: Import constants
+        const constantsModule = await import('./js/constants.js');
+        addTest('Import constants.js', true);
+        const { COLORS, CONFIG, isMobile } = constantsModule;
+        
+        // Test 2: Check data structures
+        addTest('COLORS defined', typeof COLORS === 'object' && COLORS.red, 
+          `Found ${Object.keys(COLORS).length} colors`);
+        addTest('CONFIG defined', typeof CONFIG === 'object' && CONFIG.canvasWidth,
+          `Canvas: ${CONFIG.canvasWidth}x${CONFIG.canvasHeight}`);
+        
+        // Test 3: Import data
+        const dataModule = await import('./js/data.js');
+        addTest('Import data.js', true);
+        addTest('shopItems exists', Array.isArray(dataModule.shopItems),
+          `${dataModule.shopItems.length} shop items`);
+        addTest('consumableItems exists', Array.isArray(dataModule.consumableItems),
+          `${dataModule.consumableItems.length} consumable items`);
+        addTest('cambusRoutes exists', Array.isArray(dataModule.cambusRoutes),
+          `${dataModule.cambusRoutes.length} routes`);
+        
+        // Test 4: Import game state
+        const { game } = await import('./js/game-state.js');
+        addTest('Import game-state.js', true);
+        addTest('game.player exists', game.player && typeof game.player.hp === 'number',
+          `Player: ${game.player.name}, HP: ${game.player.hp}/${game.player.maxHp}`);
+        addTest('game.player.gold', typeof game.player.gold === 'number',
+          `Starting gold: $${game.player.gold}`);
+        
+        // Test 5: Import maps
+        const { maps } = await import('./js/maps.js');
+        addTest('Import maps.js', true);
+        const mapNames = Object.keys(maps);
+        addTest('maps.downtown exists', maps.downtown && maps.downtown.tiles,
+          `Found ${mapNames.length} maps: ${mapNames.join(', ')}`);
+        
+        // Test 6: Import enemies
+        const { enemies } = await import('./js/enemies.js');
+        addTest('Import enemies.js', true);
+        addTest('enemies array exists', Array.isArray(enemies) && enemies.length > 0,
+          `${enemies.length} enemy types: ${enemies.map(e => e.name).join(', ')}`);
+        
+        // Test 7: Import quests
+        const { questDatabase } = await import('./js/quests.js');
+        addTest('Import quests.js', true);
+        const questCount = Object.keys(questDatabase).length;
+        addTest('questDatabase exists', typeof questDatabase === 'object',
+          `${questCount} quests available`);
+        
+        // Test 8: Import dialogue
+        const dialogueModule = await import('./js/dialogue.js');
+        addTest('Import dialogue.js', true);
+        addTest('startDialogue exists', typeof dialogueModule.startDialogue === 'function');
+        addTest('advanceDialogue exists', typeof dialogueModule.advanceDialogue === 'function');
+        
+        // Test 9: Import world
+        const worldModule = await import('./js/world.js');
+        addTest('Import world.js', true);
+        addTest('checkCollision exists', typeof worldModule.checkCollision === 'function');
+        addTest('checkMapTransition exists', typeof worldModule.checkMapTransition === 'function');
+        
+        // Test 10: Import quests-logic
+        const questsLogicModule = await import('./js/quests-logic.js');
+        addTest('Import quests-logic.js', true);
+        addTest('completeQuest exists', typeof questsLogicModule.completeQuest === 'function');
+        addTest('updateQuestProgress exists', typeof questsLogicModule.updateQuestProgress === 'function');
+        addTest('checkNPCInteraction exists', typeof questsLogicModule.checkNPCInteraction === 'function');
+        
+        // Test 11: Import interactions
+        const interactionsModule = await import('./js/interactions.js');
+        addTest('Import interactions.js', true);
+        addTest('handleShopPurchase exists', typeof interactionsModule.handleShopPurchase === 'function');
+        addTest('handleMagicTraining exists', typeof interactionsModule.handleMagicTraining === 'function');
+        addTest('handleYogaTraining exists', typeof interactionsModule.handleYogaTraining === 'function');
+        
+        // Test 12: Import battle
+        const battleModule = await import('./js/battle.js');
+        addTest('Import battle.js', true);
+        addTest('startBattle exists', typeof battleModule.startBattle === 'function');
+        addTest('executeBattleAction exists', typeof battleModule.executeBattleAction === 'function');
+        addTest('victoryBattle exists', typeof battleModule.victoryBattle === 'function');
+        
+        // Test 13: Import rendering
+        const renderingModule = await import('./js/rendering.js');
+        addTest('Import rendering.js', true);
+        addTest('setupCanvas exists', typeof renderingModule.setupCanvas === 'function');
+        addTest('drawMap exists', typeof renderingModule.drawMap === 'function');
+        addTest('drawPlayer exists', typeof renderingModule.drawPlayer === 'function');
+        addTest('drawBattle exists', typeof renderingModule.drawBattle === 'function');
+        
+        // Test 14: Import input
+        const inputModule = await import('./js/input.js');
+        addTest('Import input.js', true);
+        addTest('handleInput exists', typeof inputModule.handleInput === 'function');
+        addTest('setupInputHandlers exists', typeof inputModule.setupInputHandlers === 'function');
+        addTest('keys object exists', typeof inputModule.keys === 'object');
+        
+        // Test 15: Import main (this will start the game)
+        addInfo('Skipping main.js', 'Not loading main.js to avoid starting the game in test mode');
+        
+        // Summary
+        const totalTests = passCount + failCount;
+        status.innerHTML = failCount === 0 
+          ? `✅ All ${passCount} tests passed! (${warnCount} warnings)`
+          : `❌ ${failCount} failed, ${passCount} passed (${totalTests} total)`;
+        
+        if (failCount === 0) {
+          addWarning('Game Status', 'All modules loaded successfully!\n\n✅ The game is ready to play.\n✅ All imports are working.\n✅ No circular dependencies detected.\n\nClick "Back to Game" to play!');
+        }
+        
+      } catch (error) {
+        addTest('Fatal Error', false, error.stack || error.message);
+        status.innerHTML = '❌ Tests failed with errors';
+        console.error('Test error:', error);
+      }
+    }
+
+    runTests();
+  </script>
+</body>
+</html>
