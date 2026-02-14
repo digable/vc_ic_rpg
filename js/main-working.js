@@ -141,9 +141,8 @@ document.addEventListener('keyup', (e) => {
 
 console.log('Iowa City Quest - Modular version loading...');
 console.log('Data modules imported successfully!');
-// Input handling section continues from above (keys, lastKeyTime, keyDelay, spacePressed already declared)
 
-// Mobile touch control setup
+// Mobile touch control setup (keys, lastKeyTime, keyDelay, spacePressed already declared above)
 if (isMobile) {
   document.getElementById('mobile-controls').classList.add('active');
   
@@ -658,26 +657,47 @@ function completeQuest(questId) {
     }
   });
   
+  // Build reward message
+  const rewardMessages = [];
+  
   // Give rewards
-  if (quest.rewards.gold) game.player.gold += quest.rewards.gold;
-  if (quest.rewards.exp) game.player.exp += quest.rewards.exp;
+  if (quest.rewards.gold) {
+    game.player.gold += quest.rewards.gold;
+    rewardMessages.push(`Received ${quest.rewards.gold} gold!`);
+  }
+  if (quest.rewards.exp) {
+    game.player.exp += quest.rewards.exp;
+    rewardMessages.push(`Gained ${quest.rewards.exp} EXP!`);
+  }
   if (quest.rewards.item) {
     const item = consumableItems.find(i => i.name === quest.rewards.item);
-    if (item) game.consumables.push(item);
+    if (item) {
+      game.consumables.push(item);
+      rewardMessages.push(`Received ${quest.rewards.item}!`);
+    }
   }
   if (quest.rewards.maxHp) {
     game.player.maxHp += quest.rewards.maxHp;
     game.player.hp += quest.rewards.maxHp;
+    rewardMessages.push(`Max HP increased by ${quest.rewards.maxHp}!`);
   }
   if (quest.rewards.maxMp) {
     game.player.maxMp += quest.rewards.maxMp;
     game.player.mp += quest.rewards.maxMp;
+    rewardMessages.push(`Max MP increased by ${quest.rewards.maxMp}!`);
   }
   if (quest.rewards.spell && !game.spells.includes(quest.rewards.spell)) {
     game.spells.push(quest.rewards.spell);
+    rewardMessages.push(`Learned ${quest.rewards.spell}!`);
   }
   if (quest.rewards.skill && !game.skills.includes(quest.rewards.skill)) {
     game.skills.push(quest.rewards.skill);
+    rewardMessages.push(`Learned ${quest.rewards.skill}!`);
+  }
+  
+  // Add reward messages to dialogue
+  if (rewardMessages.length > 0 && game.dialogue) {
+    game.dialogue.push(...rewardMessages);
   }
 }
 
@@ -767,6 +787,11 @@ function handleShopPurchase() {
     }
     
     game.inventory.push(item.name);
+    
+    // Show purchase confirmation
+    startDialogue([`Purchased ${item.name}!`, item.description]);
+    game.state = 'explore';
+    game.shopOpen = false;
   }
 }
 
@@ -806,6 +831,22 @@ function handleMagicTraining() {
       game.spells.push(training.spell);
     }
     game.inventory.push(training.name);
+    
+    // Show training confirmation
+    const messages = [`Completed ${training.name}!`];
+    if (training.spell) {
+      messages.push(`Learned ${training.spell}!`);
+    }
+    if (training.effect === 'magicUp') {
+      messages.push(`Magic increased by ${training.amount}!`);
+    } else if (training.effect === 'magicMpUp') {
+      messages.push(`Max MP increased by ${training.amount}!`);
+    } else if (training.effect === 'magicCombo') {
+      messages.push(`Magic +5, Max MP +15!`);
+    }
+    startDialogue(messages);
+    game.state = 'explore';
+    game.magicTrainerOpen = false;
   }
 }
 
@@ -844,6 +885,22 @@ function handleYogaTraining() {
       game.skills.push(technique.skill);
     }
     game.inventory.push(technique.name);
+    
+    // Show training confirmation
+    const messages = [`Completed ${technique.name}!`];
+    if (technique.skill) {
+      messages.push(`Learned ${technique.skill}!`);
+    }
+    if (technique.effect === 'defenseUp') {
+      messages.push(`Defense increased by ${technique.amount}!`);
+    } else if (technique.effect === 'hpMpCombo') {
+      messages.push(`Max HP +15, Max MP +10!`);
+    } else if (technique.effect === 'defenseCombo') {
+      messages.push(`Defense increased by ${technique.amount}!`);
+    }
+    startDialogue(messages);
+    game.state = 'explore';
+    game.yogaOpen = false;
   }
 }
 
