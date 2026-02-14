@@ -16,7 +16,7 @@ import {
 } from './interactions.js';
 import { advanceDialogue } from './dialogue.js';
 import { executeBattleAction } from './battle.js';
-import { checkNPCInteraction, getNearbyNPC } from './quests-logic.js';
+import { checkNPCInteraction, getNearbyNPC, updateQuestProgress } from './quests-logic.js';
 import { checkMapTransition, checkCollision, openFoodCart } from './world.js';
 
 // Input state
