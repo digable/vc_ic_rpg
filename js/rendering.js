@@ -718,7 +718,7 @@ export function drawDialogue() {
   // Text
   ctx.fillStyle = COLORS.white;
   ctx.font = '8px "Press Start 2P"';
-  const text = game.dialogue.lines[game.dialogue.currentLine];
+  const text = game.dialogue.messages[game.dialogue.currentIndex];
   wrapText(text, 16, 175, 220, 12);
   
   // Continue indicator
