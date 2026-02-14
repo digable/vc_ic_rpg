@@ -1,7 +1,7 @@
 // Input Handling Module
 import { game } from './game-state.js';
 import { CONFIG, isMobile } from './constants.js';
-import { cambusRoutes, consumableItems } from './data.js';
+import { cambusRoutes, consumableItems, shopItems, magicTraining, yogaTechniques } from './data.js';
 import { 
   openShop, 
   openMagicTrainer, 
@@ -15,7 +15,7 @@ import {
   healPlayer
 } from './interactions.js';
 import { advanceDialogue } from './dialogue.js';
-import { executeBattleAction } from './battle.js';
+import { executeBattleAction, startBattle } from './battle.js';
 import { checkNPCInteraction, getNearbyNPC, updateQuestProgress } from './quests-logic.js';
 import { checkMapTransition, checkCollision, openFoodCart } from './world.js';
 
