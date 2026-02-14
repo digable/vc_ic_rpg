@@ -32,7 +32,7 @@ export const maps = {
       { x: 120, y: 16, toMap: 'pentacrest', toX: 120, toY: 208, direction: 'up' },
       { x: 16, y: 120, toMap: 'riverside', toX: 224, toY: 120, direction: 'left' },
       { x: 240, y: 64, toMap: 'deadwood', toX: 32, toY: 112, direction: 'right' },
-      { x: 128, y: 224, toMap: 'northside', toX: 128, toY: 48, direction: 'down' }
+      { x: 128, y: 224, toMap: 'northside', toX: 128, toY: 32, direction: 'down' }
     ]
   },
   pentacrest: {
