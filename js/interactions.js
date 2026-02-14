@@ -1,0 +1,224 @@
+// Interaction Handlers Module
+import { game } from './game-state.js';
+import { shopItems, magicTraining, yogaTechniques, consumableItems, cambusRoutes } from './data.js';
+import { startDialogue } from './dialogue.js';
+import { updateQuestProgress } from './quests-logic.js';
+
+export function openShop() {
+  game.state = 'shop';
+  game.shopOpen = true;
+  game.shopSelection = 0;
+}
+
+export function openMagicTrainer() {
+  game.state = 'magic_trainer';
+  game.magicTrainerOpen = true;
+  game.magicTrainerSelection = 0;
+}
+
+export function openYoga() {
+  game.state = 'yoga';
+  game.yogaOpen = true;
+  game.yogaSelection = 0;
+}
+
+export function openCambus() {
+  game.state = 'cambus';
+  game.cambusOpen = true;
+  game.cambusSelection = 0;
+}
+
+export function healPlayer() {
+  game.player.hp = game.player.maxHp;
+  game.player.mp = game.player.maxMp;
+  startDialogue(['Free refill!', 'Your HP and MP are fully restored!', 'Come back anytime!']);
+}
+
+export function handleShopPurchase() {
+  if (game.shopSelection === shopItems.length) {
+    // Exit selected
+    game.state = 'explore';
+    game.shopOpen = false;
+    return;
+  }
+  
+  const item = shopItems[game.shopSelection];
+  if (game.player.gold >= item.price) {
+    game.player.gold -= item.price;
+    
+    // Apply item effect
+    if (item.effect === 'heal') {
+      game.player.hp = Math.min(game.player.maxHp, game.player.hp + item.amount);
+    } else if (item.effect === 'healMP') {
+      game.player.mp = Math.min(game.player.maxMp, game.player.mp + item.amount);
+    } else if (item.effect === 'attackUp') {
+      game.player.attack += item.amount;
+    } else if (item.effect === 'maxHpUp') {
+      game.player.maxHp += item.amount;
+      game.player.hp += item.amount;
+    }
+    
+    game.inventory.push(item.name);
+    
+    // Show purchase confirmation
+    startDialogue([`Purchased ${item.name}!`, item.description]);
+    game.state = 'explore';
+    game.shopOpen = false;
+  }
+}
+
+export function handleMagicTraining() {
+  if (game.magicTrainerSelection === magicTraining.length) {
+    // Exit selected
+    game.state = 'explore';
+    game.magicTrainerOpen = false;
+    return;
+  }
+  
+  const training = magicTraining[game.magicTrainerSelection];
+  
+  // Check if already learned this spell
+  if (training.spell && game.spells.includes(training.spell)) {
+    game.battleState = { message: 'Already learned this spell!' };
+    return;
+  }
+  
+  if (game.player.gold >= training.price) {
+    game.player.gold -= training.price;
+    
+    // Apply training effect
+    if (training.effect === 'magicUp') {
+      game.player.magic += training.amount;
+    } else if (training.effect === 'magicMpUp') {
+      game.player.maxMp += training.amount;
+      game.player.mp += training.amount;
+    } else if (training.effect === 'magicCombo') {
+      game.player.magic += 5;
+      game.player.maxMp += 15;
+      game.player.mp += 15;
+    }
+    
+    // Learn the spell
+    if (training.spell && !game.spells.includes(training.spell)) {
+      game.spells.push(training.spell);
+    }
+    game.inventory.push(training.name);
+    
+    // Show training confirmation
+    const messages = [`Completed ${training.name}!`];
+    if (training.spell) {
+      messages.push(`Learned ${training.spell}!`);
+    }
+    if (training.effect === 'magicUp') {
+      messages.push(`Magic increased by ${training.amount}!`);
+    } else if (training.effect === 'magicMpUp') {
+      messages.push(`Max MP increased by ${training.amount}!`);
+    } else if (training.effect === 'magicCombo') {
+      messages.push(`Magic +5, Max MP +15!`);
+    }
+    startDialogue(messages);
+    game.state = 'explore';
+    game.magicTrainerOpen = false;
+  }
+}
+
+export function handleYogaTraining() {
+  if (game.yogaSelection === yogaTechniques.length) {
+    // Exit selected
+    game.state = 'explore';
+    game.yogaOpen = false;
+    return;
+  }
+  
+  const technique = yogaTechniques[game.yogaSelection];
+  
+  // Check if already learned this skill
+  if (technique.skill && game.skills.includes(technique.skill)) {
+    return; // Just don't do anything, they already have it
+  }
+  
+  if (game.player.gold >= technique.price) {
+    game.player.gold -= technique.price;
+    
+    // Apply technique effects
+    if (technique.effect === 'defenseUp') {
+      game.player.defense += technique.amount;
+    } else if (technique.effect === 'hpMpCombo') {
+      game.player.maxHp += 15;
+      game.player.hp += 15;
+      game.player.maxMp += 10;
+      game.player.mp += 10;
+    } else if (technique.effect === 'defenseCombo') {
+      game.player.defense += technique.amount;
+    }
+    
+    // Learn the skill
+    if (technique.skill && !game.skills.includes(technique.skill)) {
+      game.skills.push(technique.skill);
+    }
+    game.inventory.push(technique.name);
+    
+    // Show training confirmation
+    const messages = [`Completed ${technique.name}!`];
+    if (technique.skill) {
+      messages.push(`Learned ${technique.skill}!`);
+    }
+    if (technique.effect === 'defenseUp') {
+      messages.push(`Defense increased by ${technique.amount}!`);
+    } else if (technique.effect === 'hpMpCombo') {
+      messages.push(`Max HP +15, Max MP +10!`);
+    } else if (technique.effect === 'defenseCombo') {
+      messages.push(`Defense increased by ${technique.amount}!`);
+    }
+    startDialogue(messages);
+    game.state = 'explore';
+    game.yogaOpen = false;
+  }
+}
+
+export function handleFoodCartPurchase() {
+  const vendorItems = consumableItems.filter(item => item.vendor === game.currentVendor);
+  
+  if (game.foodCartSelection === vendorItems.length) {
+    // Exit selected
+    game.state = 'explore';
+    game.foodCartOpen = false;
+    return;
+  }
+  
+  const item = vendorItems[game.foodCartSelection];
+  if (game.player.gold >= item.price) {
+    game.player.gold -= item.price;
+    game.consumables.push(item);
+    
+    // Update quest progress for vendor purchases
+    updateQuestProgress('buy_from_vendor', game.currentVendor);
+  }
+}
+
+export function handleCambusTravel() {
+  if (game.cambusSelection === cambusRoutes.length) {
+    // Exit selected
+    game.state = 'explore';
+    game.cambusOpen = false;
+    return;
+  }
+  
+  const route = cambusRoutes[game.cambusSelection];
+  
+  // Don't travel if already at this location
+  if (game.map === route.map) {
+    game.state = 'explore';
+    game.cambusOpen = false;
+    return;
+  }
+  
+  // Fast travel!
+  game.map = route.map;
+  game.player.x = route.x;
+  game.player.y = route.y;
+  game.state = 'explore';
+  game.cambusOpen = false;
+  game.enemyEncounterSteps = 0;
+}
+
