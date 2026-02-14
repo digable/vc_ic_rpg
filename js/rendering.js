@@ -4,7 +4,7 @@ import { game } from './game-state.js';
 import { maps } from './maps.js';
 import { shopItems, magicTraining, yogaTechniques, spellData, cambusRoutes, consumableItems } from './data.js';
 import { questDatabase } from './quests.js';
-import { canCompleteQuest } from './quests-logic.js';
+import { canCompleteQuest, getNearbyNPC } from './quests-logic.js';
 
 export let ctx;
 
