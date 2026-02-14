@@ -1431,8 +1431,11 @@ export function drawCambus() {
 export function drawFoodCart() {
   if (!game.foodCartOpen) return;
   
-  // Filter items for current vendor
-  const vendorItems = consumableItems.filter(item => item.vendor === game.currentVendor);
+  // Filter items for current vendor (case-insensitive, trimmed)
+  const vendorItems = consumableItems.filter(item => {
+    if (!item.vendor || !game.currentVendor) return false;
+    return item.vendor.toString().trim().toLowerCase() === String(game.currentVendor).trim().toLowerCase();
+  });
   
   // Background
   ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';

@@ -57,6 +57,7 @@ export const maps = {
     ],
     npcs: [
       { x: 128, y: 80, name: 'Professor', hasQuest: 'campus_tour', dialogue: ['Welcome to the Pentacrest!', 'This is the heart of campus.', 'Study hard!'] },
+      { x: 80, y: 48, name: 'Chef', type: 'food_cart', dialogue: ['I cook great ramen!', 'Try the Chef Special.'] },
       { x: 64, y: 112, name: 'Student', hasQuest: 'study_buddy', dialogue: ['I have so much homework...', 'Good luck out there!'] },
       { x: 224, y: 112, name: 'Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] },
       { x: 192, y: 144, name: 'Food Cart Vendor', type: 'food_cart', dialogue: ['Fresh snacks!', 'Fuel up!'] }

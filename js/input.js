@@ -399,7 +399,10 @@ export function handleInput() {
       lastKeyTime = now;
     }
   } else if (game.state === 'food_cart') {
-    const vendorItems = consumableItems.filter(item => item.vendor === game.currentVendor);
+    const vendorItems = consumableItems.filter(item => {
+      if (!item.vendor || !game.currentVendor) return false;
+      return item.vendor.toString().trim().toLowerCase() === String(game.currentVendor).trim().toLowerCase();
+    });
     
     if (keys['ArrowUp']) {
       game.foodCartSelection = Math.max(0, game.foodCartSelection - 1);

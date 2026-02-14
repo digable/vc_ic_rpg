@@ -154,8 +154,11 @@ export function updateQuestProgress(type, value) {
           obj.visited = true;
         } else if (type === 'collect_gold') {
           obj.amount = game.player.gold;
-        } else if (type === 'buy_from_vendor' && obj.vendor === value) {
-          obj.bought = true;
+        } else if (type === 'buy_from_vendor') {
+          // Compare vendor names case-insensitively and trimmed
+          if (obj.vendor && value && obj.vendor.toString().trim().toLowerCase() === String(value).trim().toLowerCase()) {
+            obj.bought = true;
+          }
         }
       }
     });

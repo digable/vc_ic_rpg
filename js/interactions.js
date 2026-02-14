@@ -178,7 +178,10 @@ export function handleYogaTraining() {
 }
 
 export function handleFoodCartPurchase() {
-  const vendorItems = consumableItems.filter(item => item.vendor === game.currentVendor);
+  const vendorItems = consumableItems.filter(item => {
+    if (!item.vendor || !game.currentVendor) return false;
+    return item.vendor.toString().trim().toLowerCase() === String(game.currentVendor).trim().toLowerCase();
+  });
   
   if (game.foodCartSelection === vendorItems.length) {
     // Exit selected
