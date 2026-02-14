@@ -68,37 +68,6 @@ Each vendor has their own menu:
 - **A Button** - Interact / Select
 - **M Button** - Menu / Cancel
 
-## 🚀 Quick Start
-
-### Play Locally
-
-1. Navigate to the project folder:
-```bash
-cd "c:\Users\digable\source\repos\digable\vc_ic_rpg"
-```
-
-2. Start a local server (choose one):
-
-**Python 3** (built-in on Windows)
-```bash
-python -m http.server 8000
-```
-
-**Node.js** (if installed)
-```bash
-npx http-server -p 8000
-```
-
-**VS Code Live Server** (if extension installed)
-- Right-click `index.html` → "Open with Live Server"
-
-3. Open in browser:
-```
-http://localhost:8000/index.html
-```
-
-**Note:** ES6 modules require a web server (can't open index.html directly with file://).
-
 ## 📁 Project Structure
 
 ```
