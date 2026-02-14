@@ -32,6 +32,7 @@ export function healPlayer() {
   game.player.hp = game.player.maxHp;
   game.player.mp = game.player.maxMp;
   startDialogue(['Free refill!', 'Your HP and MP are fully restored!', 'Come back anytime!']);
+  game.state = 'dialogue';
 }
 
 export function handleShopPurchase() {
@@ -117,7 +118,7 @@ export function handleMagicTraining() {
       messages.push(`Magic +5, Max MP +15!`);
     }
     startDialogue(messages);
-    game.state = 'explore';
+    game.state = 'dialogue';
     game.magicTrainerOpen = false;
   }
 }
@@ -171,7 +172,7 @@ export function handleYogaTraining() {
       messages.push(`Defense increased by ${technique.amount}!`);
     }
     startDialogue(messages);
-    game.state = 'explore';
+    game.state = 'dialogue';
     game.yogaOpen = false;
   }
 }

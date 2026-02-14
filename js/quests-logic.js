@@ -20,25 +20,30 @@ export function checkNPCInteraction() {
         if (!activeQuest) {
           // Offer new quest
           startDialogue(quest.dialogue.offer);
+          game.state = 'dialogue';
           offerQuest(quest.id);
           return npc;
         } else if (activeQuest.status === 'active') {
           // Check if quest can be completed
           if (canCompleteQuest(activeQuest)) {
             startDialogue(quest.dialogue.complete);
+            game.state = 'dialogue';
             completeQuest(quest.id);
             return npc;
           } else {
             startDialogue(quest.dialogue.progress);
+            game.state = 'dialogue';
             return npc;
           }
         } else if (activeQuest.status === 'completed') {
           // Quest already done
           startDialogue(npc.dialogue);
+          game.state = 'dialogue';
           return npc;
         }
       } else if (!npc.type || !specialTypes.includes(npc.type)) {
         startDialogue(npc.dialogue);
+        game.state = 'dialogue';
       }
       return npc;
     }
