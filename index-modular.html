@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iowa City Quest - A NES RPG Adventure</title>
+  <link rel="stylesheet" href="game.css">
+</head>
+<body>
+  <div id="game-container">
+    <div id="title-screen">
+      <div class="title">IOWA CITY<br>QUEST</div>
+      <div class="subtitle">A Modern RPG Adventure</div>
+      <div class="start-text" id="start-text">PRESS SPACE TO START</div>
+      <div class="controls" id="controls-text">
+        ARROW KEYS: Move | SPACE: Action/Advance Text | ESC: Menu
+      </div>
+    </div>
+    <canvas id="game-canvas"></canvas>
+  </div>
+  
+  <div class="mobile-controls" id="mobile-controls">
+    <div class="dpad">
+      <div class="dpad-btn dpad-up" data-key="up">↑</div>
+      <div class="dpad-btn dpad-down" data-key="down">↓</div>
+      <div class="dpad-btn dpad-left" data-key="left">←</div>
+      <div class="dpad-btn dpad-right" data-key="right">→</div>
+    </div>
+    <div class="action-buttons">
+      <div class="action-btn btn-action" data-key="action">A</div>
+      <div class="action-btn btn-menu" data-key="menu">M</div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main-working.js"></script>
+</body>
+</html>
