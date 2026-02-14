@@ -60,6 +60,10 @@ function gameLoop() {
     if (game.dialogue) {
       drawDialogue(ctx);
     }
+    
+    if (game.menuOpen) {
+      drawMenu(ctx);
+    }
   } else if (game.state === 'battle') {
     drawBattle(ctx);
   } else if (game.state === 'menu') {
