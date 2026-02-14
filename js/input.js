@@ -223,12 +223,14 @@ export function handleInput() {
     }
 
     if (keys['Escape']) {
-      game.menuOpen = !game.menuOpen;
-      if (game.menuOpen) {
-        game.menuSelection = 0;
-        game.menuTab = 0;
+      if (now - lastKeyTime > keyDelay) {
+        game.menuOpen = !game.menuOpen;
+        if (game.menuOpen) {
+          game.menuSelection = 0;
+          game.menuTab = 0;
+        }
+        lastKeyTime = now;
       }
-      lastKeyTime = now;
     }
     
     if (game.menuOpen) {
