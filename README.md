@@ -8,7 +8,7 @@ A retro NES-style RPG adventure set in Iowa City! Explore campus, complete quest
 
 ## 🕹️ Play Now
 
-**[Play on GitHub Pages](https://digable.github.io/iowa-city-quest/)**
+**[Play on GitHub Pages](https://digable.github.io/vc_ic_rpg/)**
 
 ## ✨ Features
 
