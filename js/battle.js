@@ -5,6 +5,7 @@ import { spellData, consumableItems } from './data.js';
 import { maps } from './maps.js';
 import { startDialogue } from './dialogue.js';
 import { updateQuestProgress } from './quests-logic.js';
+import { addExperience } from './leveling.js';
 
 export function startBattle() {
   game.state = 'battle';
@@ -216,6 +217,11 @@ export function applyItemEffect(item) {
     if (game.battleState) {
       game.battleState.message = `Used ${item.name}! Attack +${item.amount} for ${item.turns} turns!`;
     }
+  } else if (item.effect === 'buffStrength') {
+    game.activeBuff = { type: 'strength', amount: item.amount, turnsLeft: item.turns };
+    if (game.battleState) {
+      game.battleState.message = `Used ${item.name}! Strength +${item.amount} for ${item.turns} turns!`;
+    }
   } else if (item.effect === 'buffDefense') {
     game.activeBuff = { type: 'defense', amount: item.amount, turnsLeft: item.turns };
     if (game.battleState) {
@@ -225,6 +231,21 @@ export function applyItemEffect(item) {
     game.activeBuff = { type: 'magic', amount: item.amount, turnsLeft: item.turns };
     if (game.battleState) {
       game.battleState.message = `Used ${item.name}! Magic +${item.amount} for ${item.turns} turns!`;
+    }
+  } else if (item.effect === 'buffIntellect') {
+    game.activeBuff = { type: 'intellect', amount: item.amount, turnsLeft: item.turns };
+    if (game.battleState) {
+      game.battleState.message = `Used ${item.name}! Intellect +${item.amount} for ${item.turns} turns!`;
+    }
+  } else if (item.effect === 'buffAgility') {
+    game.activeBuff = { type: 'agility', amount: item.amount, turnsLeft: item.turns };
+    if (game.battleState) {
+      game.battleState.message = `Used ${item.name}! Agility +${item.amount} for ${item.turns} turns!`;
+    }
+  } else if (item.effect === 'buffVitality') {
+    game.activeBuff = { type: 'vitality', amount: item.amount, turnsLeft: item.turns };
+    if (game.battleState) {
+      game.battleState.message = `Used ${item.name}! Vitality +${item.amount} for ${item.turns} turns!`;
     }
   }
 }
@@ -288,7 +309,6 @@ export function enemyTurn() {
 export function victoryBattle() {
   const exp = game.battleState.enemy.exp;
   const gold = game.battleState.enemy.gold;
-  game.player.exp += exp;
   game.player.gold += gold;
   
   // Update quest progress for enemy defeats
@@ -297,15 +317,10 @@ export function victoryBattle() {
   
   game.battleState.message = `Victory! Gained ${exp} EXP and $${gold}!`;
   
-  // Level up check
-  if (game.player.exp >= game.player.level * 30) {
-    game.player.level++;
-    game.player.maxHp += 10;
-    game.player.maxMp += 5;
-    game.player.attack += 2;
-    game.player.magic += 2;
-    game.player.defense += 1;
-    game.battleState.message += ` LEVEL UP to ${game.player.level}! ATK+2 MAG+2 DEF+1`;
+  // Add experience and handle level ups
+  const levelUpMessages = addExperience(exp);
+  if (levelUpMessages.length > 0) {
+    game.battleState.message += ` *** ${levelUpMessages.join(' | ')} ***`;
   }
   
   // Apply post-battle regeneration skills

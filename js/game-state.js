@@ -13,6 +13,7 @@ export const game = {
     exp: 0,
     gold: 100,
     name: 'Student',
+    class: 'Student',
     facing: 'down',
     attack: 8,
     magic: 5,

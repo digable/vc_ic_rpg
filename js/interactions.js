@@ -52,6 +52,20 @@ export function handleShopPurchase() {
       game.player.hp = Math.min(game.player.maxHp, game.player.hp + item.amount);
     } else if (item.effect === 'healMP') {
       game.player.mp = Math.min(game.player.maxMp, game.player.mp + item.amount);
+    } else if (item.effect === 'strengthUp') {
+      game.player.strength = (game.player.strength || 0) + item.amount;
+    } else if (item.effect === 'intellectUp') {
+      game.player.intellect = (game.player.intellect || 0) + item.amount;
+    } else if (item.effect === 'agilityUp') {
+      game.player.agility = (game.player.agility || 0) + item.amount;
+    } else if (item.effect === 'vitalityUp') {
+      game.player.vitality = (game.player.vitality || 0) + item.amount;
+      game.player.maxHp += 20;
+      game.player.hp += 20;
+    } else if (item.effect === 'luckUp') {
+      game.player.luck = (game.player.luck || 0) + item.amount;
+    } else if (item.effect === 'defenseUp') {
+      game.player.defense += item.amount;
     } else if (item.effect === 'attackUp') {
       game.player.attack += item.amount;
     } else if (item.effect === 'maxHpUp') {
@@ -89,14 +103,18 @@ export function handleMagicTraining() {
     
     // Apply training effect
     if (training.effect === 'magicUp') {
-      game.player.magic += training.amount;
+      game.player.intellect = (game.player.intellect || 0) + training.amount;
+    } else if (training.effect === 'intellectUp') {
+      game.player.intellect = (game.player.intellect || 0) + training.amount;
     } else if (training.effect === 'magicMpUp') {
       game.player.maxMp += training.amount;
       game.player.mp += training.amount;
     } else if (training.effect === 'magicCombo') {
-      game.player.magic += 5;
+      game.player.intellect = (game.player.intellect || 0) + 5;
       game.player.maxMp += 15;
       game.player.mp += 15;
+    } else if (training.effect === 'spiritUp') {
+      game.player.spirit = (game.player.spirit || 0) + training.amount;
     }
     
     // Learn the spell
@@ -110,12 +128,14 @@ export function handleMagicTraining() {
     if (training.spell) {
       messages.push(`Learned ${training.spell}!`);
     }
-    if (training.effect === 'magicUp') {
-      messages.push(`Magic increased by ${training.amount}!`);
+    if (training.effect === 'magicUp' || training.effect === 'intellectUp') {
+      messages.push(`Intellect increased by ${training.amount}!`);
     } else if (training.effect === 'magicMpUp') {
       messages.push(`Max MP increased by ${training.amount}!`);
     } else if (training.effect === 'magicCombo') {
-      messages.push(`Magic +5, Max MP +15!`);
+      messages.push(`Intellect +5, Max MP +15!`);
+    } else if (training.effect === 'spiritUp') {
+      messages.push(`Spirit increased by ${training.amount}!`);
     }
     startDialogue(messages);
     game.state = 'dialogue';
@@ -142,8 +162,16 @@ export function handleYogaTraining() {
     game.player.gold -= technique.price;
     
     // Apply technique effects
-    if (technique.effect === 'defenseUp') {
+    if (technique.effect === 'strengthUp') {
+      game.player.strength = (game.player.strength || 0) + technique.amount;
+    } else if (technique.effect === 'defenseUp') {
       game.player.defense += technique.amount;
+    } else if (technique.effect === 'vitalityUp') {
+      game.player.vitality = (game.player.vitality || 0) + technique.amount;
+    } else if (technique.effect === 'agilityUp') {
+      game.player.agility = (game.player.agility || 0) + technique.amount;
+    } else if (technique.effect === 'spiritUp') {
+      game.player.spirit = (game.player.spirit || 0) + technique.amount;
     } else if (technique.effect === 'hpMpCombo') {
       game.player.maxHp += 15;
       game.player.hp += 15;
@@ -164,8 +192,16 @@ export function handleYogaTraining() {
     if (technique.skill) {
       messages.push(`Learned ${technique.skill}!`);
     }
-    if (technique.effect === 'defenseUp') {
+    if (technique.effect === 'strengthUp') {
+      messages.push(`Strength increased by ${technique.amount}!`);
+    } else if (technique.effect === 'defenseUp') {
       messages.push(`Defense increased by ${technique.amount}!`);
+    } else if (technique.effect === 'vitalityUp') {
+      messages.push(`Vitality increased by ${technique.amount}!`);
+    } else if (technique.effect === 'agilityUp') {
+      messages.push(`Agility increased by ${technique.amount}!`);
+    } else if (technique.effect === 'spiritUp') {
+      messages.push(`Spirit increased by ${technique.amount}!`);
     } else if (technique.effect === 'hpMpCombo') {
       messages.push(`Max HP +15, Max MP +10!`);
     } else if (technique.effect === 'defenseCombo') {
