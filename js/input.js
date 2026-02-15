@@ -480,5 +480,6 @@ export function handleInput() {
       game.foodCartSelection = 0;
       lastKeyTime = now;
     }
+  }
 }
 
