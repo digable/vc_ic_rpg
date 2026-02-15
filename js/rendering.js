@@ -1328,6 +1328,12 @@ export function drawMagicTrainer() {
 export function drawYoga() {
   if (!game.yogaOpen) return;
   
+  const itemsPerPage = 5;
+  const startIdx = game.yogaPage * itemsPerPage;
+  const endIdx = startIdx + itemsPerPage;
+  const pageItems = yogaTechniques.slice(startIdx, endIdx);
+  const totalPages = Math.ceil(yogaTechniques.length / itemsPerPage);
+  
   // Background
   ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
   ctx.fillRect(15, 25, 226, 190);
@@ -1342,10 +1348,14 @@ export function drawYoga() {
   ctx.fillStyle = COLORS.white;
   ctx.font = '6px "Press Start 2P"';
   ctx.fillText(`Gold: $${game.player.gold}`, 25, 55);
-  ctx.fillText(`Defense: ${game.player.defense}`, 130, 55);
+  
+  // Page indicator
+  ctx.fillStyle = COLORS.gray;
+  ctx.font = '5px "Press Start 2P"';
+  ctx.fillText(`Page ${game.yogaPage + 1}/${totalPages}`, 150, 55);
   
   // Yoga techniques
-  yogaTechniques.forEach((technique, i) => {
+  pageItems.forEach((technique, i) => {
     const y = 75 + i * 20;
     const alreadyLearned = technique.skill && game.skills.includes(technique.skill);
     
@@ -1355,6 +1365,7 @@ export function drawYoga() {
       ctx.fillStyle = COLORS.white;
     }
     
+    ctx.font = '6px "Press Start 2P"';
     if (i === game.yogaSelection && !alreadyLearned) {
       ctx.fillStyle = COLORS.lightGreen;
       ctx.fillText('>', 25, y);
@@ -1374,20 +1385,24 @@ export function drawYoga() {
     ctx.fillStyle = COLORS.gray;
     ctx.font = '5px "Press Start 2P"';
     ctx.fillText(technique.description, 40, y + 8);
-    ctx.font = '6px "Press Start 2P"';
   });
   
   // Exit option
-  const exitY = 75 + yogaTechniques.length * 20;
-  ctx.fillStyle = game.yogaSelection === yogaTechniques.length ? COLORS.lightGreen : COLORS.white;
-  if (game.yogaSelection === yogaTechniques.length) {
+  const exitY = 75 + pageItems.length * 20;
+  ctx.fillStyle = game.yogaSelection === pageItems.length ? COLORS.lightGreen : COLORS.white;
+  ctx.font = '6px "Press Start 2P"';
+  if (game.yogaSelection === pageItems.length) {
     ctx.fillText('>', 25, exitY);
   }
   ctx.fillText('Exit Studio', 40, exitY);
   
   ctx.fillStyle = COLORS.gray;
   ctx.font = '5px "Press Start 2P"';
-  ctx.fillText('SPACE: Learn | ESC: Exit', 45, 205);
+  if (totalPages > 1) {
+    ctx.fillText('SPACE: Learn | ESC: Exit | L/R: Pages', 30, 205);
+  } else {
+    ctx.fillText('SPACE: Learn | ESC: Exit', 45, 205);
+  }
 }
 
 export function drawCambus() {

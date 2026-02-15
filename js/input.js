@@ -408,23 +408,51 @@ export function handleInput() {
       lastKeyTime = now;
     }
   } else if (game.state === 'yoga') {
+    const itemsPerPage = 5;
+    const totalPages = Math.ceil(yogaTechniques.length / itemsPerPage);
+    const startIdx = game.yogaPage * itemsPerPage;
+    const pageItems = yogaTechniques.slice(startIdx, startIdx + itemsPerPage);
+    
     if (keys['ArrowUp']) {
       game.yogaSelection = Math.max(0, game.yogaSelection - 1);
       lastKeyTime = now;
     }
     if (keys['ArrowDown']) {
-      game.yogaSelection = Math.min(yogaTechniques.length, game.yogaSelection + 1);
+      game.yogaSelection = Math.min(pageItems.length, game.yogaSelection + 1);
       lastKeyTime = now;
+    }
+    if (keys['ArrowLeft']) {
+      if (game.yogaPage > 0) {
+        game.yogaPage--;
+        game.yogaSelection = 0;
+        lastKeyTime = now;
+      }
+    }
+    if (keys['ArrowRight']) {
+      if (game.yogaPage < totalPages - 1) {
+        game.yogaPage++;
+        game.yogaSelection = 0;
+        lastKeyTime = now;
+      }
     }
     if (keys[' ']) {
       if (now - lastKeyTime > keyDelay) {
-        handleYogaTraining();
+        const actualSelection = game.yogaSelection + (game.yogaPage * itemsPerPage);
+        if (game.yogaSelection === pageItems.length) {
+          // Exit selected
+          game.state = 'explore';
+          game.yogaOpen = false;
+        } else if (actualSelection < yogaTechniques.length) {
+          handleYogaTraining();
+        }
         lastKeyTime = now;
       }
     }
     if (keys['Escape']) {
       game.state = 'explore';
       game.yogaOpen = false;
+      game.yogaPage = 0;
+      game.yogaSelection = 0;
       lastKeyTime = now;
     }
   } else if (game.state === 'food_cart') {

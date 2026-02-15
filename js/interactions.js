@@ -151,14 +151,21 @@ export function handleMagicTraining() {
 }
 
 export function handleYogaTraining() {
-  if (game.yogaSelection === yogaTechniques.length) {
+  const itemsPerPage = 5;
+  const startIdx = game.yogaPage * itemsPerPage;
+  const pageItems = yogaTechniques.slice(startIdx, startIdx + itemsPerPage);
+  
+  if (game.yogaSelection === pageItems.length) {
     // Exit selected
     game.state = 'explore';
     game.yogaOpen = false;
+    game.yogaPage = 0;
+    game.yogaSelection = 0;
     return;
   }
   
-  const technique = yogaTechniques[game.yogaSelection];
+  const actualIdx = startIdx + game.yogaSelection;
+  const technique = yogaTechniques[actualIdx];
   
   // Check if already learned this skill
   if (technique.skill && game.skills.includes(technique.skill)) {
