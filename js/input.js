@@ -188,6 +188,11 @@ export function handleInput() {
     return;
   }
   
+  // Block all other input during dialogue
+  if (game.state === 'dialogue') {
+    return;
+  }
+  
   if (now - lastKeyTime < keyDelay) return;
 
   if (game.state === 'explore') {
