@@ -713,25 +713,31 @@ export function drawDialogue() {
   if (isLevelUp) {
     // Level up dialogue with special formatting
     ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-    ctx.fillRect(20, 100, 216, 140);
+    ctx.fillRect(20, 80, 216, 160);
     ctx.strokeStyle = COLORS.yellow;
     ctx.lineWidth = 3;
-    ctx.strokeRect(20, 100, 216, 140);
-    
-    // Title
-    ctx.fillStyle = COLORS.yellow;
-    ctx.font = 'bold 10px "Press Start 2P"';
-    ctx.textAlign = 'center';
-    ctx.fillText('LEVEL UP!', 128, 125);
+    ctx.strokeRect(20, 80, 216, 160);
     
     // Details
-    ctx.fillStyle = COLORS.white;
-    ctx.font = '7px "Press Start 2P"';
-    ctx.textAlign = 'left';
+    ctx.fillStyle = COLORS.yellow;
+    ctx.font = 'bold 8px "Press Start 2P"';
+    ctx.textAlign = 'center';
     const currentMsg = game.dialogue.messages[game.dialogue.currentIndex];
     const lines = currentMsg.split('\n');
+    
+    let yPos = 105;
     lines.forEach((line, i) => {
-      ctx.fillText(line, 35, 145 + i * 15);
+      // First line in yellow bold (LEVEL UP!)
+      if (i === 0) {
+        ctx.fillStyle = COLORS.yellow;
+        ctx.font = 'bold 8px "Press Start 2P"';
+      } else {
+        ctx.fillStyle = COLORS.white;
+        ctx.font = '7px "Press Start 2P"';
+      }
+      ctx.textAlign = 'center';
+      ctx.fillText(line, 128, yPos);
+      yPos += line === '' ? 8 : 12;
     });
     
     ctx.textAlign = 'left';

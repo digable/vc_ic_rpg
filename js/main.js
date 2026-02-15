@@ -67,10 +67,7 @@ function gameLoop() {
     game.dialogue = {
       type: 'levelUp',
       messages: [
-        `LEVEL UP!`,
-        `You have reached Level ${game.player.level}!`,
-        `HP: +10 | MP: +5`,
-        `ATK: +2 | MAG: +1 | DEF: +1`
+        `LEVEL UP!\nYou have reached Level ${game.player.level}!\n\nHP: +10 | MP: +5\nATK: +2 | MAG: +1 | DEF: +1`
       ],
       currentIndex: 0
     };
