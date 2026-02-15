@@ -349,12 +349,7 @@ export function victoryBattle() {
 }
 
 export function gameOver() {
-  game.battleState.message = 'You were defeated... Game Over';
-  setTimeout(() => {
-    game.player.hp = game.player.maxHp;
-    game.player.gold = Math.floor(game.player.gold / 2);
-    game.state = 'explore';
-    game.battleState = null;
-  }, 3000);
+  game.state = 'gameOver';
+  game.battleState = null;
 }
 

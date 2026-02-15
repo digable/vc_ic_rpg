@@ -52,3 +52,56 @@ export const game = {
   textBox: null,
   animFrame: 0
 };
+
+export function resetGameState() {
+  game.state = 'title';
+  game.player = {
+    x: 120,
+    y: 120,
+    hp: 50,
+    maxHp: 50,
+    mp: 20,
+    maxMp: 20,
+    level: 1,
+    exp: 0,
+    gold: 100,
+    name: 'Student',
+    class: 'Student',
+    facing: 'down',
+    attack: 8,
+    magic: 5,
+    defense: 3
+  };
+  game.map = 'downtown';
+  game.inventory = ['Campus ID', 'Bus Pass', 'Coffee'];
+  game.consumables = [];
+  game.skills = [];
+  game.spells = [];
+  game.enemyEncounterSteps = 0;
+  game.dialogue = null;
+  game.battleState = null;
+  game.menuOpen = false;
+  game.menuSelection = 0;
+  game.menuTab = 0;
+  game.shopOpen = false;
+  game.shopSelection = 0;
+  game.shopPage = 0;
+  game.magicTrainerOpen = false;
+  game.magicTrainerSelection = 0;
+  game.magicTrainerPage = 0;
+  game.yogaOpen = false;
+  game.yogaSelection = 0;
+  game.yogaPage = 0;
+  game.cambusOpen = false;
+  game.cambusSelection = 0;
+  game.foodCartOpen = false;
+  game.foodCartSelection = 0;
+  game.foodCartPage = 0;
+  game.currentVendor = 'Food Cart Vendor';
+  game.itemMenuOpen = false;
+  game.itemMenuSelection = 0;
+  game.activeBuff = null;
+  game.quests = [];
+  game.textBox = null;
+  game.animFrame = 0;
+}

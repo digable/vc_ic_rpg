@@ -1,5 +1,5 @@
 // Input Handling Module
-import { game } from './game-state.js';
+import { game, resetGameState } from './game-state.js';
 import { CONFIG, isMobile } from './constants.js';
 import { cambusRoutes, consumableItems, shopItems, magicTraining, yogaTechniques } from './data.js';
 import { 
@@ -119,6 +119,24 @@ export function setupInputHandlers() {
   document.addEventListener('keyup', (e) => {
     keys[e.key] = false;
     if (e.key === ' ') spacePressed = false;
+  });
+
+  // Handle mouse/touch clicks for game over screen
+  document.addEventListener('click', (e) => {
+    if (game.state === 'gameOver') {
+      // Get canvas and calculate relative position
+      const canvas = document.getElementById('game-canvas');
+      if (!canvas) return;
+      
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+      
+      // Check if click is on restart button (80-176 x, 160-190 y)
+      if (x >= 80 && x <= 176 && y >= 160 && y <= 190) {
+        resetGameState();
+      }
+    }
   });
 }
 
@@ -507,6 +525,13 @@ export function handleInput() {
       game.foodCartPage = 0;
       game.foodCartSelection = 0;
       lastKeyTime = now;
+    }
+  } else if (game.state === 'gameOver') {
+    if (keys[' '] || keys['Enter']) {
+      if (now - lastKeyTime > keyDelay) {
+        resetGameState();
+        lastKeyTime = now;
+      }
     }
   }
 }

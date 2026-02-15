@@ -17,7 +17,8 @@ import {
   drawMagicTrainer, 
   drawYoga, 
   drawCambus, 
-  drawFoodCart 
+  drawFoodCart,
+  drawGameOver 
 } from './rendering.js';
 
 console.log('Iowa City Quest - Modular version loading...');
@@ -81,6 +82,8 @@ function gameLoop() {
     drawCambus(ctx);
   } else if (game.state === 'food_cart') {
     drawFoodCart(ctx);
+  } else if (game.state === 'gameOver') {
+    drawGameOver(ctx);
   }
   
   // Animation frame
