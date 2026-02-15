@@ -104,4 +104,10 @@ export function resetGameState() {
   game.quests = [];
   game.textBox = null;
   game.animFrame = 0;
+  
+  // Show title screen by removing hidden class
+  const titleScreen = document.getElementById('title-screen');
+  if (titleScreen) {
+    titleScreen.classList.remove('hidden');
+  }
 }
