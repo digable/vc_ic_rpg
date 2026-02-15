@@ -178,6 +178,29 @@ export function handleInput() {
     return;
   }
   
+  // Handle dialogue state - allow space/enter to advance or exit
+  if (game.state === 'dialogue') {
+    if (keys[' '] || keys['Enter']) {
+      if (now - lastKeyTime > keyDelay) {
+        advanceDialogue();
+        if (!game.dialogue) {
+          game.levelUpDialog = null; // Clear level up dialog when dialogue ends
+          game.state = 'explore';
+        }
+        lastKeyTime = now;
+      }
+    }
+    if (keys['Escape']) {
+      if (now - lastKeyTime > keyDelay) {
+        game.dialogue = null;
+        game.levelUpDialog = null;
+        game.state = 'explore';
+        lastKeyTime = now;
+      }
+    }
+    return; // Block all other input during dialogue
+  }
+  
   if (game.state === 'dialogue' && keys['Escape']) {
     if (now - lastKeyTime > keyDelay) {
       game.dialogue = null;
@@ -290,17 +313,6 @@ export function handleInput() {
           useItemFromMenu();
           lastKeyTime = now;
         }
-      }
-    }
-  } else if (game.state === 'dialogue') {
-    if (keys[' '] || keys['Enter']) {
-      if (now - lastKeyTime > keyDelay) {
-        advanceDialogue();
-        if (!game.dialogue) {
-          game.levelUpDialog = null; // Clear level up dialog when dialogue ends
-          game.state = 'explore';
-        }
-        lastKeyTime = now;
       }
     }
   } else if (game.state === 'battle') {
