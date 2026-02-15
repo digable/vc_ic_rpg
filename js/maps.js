@@ -156,7 +156,6 @@ export const maps = {
       { x: 96, y: 64, name: 'Bartender', type: 'food_cart', dialogue: ['Welcome to The Deadwood!', 'What can I get you?'] },
       { x: 64, y: 112, name: 'Regular', hasQuest: 'bar_tab', dialogue: ['This place has been here forever.', 'Best bar in Iowa City!'] },
       { x: 144, y: 96, name: 'Pool Player', dialogue: ['Wanna play a game?', 'I come here every weekend.'] },
-      { x: 176, y: 64, name: 'Food Cart Vendor', type: 'food_cart', dialogue: ['Bar snacks!', 'Get your munchies!'] },
       { x: 32, y: 112, name: 'Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] }
     ],
     name: 'The Deadwood',
