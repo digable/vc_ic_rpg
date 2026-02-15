@@ -66,8 +66,7 @@ export const consumableItems = [
   { name: 'Beer', price: 20, effect: 'healHP', amount: 15, description: 'Restores 15 HP', vendor: 'Bartender' },
   { name: 'Whiskey Shot', price: 35, effect: 'buffAttack', amount: 7, turns: 2, description: 'Temp +7 Attack (2 turns)', vendor: 'Bartender' },
   { name: 'IPA', price: 30, effect: 'healBoth', hpAmount: 20, mpAmount: 10, description: 'Restore 20 HP & 10 MP', vendor: 'Bartender' },
-  { name: 'Cocktail', price: 45, effect: 'buffMagic', amount: 5, turns: 3, description: 'Temp +5 Magic (3 turns)', vendor: 'Bartender' },
-  { name: 'Bar Nachos', price: 25, effect: 'healHP', amount: 25, description: 'Restores 25 HP', vendor: 'Bartender' }
+  { name: 'Cocktail', price: 45, effect: 'buffMagic', amount: 5, turns: 3, description: 'Temp +5 Magic (3 turns)', vendor: 'Bartender' }
 ];
 
 // Cambus routes (fast travel locations)
