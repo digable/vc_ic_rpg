@@ -181,6 +181,7 @@ export function handleInput() {
   if (game.state === 'dialogue' && keys['Escape']) {
     if (now - lastKeyTime > keyDelay) {
       game.dialogue = null;
+      game.levelUpDialog = null;
       game.state = 'explore';
       lastKeyTime = now;
     }
@@ -287,7 +288,7 @@ export function handleInput() {
       }
     }
   } else if (game.state === 'dialogue') {
-    if (keys[' ']) {
+    if (keys[' '] || keys['Enter']) {
       if (now - lastKeyTime > keyDelay) {
         advanceDialogue();
         if (!game.dialogue) {
