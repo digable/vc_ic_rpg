@@ -35,7 +35,13 @@ function gameLoop() {
   
   // Check for level up
   const expNeeded = game.player.level * 50;
-  if (game.player.exp >= expNeeded) {
+  if (game.player.exp >= expNeeded && !game.levelUpDialog) {
+    const oldMaxHp = game.player.maxHp;
+    const oldMaxMp = game.player.maxMp;
+    const oldAttack = game.player.attack;
+    const oldMagic = game.player.magic;
+    const oldDefense = game.player.defense;
+    
     game.player.level++;
     game.player.exp -= expNeeded;
     game.player.maxHp += 10;
@@ -45,6 +51,29 @@ function gameLoop() {
     game.player.attack += 2;
     game.player.magic += 1;
     game.player.defense += 1;
+    
+    // Store level up info for dialogue
+    game.levelUpDialog = {
+      level: game.player.level,
+      hpGain: 10,
+      mpGain: 5,
+      attackGain: 2,
+      magicGain: 1,
+      defenseGain: 1
+    };
+    
+    // Show level up dialogue
+    game.state = 'dialogue';
+    game.dialogue = {
+      type: 'levelUp',
+      messages: [
+        `LEVEL UP!`,
+        `You have reached Level ${game.player.level}!`,
+        `HP: +10 | MP: +5`,
+        `ATK: +2 | MAG: +1 | DEF: +1`
+      ],
+      currentIndex: 0
+    };
   }
   
   // Clear screen

@@ -291,6 +291,7 @@ export function handleInput() {
       if (now - lastKeyTime > keyDelay) {
         advanceDialogue();
         if (!game.dialogue) {
+          game.levelUpDialog = null; // Clear level up dialog when dialogue ends
           game.state = 'explore';
         }
         lastKeyTime = now;

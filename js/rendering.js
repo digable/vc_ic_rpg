@@ -708,18 +708,47 @@ export function drawHUD() {
 export function drawDialogue() {
   if (!game.dialogue) return;
   
-  // Dialogue box
-  ctx.fillStyle = COLORS.black;
-  ctx.fillRect(8, 160, 240, 70);
-  ctx.strokeStyle = COLORS.white;
-  ctx.lineWidth = 2;
-  ctx.strokeRect(8, 160, 240, 70);
+  const isLevelUp = game.dialogue.type === 'levelUp';
   
-  // Text
-  ctx.fillStyle = COLORS.white;
-  ctx.font = '8px "Press Start 2P"';
-  const text = game.dialogue.messages[game.dialogue.currentIndex];
-  wrapText(text, 16, 175, 220, 12);
+  if (isLevelUp) {
+    // Level up dialogue with special formatting
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+    ctx.fillRect(20, 100, 216, 140);
+    ctx.strokeStyle = COLORS.yellow;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(20, 100, 216, 140);
+    
+    // Title
+    ctx.fillStyle = COLORS.yellow;
+    ctx.font = 'bold 10px "Press Start 2P"';
+    ctx.textAlign = 'center';
+    ctx.fillText('LEVEL UP!', 128, 125);
+    
+    // Details
+    ctx.fillStyle = COLORS.white;
+    ctx.font = '7px "Press Start 2P"';
+    ctx.textAlign = 'left';
+    const currentMsg = game.dialogue.messages[game.dialogue.currentIndex];
+    const lines = currentMsg.split('\n');
+    lines.forEach((line, i) => {
+      ctx.fillText(line, 35, 145 + i * 15);
+    });
+    
+    ctx.textAlign = 'left';
+  } else {
+    // Regular dialogue box
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(8, 160, 240, 70);
+    ctx.strokeStyle = COLORS.white;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(8, 160, 240, 70);
+    
+    // Text
+    ctx.fillStyle = COLORS.white;
+    ctx.font = '8px "Press Start 2P"';
+    const text = game.dialogue.messages[game.dialogue.currentIndex];
+    wrapText(text, 16, 175, 220, 12);
+  }
   
   // Continue indicator
   if (Math.floor(game.animFrame / 30) % 2 === 0) {

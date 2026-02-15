@@ -50,6 +50,7 @@ export const game = {
   activeBuff: null, // { type: 'attack'/'defense'/'magic', amount: 5, turnsLeft: 3 }
   quests: [], // Active and completed quests
   textBox: null,
+  levelUpDialog: null, // Stores level up info when level up occurs
   animFrame: 0
 };
 
@@ -103,6 +104,7 @@ export function resetGameState() {
   game.activeBuff = null;
   game.quests = [];
   game.textBox = null;
+  game.levelUpDialog = null;
   game.animFrame = 0;
   
   // Show title screen by removing hidden class
@@ -110,4 +112,7 @@ export function resetGameState() {
   if (titleScreen) {
     titleScreen.classList.remove('hidden');
   }
+  
+  // Scroll viewport back to top
+  window.scrollTo(0, 0);
 }
