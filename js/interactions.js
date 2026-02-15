@@ -36,14 +36,21 @@ export function healPlayer() {
 }
 
 export function handleShopPurchase() {
-  if (game.shopSelection === shopItems.length) {
+  const itemsPerPage = 5;
+  const startIdx = game.shopPage * itemsPerPage;
+  const pageItems = shopItems.slice(startIdx, startIdx + itemsPerPage);
+  
+  if (game.shopSelection === pageItems.length) {
     // Exit selected
     game.state = 'explore';
     game.shopOpen = false;
+    game.shopPage = 0;
+    game.shopSelection = 0;
     return;
   }
   
-  const item = shopItems[game.shopSelection];
+  const actualIdx = startIdx + game.shopSelection;
+  const item = shopItems[actualIdx];
   if (game.player.gold >= item.price) {
     game.player.gold -= item.price;
     
@@ -219,14 +226,21 @@ export function handleFoodCartPurchase() {
     return item.vendor.toString().trim().toLowerCase() === String(game.currentVendor).trim().toLowerCase();
   });
   
-  if (game.foodCartSelection === vendorItems.length) {
+  const itemsPerPage = 5;
+  const startIdx = game.foodCartPage * itemsPerPage;
+  const pageItems = vendorItems.slice(startIdx, startIdx + itemsPerPage);
+  
+  if (game.foodCartSelection === pageItems.length) {
     // Exit selected
     game.state = 'explore';
     game.foodCartOpen = false;
+    game.foodCartPage = 0;
+    game.foodCartSelection = 0;
     return;
   }
   
-  const item = vendorItems[game.foodCartSelection];
+  const actualIdx = startIdx + game.foodCartSelection;
+  const item = vendorItems[actualIdx];
   if (game.player.gold >= item.price) {
     game.player.gold -= item.price;
     game.consumables.push(item);

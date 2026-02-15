@@ -32,14 +32,18 @@ export const game = {
   menuTab: 0, // 0=stats, 1=map, 2=items
   shopOpen: false,
   shopSelection: 0,
+  shopPage: 0, // For pagination
   magicTrainerOpen: false,
   magicTrainerSelection: 0,
+  magicTrainerPage: 0, // For pagination
   yogaOpen: false,
   yogaSelection: 0,
+  yogaPage: 0, // For pagination
   cambusOpen: false,
   cambusSelection: 0,
   foodCartOpen: false,
   foodCartSelection: 0,
+  foodCartPage: 0, // For pagination
   currentVendor: 'Food Cart Vendor',
   itemMenuOpen: false,
   itemMenuSelection: 0,

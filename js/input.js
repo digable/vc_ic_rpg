@@ -339,23 +339,52 @@ export function handleInput() {
       }
     }
   } else if (game.state === 'shop') {
+    const itemsPerPage = 5;
+    const totalPages = Math.ceil(shopItems.length / itemsPerPage);
+    const startIdx = game.shopPage * itemsPerPage;
+    const pageItems = shopItems.slice(startIdx, startIdx + itemsPerPage);
+    
     if (keys['ArrowUp']) {
       game.shopSelection = Math.max(0, game.shopSelection - 1);
       lastKeyTime = now;
     }
     if (keys['ArrowDown']) {
-      game.shopSelection = Math.min(shopItems.length, game.shopSelection + 1);
+      game.shopSelection = Math.min(pageItems.length, game.shopSelection + 1);
       lastKeyTime = now;
+    }
+    if (keys['ArrowLeft']) {
+      if (game.shopPage > 0) {
+        game.shopPage--;
+        game.shopSelection = 0;
+        lastKeyTime = now;
+      }
+    }
+    if (keys['ArrowRight']) {
+      if (game.shopPage < totalPages - 1) {
+        game.shopPage++;
+        game.shopSelection = 0;
+        lastKeyTime = now;
+      }
     }
     if (keys[' ']) {
       if (now - lastKeyTime > keyDelay) {
-        handleShopPurchase();
+        // Adjust selection index for pagination
+        const actualSelection = game.shopSelection + (game.shopPage * itemsPerPage);
+        if (game.shopSelection === pageItems.length) {
+          // Exit selected
+          game.state = 'explore';
+          game.shopOpen = false;
+        } else if (actualSelection < shopItems.length) {
+          handleShopPurchase();
+        }
         lastKeyTime = now;
       }
     }
     if (keys['Escape']) {
       game.state = 'explore';
       game.shopOpen = false;
+      game.shopPage = 0;
+      game.shopSelection = 0;
       lastKeyTime = now;
     }
   } else if (game.state === 'magic_trainer') {
@@ -404,25 +433,52 @@ export function handleInput() {
       return item.vendor.toString().trim().toLowerCase() === String(game.currentVendor).trim().toLowerCase();
     });
     
+    const itemsPerPage = 5;
+    const totalPages = Math.ceil(vendorItems.length / itemsPerPage);
+    const startIdx = game.foodCartPage * itemsPerPage;
+    const pageItems = vendorItems.slice(startIdx, startIdx + itemsPerPage);
+    
     if (keys['ArrowUp']) {
       game.foodCartSelection = Math.max(0, game.foodCartSelection - 1);
       lastKeyTime = now;
     }
     if (keys['ArrowDown']) {
-      game.foodCartSelection = Math.min(vendorItems.length, game.foodCartSelection + 1);
+      game.foodCartSelection = Math.min(pageItems.length, game.foodCartSelection + 1);
       lastKeyTime = now;
+    }
+    if (keys['ArrowLeft']) {
+      if (game.foodCartPage > 0) {
+        game.foodCartPage--;
+        game.foodCartSelection = 0;
+        lastKeyTime = now;
+      }
+    }
+    if (keys['ArrowRight']) {
+      if (game.foodCartPage < totalPages - 1) {
+        game.foodCartPage++;
+        game.foodCartSelection = 0;
+        lastKeyTime = now;
+      }
     }
     if (keys[' ']) {
       if (now - lastKeyTime > keyDelay) {
-        handleFoodCartPurchase();
+        const actualSelection = game.foodCartSelection + (game.foodCartPage * itemsPerPage);
+        if (game.foodCartSelection === pageItems.length) {
+          // Exit selected
+          game.state = 'explore';
+          game.foodCartOpen = false;
+        } else if (actualSelection < vendorItems.length) {
+          handleFoodCartPurchase();
+        }
         lastKeyTime = now;
       }
     }
     if (keys['Escape']) {
       game.state = 'explore';
       game.foodCartOpen = false;
+      game.foodCartPage = 0;
+      game.foodCartSelection = 0;
       lastKeyTime = now;
     }
-  }
 }
 

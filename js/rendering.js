@@ -1201,6 +1201,12 @@ export function drawMenu() {
 export function drawShop() {
   if (!game.shopOpen) return;
   
+  const itemsPerPage = 5;
+  const startIdx = game.shopPage * itemsPerPage;
+  const endIdx = startIdx + itemsPerPage;
+  const pageItems = shopItems.slice(startIdx, endIdx);
+  const totalPages = Math.ceil(shopItems.length / itemsPerPage);
+  
   // Background
   ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
   ctx.fillRect(15, 25, 226, 190);
@@ -1216,10 +1222,16 @@ export function drawShop() {
   ctx.font = '6px "Press Start 2P"';
   ctx.fillText(`Gold: $${game.player.gold}`, 25, 55);
   
+  // Page indicator
+  ctx.fillStyle = COLORS.gray;
+  ctx.font = '5px "Press Start 2P"';
+  ctx.fillText(`Page ${game.shopPage + 1}/${totalPages}`, 150, 55);
+  
   // Items
-  shopItems.forEach((item, i) => {
+  pageItems.forEach((item, i) => {
     const y = 75 + i * 20;
     ctx.fillStyle = COLORS.white;
+    ctx.font = '6px "Press Start 2P"';
     
     if (i === game.shopSelection) {
       ctx.fillStyle = COLORS.yellow;
@@ -1236,16 +1248,16 @@ export function drawShop() {
   });
   
   // Exit option
-  const exitY = 75 + shopItems.length * 20;
-  ctx.fillStyle = game.shopSelection === shopItems.length ? COLORS.yellow : COLORS.white;
-  if (game.shopSelection === shopItems.length) {
+  const exitY = 75 + pageItems.length * 20;
+  ctx.fillStyle = game.shopSelection === pageItems.length ? COLORS.yellow : COLORS.white;
+  if (game.shopSelection === pageItems.length) {
     ctx.fillText('>', 25, exitY);
   }
   ctx.fillText('Exit Shop', 40, exitY);
   
   ctx.fillStyle = COLORS.gray;
   ctx.font = '5px "Press Start 2P"';
-  ctx.fillText('SPACE: Buy | ESC: Exit', 45, 205);
+  ctx.fillText('SPACE: Buy | ESC: Exit | L/R: Pages', 35, 205);
 }
 
 export function drawMagicTrainer() {
@@ -1437,6 +1449,12 @@ export function drawFoodCart() {
     return item.vendor.toString().trim().toLowerCase() === String(game.currentVendor).trim().toLowerCase();
   });
   
+  const itemsPerPage = 5;
+  const startIdx = game.foodCartPage * itemsPerPage;
+  const endIdx = startIdx + itemsPerPage;
+  const pageItems = vendorItems.slice(startIdx, endIdx);
+  const totalPages = Math.ceil(vendorItems.length / itemsPerPage);
+  
   // Background
   ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
   ctx.fillRect(15, 25, 226, 190);
@@ -1452,10 +1470,18 @@ export function drawFoodCart() {
   ctx.font = '6px "Press Start 2P"';
   ctx.fillText(`Gold: $${game.player.gold}`, 25, 55);
   
+  // Page indicator
+  ctx.fillStyle = COLORS.gray;
+  ctx.font = '5px "Press Start 2P"';
+  if (totalPages > 1) {
+    ctx.fillText(`Page ${game.foodCartPage + 1}/${totalPages}`, 150, 55);
+  }
+  
   // Food items
-  vendorItems.forEach((item, i) => {
+  pageItems.forEach((item, i) => {
     const y = 75 + i * 20;
     ctx.fillStyle = COLORS.white;
+    ctx.font = '6px "Press Start 2P"';
     
     if (i === game.foodCartSelection) {
       ctx.fillStyle = COLORS.orange;
@@ -1472,16 +1498,20 @@ export function drawFoodCart() {
   });
   
   // Exit option
-  const exitY = 75 + vendorItems.length * 20;
-  ctx.fillStyle = game.foodCartSelection === vendorItems.length ? COLORS.orange : COLORS.white;
-  if (game.foodCartSelection === vendorItems.length) {
+  const exitY = 75 + pageItems.length * 20;
+  ctx.fillStyle = game.foodCartSelection === pageItems.length ? COLORS.orange : COLORS.white;
+  if (game.foodCartSelection === pageItems.length) {
     ctx.fillText('>', 25, exitY);
   }
   ctx.fillText('Exit', 40, exitY);
   
   ctx.fillStyle = COLORS.gray;
   ctx.font = '5px "Press Start 2P"';
-  ctx.fillText('SPACE: Buy | ESC: Exit', 50, 205);
+  if (totalPages > 1) {
+    ctx.fillText('SPACE: Buy | ESC: Exit | L/R: Pages', 40, 205);
+  } else {
+    ctx.fillText('SPACE: Buy | ESC: Exit', 50, 205);
+  }
 }
 
 export function wrapText(text, x, y, maxWidth, lineHeight) {
