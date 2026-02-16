@@ -12,13 +12,14 @@ A retro NES-style RPG adventure set in Iowa City! Explore campus, complete quest
 
 ## ✨ Features
 
-### 🗺️ Explore 6 Iowa City Locations
+### 🗺️ Explore 7 Iowa City Locations
 - **Downtown** - Coffee shops, stores, and street vendors
 - **Pentacrest** - The heart of campus
 - **Main Library** - Study spaces and magic training
 - **Iowa River Park** - Peaceful riverside area with yoga
 - **The Deadwood** - Local bar with food and drinks
 - **Northside** - Restaurant district with diverse cuisine
+- **Beer Caves** - Maze-like underground caverns
 
 ### ⚔️ Turn-Based Combat
 - Fight academic enemies (Late Assignments, Midterms, Group Projects)
@@ -27,7 +28,7 @@ A retro NES-style RPG adventure set in Iowa City! Explore campus, complete quest
 - Level up with NES Final Fantasy-style progression (50 levels)
 - Class-based stat growth (6 Iowa City-themed classes)
 
-### 📋 8 Side Quests
+### 📋 11 Side Quests
 Complete Iowa City-themed quests:
 - The Coffee Run
 - Campus Tour Guide
@@ -37,6 +38,9 @@ Complete Iowa City-themed quests:
 - Food Critic Challenge
 - Study Buddy Needed
 - Seeking Inspiration
+- Cave Exploration
+- Crystal Elemental Hunt
+- The Dragon Threat
 
 ### 🍕 Unique Food Vendors
 28+ food items across 4 vendors with distinct mechanics:
@@ -55,6 +59,7 @@ Complete Iowa City-themed quests:
 - **Magic Training** - 5 trainers teach spells and provide stat increases
 - **Consumable Items** - 28+ food items with temporary buff effects
 - **Cambus Fast Travel** - Navigate Iowa City quickly
+- **Beer Caves Maze** - Flashlight reveals the path
 
 ### 📱 Mobile Support
 - Touch controls for mobile devices
@@ -94,7 +99,14 @@ vc_ic_rpg/
     ├── maps.js             # Map layouts & NPC positions (350 lines)
     ├── enemies.js          # Enemy definitions & encounters
     ├── battle.js           # Combat system & spell execution (200+ lines)
-    ├── rendering.js        # All canvas drawing functions (1505 lines)
+    ├── rendering/          # Modular rendering system
+    │   ├── index.js         # Rendering exports & setup
+    │   ├── utils.js         # Shared rendering helpers
+    │   ├── world.js         # Map/player/NPC rendering
+    │   ├── ui.js            # HUD/dialogue/menu rendering
+    │   ├── battle.js        # Battle rendering
+    │   ├── vendors.js       # Vendor screens rendering
+    │   └── gamestate.js     # Game state screens
     ├── input.js            # Keyboard/touch input handling (426 lines)
     ├── interactions.js     # NPC & vendor interactions (226 lines)
     ├── dialogue.js         # Dialogue system with message flow
@@ -249,18 +261,6 @@ This project is open source and available under the [MIT License](LICENSE).
 **Mobile controls not working?**
 - Ensure device has touch events enabled
 - Try landscape orientation for better UX
-
-## 🔄 Recent Updates
-
-- ✅ **Implemented NES Final Fantasy-style leveling** (50 levels with experience thresholds)
-- ✅ **Added 5 Iowa City-themed character classes** (Hawkeye, Scholar, Engineer, Greek, Artist)
-- ✅ **Updated all vendors & items** (28+ food items, 8 shop items, 8 yoga techniques, 5 magic trainers)
-- ✅ **Implemented vendor pagination** (5 items per page with Left/Right navigation)
-- ✅ **Added 6 core stats system** (Strength, Intellect, Agility, Vitality, Spirit, Luck)
-- ✅ **Fixed Food Cart Vendor** in Pentacrest (moved to walkable tile)
-- ✅ **Refactored vendor items** to use new attribute system (strengthUp, intellectUp, etc.)
-- ✅ **Fixed dialogue system** (Escape to close, Space to advance)
-- ✅ **Made vendor matching case-insensitive** across all systems
 
 ## �🙏 Acknowledgments
 

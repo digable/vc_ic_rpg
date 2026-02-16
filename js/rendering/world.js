@@ -16,8 +16,18 @@ export function drawMap() {
   for (let y = 0; y < map.height; y++) {
     for (let x = 0; x < map.width; x++) {
       const tile = map.tiles[y][x];
-      ctx.fillStyle = tileColors[tile];
+      let fillStyle = tileColors[tile];
+      if (game.map === 'beer_caves' && game.flashlightOn) {
+        if (tile === 0) fillStyle = COLORS.lightGray;
+        if (tile === 6) fillStyle = COLORS.darkGray;
+        if (tile === 2) fillStyle = COLORS.black;
+      }
+      ctx.fillStyle = fillStyle;
       ctx.fillRect(x * 16, y * 16, 16, 16);
+      if (game.map === 'beer_caves' && game.flashlightOn && (tile === 6 || tile === 2)) {
+        ctx.strokeStyle = COLORS.lightGray;
+        ctx.strokeRect(x * 16 + 1, y * 16 + 1, 14, 14);
+      }
       
       // Add texture for buildings
       if (tile === 3) {
