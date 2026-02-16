@@ -47,6 +47,27 @@ export function drawMap() {
       }
     }
   }
+
+  if (game.map === 'beer_caves' && game.flashlightOn) {
+    const radius = Math.min(256, 240) * 0.2;
+    const centerX = game.player.x;
+    const centerY = game.player.y;
+
+    ctx.save();
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+    ctx.fillRect(0, 0, 256, 240);
+    ctx.globalCompositeOperation = 'destination-out';
+
+    const gradient = ctx.createRadialGradient(centerX, centerY, radius * 0.4, centerX, centerY, radius);
+    gradient.addColorStop(0, 'rgba(0, 0, 0, 1)');
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
   
   // Draw exit labels
   if (map.exits) {
