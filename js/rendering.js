@@ -1,5 +1,5 @@
 // Rendering Module - All Drawing Functions
-import { COLORS, tileColors } from './constants.js';
+import { COLORS, tileColors, isMobile } from './constants.js';
 import { game } from './game-state.js';
 import { maps } from './maps.js';
 import { shopItems, magicTraining, yogaTechniques, spellData, cambusRoutes, consumableItems } from './data.js';
@@ -7,6 +7,18 @@ import { questDatabase } from './quests.js';
 import { canCompleteQuest, getNearbyNPC } from './quests-logic.js';
 
 export let ctx;
+
+// Helper function to get the correct button label based on platform
+function getButtonLabel(action = '') {
+  if (isMobile) {
+    return action ? `A Button: ${action}` : 'A';
+  }
+  return action ? `SPACE: ${action}` : 'SPACE';
+}
+
+function getMenuLabel() {
+  return isMobile ? 'M Button: Menu' : 'ESC: Menu';
+}
 
 export function setupCanvas() {
   const canvas = document.getElementById('game-canvas');
@@ -670,20 +682,21 @@ export function drawHUD() {
     ctx.fillRect(0, 226, 256, 14);
     ctx.fillStyle = COLORS.yellow;
     ctx.font = '6px "Press Start 2P"';
+    
     if (nearbyNPC.type === 'shop') {
-      ctx.fillText(`SPACE: Enter Shop`, 8, 235);
+      ctx.fillText(getButtonLabel('Enter Shop'), 8, 235);
     } else if (nearbyNPC.type === 'healer') {
-      ctx.fillText(`SPACE: Get Free Refill`, 8, 235);
+      ctx.fillText(getButtonLabel('Get Free Refill'), 8, 235);
     } else if (nearbyNPC.type === 'magic_trainer') {
-      ctx.fillText(`SPACE: Learn Magic`, 8, 235);
+      ctx.fillText(getButtonLabel('Learn Magic'), 8, 235);
     } else if (nearbyNPC.type === 'yoga') {
-      ctx.fillText(`SPACE: Yoga Training`, 8, 235);
+      ctx.fillText(getButtonLabel('Yoga Training'), 8, 235);
     } else if (nearbyNPC.type === 'cambus') {
-      ctx.fillText(`SPACE: Use Cambus`, 8, 235);
+      ctx.fillText(getButtonLabel('Use Cambus'), 8, 235);
     } else if (nearbyNPC.type === 'food_cart') {
-      ctx.fillText(`SPACE: Buy Food`, 8, 235);
+      ctx.fillText(getButtonLabel('Buy Food'), 8, 235);
     } else {
-      ctx.fillText(`SPACE: Talk to ${nearbyNPC.name}`, 8, 235);
+      ctx.fillText(getButtonLabel(`Talk to ${nearbyNPC.name}`), 8, 235);
     }
   }
   
@@ -1223,14 +1236,14 @@ export function drawMenu() {
       
       ctx.fillStyle = COLORS.gray;
       ctx.font = '5px "Press Start 2P"';
-      ctx.fillText('SPACE: Use item', 60, 190);
+      ctx.fillText(getButtonLabel('Use item'), 60, 190);
     }
   }
   
   ctx.fillStyle = COLORS.gray;
   ctx.font = '5px "Press Start 2P"';
   ctx.fillText('<- -> Switch tabs', 60, 200);
-  ctx.fillText('ESC: Close', 90, 190);
+  ctx.fillText(getMenuLabel(), 90, 190);
 }
 
 export function drawShop() {
@@ -1292,7 +1305,7 @@ export function drawShop() {
   
   ctx.fillStyle = COLORS.gray;
   ctx.font = '5px "Press Start 2P"';
-  ctx.fillText('SPACE: Buy | ESC: Exit | L/R: Pages', 35, 205);
+  ctx.fillText(isMobile ? 'A: Buy | M: Exit | </>: Pages' : 'SPACE: Buy | ESC: Exit | L/R: Pages', 35, 205);
 }
 
 export function drawMagicTrainer() {
@@ -1357,7 +1370,7 @@ export function drawMagicTrainer() {
   
   ctx.fillStyle = COLORS.gray;
   ctx.font = '5px "Press Start 2P"';
-  ctx.fillText('SPACE: Train | ESC: Exit', 45, 205);
+  ctx.fillText(isMobile ? 'A: Train | M: Exit' : 'SPACE: Train | ESC: Exit', 45, 205);
 }
 
 export function drawYoga() {
@@ -1434,9 +1447,9 @@ export function drawYoga() {
   ctx.fillStyle = COLORS.gray;
   ctx.font = '5px "Press Start 2P"';
   if (totalPages > 1) {
-    ctx.fillText('SPACE: Learn | ESC: Exit | L/R: Pages', 30, 205);
+    ctx.fillText(isMobile ? 'A: Learn | M: Exit | </>: Pages' : 'SPACE: Learn | ESC: Exit | L/R: Pages', 30, 205);
   } else {
-    ctx.fillText('SPACE: Learn | ESC: Exit', 45, 205);
+    ctx.fillText(isMobile ? 'A: Learn | M: Exit' : 'SPACE: Learn | ESC: Exit', 45, 205);
   }
 }
 
@@ -1487,7 +1500,7 @@ export function drawCambus() {
   
   ctx.fillStyle = COLORS.gray;
   ctx.font = '5px "Press Start 2P"';
-  ctx.fillText('SPACE: Travel | ESC: Exit', 50, 190);
+  ctx.fillText(isMobile ? 'A: Travel | M: Exit' : 'SPACE: Travel | ESC: Exit', 50, 190);
 }
 
 export function drawFoodCart() {
@@ -1558,9 +1571,9 @@ export function drawFoodCart() {
   ctx.fillStyle = COLORS.gray;
   ctx.font = '5px "Press Start 2P"';
   if (totalPages > 1) {
-    ctx.fillText('SPACE: Buy | ESC: Exit | L/R: Pages', 40, 205);
+    ctx.fillText(isMobile ? 'A: Buy | M: Exit | </>: Pages' : 'SPACE: Buy | ESC: Exit | L/R: Pages', 40, 205);
   } else {
-    ctx.fillText('SPACE: Buy | ESC: Exit', 50, 205);
+    ctx.fillText(isMobile ? 'A: Buy | M: Exit' : 'SPACE: Buy | ESC: Exit', 50, 205);
   }
 }
 
@@ -1618,6 +1631,6 @@ export function drawGameOver() {
   ctx.fillStyle = COLORS.gray;
   ctx.font = '6px "Press Start 2P"';
   ctx.textAlign = 'center';
-  ctx.fillText('Press SPACE or click button', 128, 210);
+  ctx.fillText(isMobile ? 'Tap button to restart' : 'Press SPACE or click button', 128, 210);
 }
 
