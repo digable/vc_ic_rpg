@@ -69,5 +69,66 @@ export const enemies = [
     gold: 200, 
     outdoor: false,
     specialAttack: { name: 'Citation Storm', damage: 30, mpCost: 0 }
+  },
+  // Beer Caves Monsters
+  { 
+    name: 'Bat Swarm', 
+    hp: 22, 
+    maxHp: 22, 
+    attack: 6, 
+    exp: 18, 
+    gold: 40, 
+    location: 'beer_caves',
+    specialAttack: { name: 'Sonic Screech', damage: 9, mpCost: 0 }
+  },
+  { 
+    name: 'Cave Spider', 
+    hp: 28, 
+    maxHp: 28, 
+    attack: 8, 
+    exp: 22, 
+    gold: 45, 
+    location: 'beer_caves',
+    specialAttack: { name: 'Web Trap', damage: 12, mpCost: 0 }
+  },
+  { 
+    name: 'Stone Golem', 
+    hp: 50, 
+    maxHp: 50, 
+    attack: 14, 
+    exp: 45, 
+    gold: 90, 
+    location: 'beer_caves',
+    specialAttack: { name: 'Rock Slam', damage: 20, mpCost: 0 }
+  },
+  { 
+    name: 'Glowing Mushroom', 
+    hp: 18, 
+    maxHp: 18, 
+    attack: 4, 
+    exp: 16, 
+    gold: 35, 
+    location: 'beer_caves',
+    specialAttack: { name: 'Spore Cloud', damage: 8, mpCost: 0, effect: 'poison' }
+  },
+  { 
+    name: 'Crystal Elemental', 
+    hp: 40, 
+    maxHp: 40, 
+    attack: 11, 
+    exp: 38, 
+    gold: 85, 
+    location: 'beer_caves',
+    specialAttack: { name: 'Shatter', damage: 18, mpCost: 0 }
+  },
+  { 
+    name: 'Cave Drake', 
+    hp: 65, 
+    maxHp: 65, 
+    attack: 16, 
+    exp: 55, 
+    gold: 120, 
+    location: 'beer_caves',
+    specialAttack: { name: 'Dragon Breath', damage: 25, mpCost: 0 }
   }
 ];

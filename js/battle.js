@@ -12,21 +12,31 @@ export function startBattle() {
   
   // Determine which enemies can appear based on location
   const map = maps[game.map];
-  const isOutdoor = map.grassWalkable; // Pentacrest and Riverside are outdoor
   
-  let availableEnemies = enemies.filter(e => {
-    if (e.outdoor && !isOutdoor) return false; // Parking meters only outside
-    if (!e.outdoor && e.outdoor !== undefined) return true; // Indoor enemies
-    return true; // Homework can be anywhere (outdoor undefined)
-  });
-  
-  // Special: 20% chance for Raccoon in Riverside Park
   let enemy;
-  if (game.map === 'riverside' && Math.random() < 0.2) {
-    enemy = JSON.parse(JSON.stringify(enemies.find(e => e.name === 'Raccoon')));
+  
+  // Beer Caves has unique enemies
+  if (game.map === 'beer_caves') {
+    const beerCavesEnemies = enemies.filter(e => e.location === 'beer_caves');
+    const enemyIndex = Math.min(Math.floor(game.player.level / 2), beerCavesEnemies.length - 1);
+    enemy = JSON.parse(JSON.stringify(beerCavesEnemies[enemyIndex]));
   } else {
-    const enemyIndex = Math.min(Math.floor(game.player.level / 2), availableEnemies.length - 1);
-    enemy = JSON.parse(JSON.stringify(availableEnemies[enemyIndex]));
+    const isOutdoor = map.grassWalkable; // Pentacrest and Riverside are outdoor
+    
+    let availableEnemies = enemies.filter(e => {
+      if (e.location) return false; // Skip location-specific enemies for non-matching maps
+      if (e.outdoor && !isOutdoor) return false; // Parking meters only outside
+      if (!e.outdoor && e.outdoor !== undefined) return true; // Indoor enemies
+      return true; // Homework can be anywhere (outdoor undefined)
+    });
+    
+    // Special: 20% chance for Raccoon in Riverside Park
+    if (game.map === 'riverside' && Math.random() < 0.2) {
+      enemy = JSON.parse(JSON.stringify(enemies.find(e => e.name === 'Raccoon')));
+    } else {
+      const enemyIndex = Math.min(Math.floor(game.player.level / 2), availableEnemies.length - 1);
+      enemy = JSON.parse(JSON.stringify(availableEnemies[enemyIndex]));
+    }
   }
   
   game.battleState = {

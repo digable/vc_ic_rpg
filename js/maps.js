@@ -195,7 +195,38 @@ export const maps = {
     name: 'Northside',
     grassWalkable: false,
     exits: [
-      { x: 128, y: 16, toMap: 'downtown', toX: 128, toY: 208, direction: 'up' }
+      { x: 128, y: 16, toMap: 'downtown', toX: 128, toY: 208, direction: 'up' },
+      { x: 112, y: 0, toMap: 'beer_caves', toX: 128, toY: 208, direction: 'up' }
+    ]
+  },
+  beer_caves: {
+    width: 16,
+    height: 15,
+    tiles: [
+      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+      [2,6,6,6,6,6,6,6,6,6,6,6,6,6,6,2],
+      [2,6,6,0,0,0,0,0,0,0,0,0,0,6,6,2],
+      [2,6,6,0,6,6,0,6,6,0,6,6,0,6,6,2],
+      [2,6,6,0,6,6,0,6,6,0,6,6,0,6,6,2],
+      [2,6,6,0,0,0,0,0,0,0,0,0,0,6,6,2],
+      [2,6,6,0,6,6,0,6,6,0,6,6,0,6,6,2],
+      [2,6,6,0,6,6,0,6,6,0,6,6,0,6,6,2],
+      [2,6,6,0,0,0,0,0,0,0,0,0,0,6,6,2],
+      [2,6,6,0,6,6,0,6,6,0,6,6,0,6,6,2],
+      [2,6,6,0,6,6,0,6,6,0,6,6,0,6,6,2],
+      [2,6,6,0,0,0,0,0,0,0,0,0,0,6,6,2],
+      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]
+    ],
+    npcs: [
+      { x: 96, y: 96, name: 'Caver', dialogue: ['Welcome to the Beer Caves!', 'These caverns are ancient.', 'Watch out for the creatures down here!'] },
+      { x: 160, y: 64, name: 'Explorer', dialogue: ['I explore these caves often.', 'Lots of mysteries to discover.'] }
+    ],
+    name: 'Beer Caves',
+    grassWalkable: false,
+    exits: [
+      { x: 128, y: 224, toMap: 'northside', toX: 112, toY: 16, direction: 'down' }
     ]
   }
 };
