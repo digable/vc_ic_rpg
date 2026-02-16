@@ -120,7 +120,7 @@ export function setupInputHandlers() {
           'Welcome to Iowa City!',
           'A dark corruption has spread across\nthe city, emanating from the historic\nOld Capitol building.',
           'As a student hero, you must explore\nIowa City, complete quests, and\ngrow stronger.',
-          'Visit Kinnick Stadium, the Ped Mall,\nCoralville Lake, and more!',
+          'Visit Kinnick Stadium, the Ped Mall,\nthe Old Capitol, Coralville Lake,\nthe mysterious Beer Caves, and more!',
           'When you reach Level 10, face the\nCorrupted Administrator to save\nIowa City!',
           'Good luck, hero!\nPress SPACE to begin your adventure!'
         ],
