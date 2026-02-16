@@ -18,7 +18,10 @@ export const magicTraining = [
   { name: 'Ice Blast Training', price: 120, effect: 'magicUp', amount: 5, spell: 'Ice Blast', description: '+5 Intellect, Learn Ice Blast' },
   { name: 'Thunder Training', price: 200, effect: 'magicMpUp', amount: 10, spell: 'Thunder', description: '+10 MP, Learn Thunder' },
   { name: 'Arcane Mastery', price: 300, effect: 'magicCombo', amount: 0, spell: 'Arcane Missile', description: '+5 Intellect, +15 MP, Learn Arcane' },
-  { name: 'Spirit Bond', price: 150, effect: 'spiritUp', amount: 4, spell: 'Heal', description: '+4 Spirit, Learn Heal spell' }
+  { name: 'Spirit Bond', price: 150, effect: 'spiritUp', amount: 4, spell: 'Heal', description: '+4 Spirit, Learn Heal spell' },
+  { name: 'Barrier Training', price: 180, effect: 'magicUp', amount: 4, spell: 'Barrier', description: '+4 Intellect, Learn Barrier' },
+  { name: 'Divine Light', price: 250, effect: 'spiritUp', amount: 5, spell: 'Restore', description: '+5 Spirit, Learn Restore' },
+  { name: 'Meteor Strike', price: 400, effect: 'magicCombo', amount: 0, spell: 'Meteor', description: '+7 Intellect, +20 MP, Learn Meteor' }
 ];
 
 // Yoga studio defensive techniques
@@ -40,6 +43,7 @@ export const spellData = {
   'Ice Blast': { type: 'attack', mpCost: 12, power: 2.0, description: 'Freezing ice attack' },
   'Thunder': { type: 'attack', mpCost: 15, power: 2.5, description: 'Lightning strike' },
   'Arcane Missile': { type: 'attack', mpCost: 8, power: 1.5, description: 'Magic missile' },
+  'Meteor': { type: 'attack', mpCost: 25, power: 3.5, description: 'Devastating meteor strike' },
   'Shield': { type: 'defense', mpCost: 8, boost: 5, duration: 2, description: 'Temporary +5 defense' },
   'Barrier': { type: 'defense', mpCost: 12, boost: 8, duration: 2, description: 'Strong +8 defense' },
   'Heal': { type: 'heal', mpCost: 10, amount: 25, description: 'Restore 25 HP' },
