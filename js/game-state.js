@@ -41,6 +41,7 @@ export const game = {
   yogaPage: 0, // For pagination
   cambusOpen: false,
   cambusSelection: 0,
+  cambusPage: 0, // For pagination
   foodCartOpen: false,
   foodCartSelection: 0,
   foodCartPage: 0, // For pagination
@@ -95,6 +96,7 @@ export function resetGameState() {
   game.yogaPage = 0;
   game.cambusOpen = false;
   game.cambusSelection = 0;
+  game.cambusPage = 0;
   game.foodCartOpen = false;
   game.foodCartSelection = 0;
   game.foodCartPage = 0;

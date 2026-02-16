@@ -145,13 +145,32 @@ export function handleInput() {
   
   // Special handling for cambus menu - arrow keys should work immediately
   if (game.state === 'cambus') {
+    const itemsPerPage = 6;
+    const totalPages = Math.ceil(cambusRoutes.length / itemsPerPage);
+    const startIdx = game.cambusPage * itemsPerPage;
+    const pageItems = cambusRoutes.slice(startIdx, startIdx + itemsPerPage);
+
     if (keys['ArrowUp']) {
       game.cambusSelection = Math.max(0, game.cambusSelection - 1);
       keys['ArrowUp'] = false; // Prevent repeat
     }
     if (keys['ArrowDown']) {
-      game.cambusSelection = Math.min(cambusRoutes.length, game.cambusSelection + 1);
+      game.cambusSelection = Math.min(pageItems.length, game.cambusSelection + 1);
       keys['ArrowDown'] = false; // Prevent repeat
+    }
+    if (keys['ArrowLeft']) {
+      if (game.cambusPage > 0) {
+        game.cambusPage--;
+        game.cambusSelection = 0;
+        keys['ArrowLeft'] = false;
+      }
+    }
+    if (keys['ArrowRight']) {
+      if (game.cambusPage < totalPages - 1) {
+        game.cambusPage++;
+        game.cambusSelection = 0;
+        keys['ArrowRight'] = false;
+      }
     }
     if (keys[' '] && now - lastKeyTime > keyDelay) {
       handleCambusTravel();
@@ -160,6 +179,8 @@ export function handleInput() {
     if (keys['Escape'] && now - lastKeyTime > keyDelay) {
       game.state = 'explore';
       game.cambusOpen = false;
+      game.cambusPage = 0;
+      game.cambusSelection = 0;
       lastKeyTime = now;
     }
     return;

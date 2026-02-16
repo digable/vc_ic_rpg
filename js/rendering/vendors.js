@@ -222,6 +222,12 @@ export function drawCambus() {
   
   if (!game.cambusOpen) return;
   
+  const itemsPerPage = 6;
+  const startIdx = game.cambusPage * itemsPerPage;
+  const endIdx = startIdx + itemsPerPage;
+  const pageItems = cambusRoutes.slice(startIdx, endIdx);
+  const totalPages = Math.ceil(cambusRoutes.length / itemsPerPage);
+  
   // Background
   ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
   ctx.fillRect(30, 40, 196, 160);
@@ -237,8 +243,15 @@ export function drawCambus() {
   ctx.font = '6px "Press Start 2P"';
   ctx.fillText('Fast Travel - Free!', 50, 70);
   
+  // Page indicator
+  ctx.fillStyle = COLORS.gray;
+  ctx.font = '5px "Press Start 2P"';
+  if (totalPages > 1) {
+    ctx.fillText(`Page ${game.cambusPage + 1}/${totalPages}`, 150, 70);
+  }
+  
   // Routes
-  cambusRoutes.forEach((route, i) => {
+  pageItems.forEach((route, i) => {
     const y = 90 + i * 15;
     ctx.fillStyle = COLORS.white;
     
@@ -257,16 +270,20 @@ export function drawCambus() {
   });
   
   // Exit option
-  const exitY = 90 + cambusRoutes.length * 15;
-  ctx.fillStyle = game.cambusSelection === cambusRoutes.length ? COLORS.yellow : COLORS.white;
-  if (game.cambusSelection === cambusRoutes.length) {
+  const exitY = 90 + pageItems.length * 15;
+  ctx.fillStyle = game.cambusSelection === pageItems.length ? COLORS.yellow : COLORS.white;
+  if (game.cambusSelection === pageItems.length) {
     ctx.fillText('>', 40, exitY);
   }
   ctx.fillText('Stay Here', 55, exitY);
   
   ctx.fillStyle = COLORS.gray;
   ctx.font = '5px "Press Start 2P"';
-  ctx.fillText(isMobile ? 'A: Travel | M: Exit' : 'SPACE: Travel | ESC: Exit', 50, 190);
+  if (totalPages > 1) {
+    ctx.fillText(isMobile ? 'A: Travel | M: Exit | </>: Pages' : 'SPACE: Travel | ESC: Exit | L/R: Pages', 30, 190);
+  } else {
+    ctx.fillText(isMobile ? 'A: Travel | M: Exit' : 'SPACE: Travel | ESC: Exit', 50, 190);
+  }
 }
 
 export function drawFoodCart() {

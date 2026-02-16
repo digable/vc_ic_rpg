@@ -26,6 +26,7 @@ export function openCambus() {
   game.state = 'cambus';
   game.cambusOpen = true;
   game.cambusSelection = 0;
+  game.cambusPage = 0;
 }
 
 export function healPlayer() {
@@ -258,19 +259,29 @@ export function handleFoodCartPurchase() {
 }
 
 export function handleCambusTravel() {
-  if (game.cambusSelection === cambusRoutes.length) {
+  const itemsPerPage = 6;
+  const startIdx = game.cambusPage * itemsPerPage;
+  const pageItems = cambusRoutes.slice(startIdx, startIdx + itemsPerPage);
+  const isExitSelected = game.cambusSelection === pageItems.length;
+
+  if (isExitSelected) {
     // Exit selected
     game.state = 'explore';
     game.cambusOpen = false;
+    game.cambusPage = 0;
+    game.cambusSelection = 0;
     return;
   }
   
-  const route = cambusRoutes[game.cambusSelection];
+  const actualIdx = startIdx + game.cambusSelection;
+  const route = cambusRoutes[actualIdx];
   
   // Don't travel if already at this location
   if (game.map === route.map) {
     game.state = 'explore';
     game.cambusOpen = false;
+    game.cambusPage = 0;
+    game.cambusSelection = 0;
     return;
   }
   
@@ -280,6 +291,8 @@ export function handleCambusTravel() {
   game.player.y = route.y;
   game.state = 'explore';
   game.cambusOpen = false;
+  game.cambusPage = 0;
+  game.cambusSelection = 0;
   game.enemyEncounterSteps = 0;
 }
 
