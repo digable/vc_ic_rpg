@@ -1,14 +1,21 @@
 // Test Suite for Cambus Fast Travel Validation
-
-import { maps } from './js/maps.js';
-import { cambusRoutes } from './js/data.js';
-import { checkCollision } from './js/world.js';
+// Run this in browser console: runTests()
+// Note: This accesses game modules directly after the game has loaded
 
 /**
  * Test: Verify all Cambus routes map to valid locations
  * Checks that each route has a corresponding map definition
  */
 function testCambusRoutesExist() {
+  // Get references from game state
+  const { maps } = window.gameModules || {};
+  const { cambusRoutes } = window.gameModules || {};
+  
+  if (!maps || !cambusRoutes) {
+    console.error('✗ Cannot access game modules. Make sure the game has loaded.');
+    return false;
+  }
+
   console.log('\n=== Testing Cambus Routes Exist ===');
   let passed = 0;
   let failed = 0;
@@ -32,6 +39,14 @@ function testCambusRoutesExist() {
  * Checks that player spawn coordinates are within map bounds and not colliding
  */
 function testSpawnCoordinatesValid() {
+  const { maps } = window.gameModules || {};
+  const { cambusRoutes } = window.gameModules || {};
+  
+  if (!maps || !cambusRoutes) {
+    console.error('✗ Cannot access game modules. Make sure the game has loaded.');
+    return false;
+  }
+
   console.log('\n=== Testing Spawn Coordinates Validity ===');
   let passed = 0;
   let failed = 0;
@@ -76,6 +91,14 @@ function testSpawnCoordinatesValid() {
  * Checks that at least one adjacent tile is walkable in each direction
  */
 function testMovementFromSpawn() {
+  const { maps } = window.gameModules || {};
+  const { cambusRoutes } = window.gameModules || {};
+  
+  if (!maps || !cambusRoutes) {
+    console.error('✗ Cannot access game modules. Make sure the game has loaded.');
+    return false;
+  }
+
   console.log('\n=== Testing Player Movement From Spawn ===');
   let passed = 0;
   let failed = 0;
@@ -122,6 +145,14 @@ function testMovementFromSpawn() {
  * Checks that the tiles array matches expected dimensions
  */
 function testMapTileIntegrity() {
+  const { maps } = window.gameModules || {};
+  const { cambusRoutes } = window.gameModules || {};
+  
+  if (!maps || !cambusRoutes) {
+    console.error('✗ Cannot access game modules. Make sure the game has loaded.');
+    return false;
+  }
+
   console.log('\n=== Testing Map Tile Integrity ===');
   let passed = 0;
   let failed = 0;
@@ -154,6 +185,13 @@ function testMapTileIntegrity() {
  * Simulates the checkCollision function from world.js
  */
 function checkCollisionAtMapLocation(mapName, x, y) {
+  const { maps } = window.gameModules || {};
+  
+  if (!maps) {
+    console.error('Cannot access maps. Game may not be loaded.');
+    return true;
+  }
+
   const map = maps[mapName];
   const tileX = Math.floor(x / 16);
   const tileY = Math.floor(y / 16);
@@ -202,16 +240,5 @@ function runAllTests() {
   return allPassed;
 }
 
-// Run tests if this file is executed directly
-if (typeof process !== 'undefined' && process.argv[1]?.includes('test.js')) {
-  runAllTests();
-} else if (typeof window !== 'undefined') {
-  // Browser environment - make tests available on window
-  window.runTests = runAllTests;
-  window.testCambusRoutesExist = testCambusRoutesExist;
-  window.testSpawnCoordinatesValid = testSpawnCoordinatesValid;
-  window.testMovementFromSpawn = testMovementFromSpawn;
-  window.testMapTileIntegrity = testMapTileIntegrity;
-}
-
-export { runAllTests, testCambusRoutesExist, testSpawnCoordinatesValid, testMovementFromSpawn, testMapTileIntegrity };
+// Alias for convenience
+window.runTests = runAllTests;

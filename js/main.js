@@ -4,6 +4,8 @@
 import { COLORS, CONFIG } from './constants.js';
 import { game } from './game-state.js';
 import { setupInputHandlers, handleInput } from './input.js';
+import { maps } from './maps.js';
+import { cambusRoutes } from './data.js';
 import { 
   setupCanvas,
   drawMap, 
@@ -21,8 +23,12 @@ import {
   drawGameOver 
 } from './rendering/index.js';
 
+// Make game modules available to tests
+window.gameModules = { maps, cambusRoutes };
+
 console.log('Iowa City Quest - Modular version loading...');
 console.log('All modules imported successfully!');
+console.log('Test modules available: window.gameModules');
 
 // Setup
 const { canvas, ctx } = setupCanvas();
