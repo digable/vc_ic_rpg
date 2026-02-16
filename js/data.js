@@ -110,5 +110,5 @@ export const cambusRoutes = [
   { name: 'Kinnick Stadium', map: 'kinnick_stadium', x: 128, y: 96 },
   { name: 'Pedestrian Mall', map: 'ped_mall', x: 128, y: 96 },
   { name: 'Old Capitol', map: 'old_capitol', x: 128, y: 120 },
-  { name: 'Coralville Lake', map: 'coralville_lake', x: 128, y: 96 }
+  { name: 'Coralville Lake', map: 'coralville_lake', x: 128, y: 160 }
 ];
