@@ -182,7 +182,7 @@ export const maps = {
       [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
       [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
       [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
-      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]
+      [2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2]
     ],
     npcs: [
       { x: 64, y: 48, name: 'Restaurant Owner', type: 'food_cart', dialogue: ['Best food in town!', 'Fresh ingredients daily!'] },
@@ -196,14 +196,14 @@ export const maps = {
     grassWalkable: false,
     exits: [
       { x: 128, y: 16, toMap: 'downtown', toX: 128, toY: 208, direction: 'up' },
-      { x: 128, y: 0, toMap: 'beer_caves', toX: 128, toY: 224, direction: 'up' }
+      { x: 128, y: 224, toMap: 'beer_caves', toX: 128, toY: 16, direction: 'down' }
     ]
   },
   beer_caves: {
     width: 16,
     height: 15,
     tiles: [
-      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+      [2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2],
       [2,0,0,6,0,0,6,0,6,0,0,6,0,0,0,2],
       [2,6,0,6,0,6,6,0,6,0,6,6,0,6,0,2],
       [2,6,0,0,0,0,6,0,0,0,0,6,0,0,0,2],
@@ -227,7 +227,7 @@ export const maps = {
     name: 'Beer Caves',
     grassWalkable: false,
     exits: [
-      { x: 128, y: 224, toMap: 'northside', toX: 128, toY: 16, direction: 'down' }
+      { x: 128, y: 0, toMap: 'northside', toX: 128, toY: 208, direction: 'up' }
     ]
   }
 };
