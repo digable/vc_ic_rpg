@@ -196,7 +196,7 @@ export const maps = {
     grassWalkable: false,
     exits: [
       { x: 128, y: 16, toMap: 'downtown', toX: 128, toY: 208, direction: 'up' },
-      { x: 112, y: 0, toMap: 'beer_caves', toX: 128, toY: 208, direction: 'up' }
+      { x: 120, y: 0, toMap: 'beer_caves', toX: 120, toY: 208, direction: 'up' }
     ]
   },
   beer_caves: {
