@@ -228,7 +228,7 @@ export const maps = {
     name: 'Beer Caves',
     grassWalkable: false,
     exits: [
-      { x: 128, y: 0, toMap: 'northside', toX: 128, toY: 208, direction: 'up' }
+      { x: 128, y: 16, toMap: 'northside', toX: 128, toY: 224, direction: 'up' }
     ]
   },
   kinnick_stadium: {
