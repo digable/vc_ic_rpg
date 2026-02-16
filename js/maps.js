@@ -220,8 +220,9 @@ export const maps = {
       [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]
     ],
     npcs: [
-      { x: 96, y: 96, name: 'Caver', dialogue: ['Welcome to the Beer Caves!', 'These caverns are ancient.', 'Watch out for the creatures down here!'] },
-      { x: 160, y: 64, name: 'Explorer', dialogue: ['I explore these caves often.', 'Lots of mysteries to discover.'] }
+      { x: 96, y: 96, name: 'Caver', hasQuest: 'cave_exploration', dialogue: ['Welcome to the Beer Caves!', 'These caverns are ancient.', 'Watch out for the creatures down here!'] },
+      { x: 160, y: 64, name: 'Explorer', hasQuest: 'crystal_hunt', dialogue: ['I explore these caves often.', 'Lots of mysteries to discover.'] },
+      { x: 128, y: 160, name: 'Veteran Caver', hasQuest: 'dragon_slayer', dialogue: ['The Drake is a real threat...', 'We need a hero brave enough to face it.'] }
     ],
     name: 'Beer Caves',
     grassWalkable: false,

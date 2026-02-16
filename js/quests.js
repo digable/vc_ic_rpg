@@ -137,5 +137,56 @@ const questDatabase = {
       progress: ['Keep growing stronger!', 'Your journey inspires me already.'],
       complete: ['You have become legendary!', 'This is exactly what I needed!', 'Thank you!']
     }
+  },
+  
+  // Beer Caves Quests
+  cave_exploration: {
+    id: 'cave_exploration',
+    name: 'Cave Exploration',
+    giver: 'Caver',
+    location: 'beer_caves',
+    description: 'Defeat 4 different types of cave creatures to map out the beer caves.',
+    objectives: [
+      { type: 'defeat_enemy', enemy: 'Bat Swarm', count: 0, needed: 1 },
+      { type: 'defeat_enemy', enemy: 'Cave Spider', count: 0, needed: 1 },
+      { type: 'defeat_enemy', enemy: 'Glowing Mushroom', count: 0, needed: 1 },
+      { type: 'defeat_enemy', enemy: 'Stone Golem', count: 0, needed: 1 }
+    ],
+    rewards: { gold: 130, exp: 65, maxHp: 20 },
+    dialogue: {
+      offer: ['Welcome, explorer!', 'I need to map the caves.', 'Defeat one of each creature type: Bat, Spider, Mushroom, and Golem!'],
+      progress: ['How goes your exploration?', 'Keep finding those creatures!'],
+      complete: ['Excellent work, brave explorer!', 'These findings will help us understand the caves!', 'Here is your reward!']
+    }
+  },
+  
+  crystal_hunt: {
+    id: 'crystal_hunt',
+    name: 'Crystal Elemental Hunt',
+    giver: 'Explorer',
+    location: 'beer_caves',
+    description: 'Defeat 3 Crystal Elementals to collect rare cave crystals.',
+    objectives: [{ type: 'defeat_enemy', enemy: 'Crystal Elemental', count: 0, needed: 3 }],
+    rewards: { gold: 100, exp: 55, item: 'Mana Potion' },
+    dialogue: {
+      offer: ['The Crystal Elementals are fascinating!', 'Can you defeat 3 of them?', 'I need to study their crystalline structure.'],
+      progress: ['Any luck with the Elementals?'],
+      complete: ['Perfect specimens!', 'This will advance my research greatly!', 'Thank you!']
+    }
+  },
+  
+  dragon_slayer: {
+    id: 'dragon_slayer',
+    name: 'The Dragon Threat',
+    giver: 'Caver',
+    location: 'beer_caves',
+    description: 'Defeat the Cave Drake that has been terrorizing the deeper caves.',
+    objectives: [{ type: 'defeat_enemy', enemy: 'Cave Drake', count: 0, needed: 2 }],
+    rewards: { gold: 180, exp: 90, skill: 'Legendary Warrior' },
+    dialogue: {
+      offer: ['A terrible beast lurks deeper...', 'The Cave Drake is a real threat!', 'Defeat 2 of them if you can!'],
+      progress: ['Beware the Drake!', 'Good luck out there!'],
+      complete: ['You actually did it!', 'You are truly a legendary warrior!', 'Take this honor!']
+    }
   }
 };
