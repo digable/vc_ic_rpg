@@ -125,6 +125,15 @@ export function drawBattle() {
 export function drawEnemySprite(enemy, x, y) {
   const ctx = setCtx();
   
+  // Cave monsters - only visible if flashlight is on or in battle
+  const caveMonsters = ['Bat Swarm', 'Cave Spider', 'Stone Golem', 'Glowing Mushroom', 'Crystal Elemental', 'Cave Drake'];
+  const isCaveMonster = caveMonsters.includes(enemy.name);
+  
+  if (isCaveMonster && !game.flashlightOn && game.map === 'beer_caves') {
+    // Don't render cave monsters if flashlight is off in cave
+    return;
+  }
+  
   if (enemy.name === 'Parking Meter') {
     // Parking meter - gray pole with red expired sign
     ctx.fillStyle = COLORS.gray;
@@ -301,6 +310,265 @@ export function drawEnemySprite(enemy, x, y) {
     // Ominous aura
     ctx.fillStyle = 'rgba(0, 0, 255, 0.3)';
     ctx.fillRect(x - 18, y - 14, 36, 44);
+    
+  } else if (enemy.name === 'Bat Swarm') {
+    // Flying bats in formation
+    ctx.fillStyle = COLORS.darkGray;
+    // Left bat
+    ctx.fillRect(x - 14, y - 4, 8, 10);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 13, y - 2, 3, 4); // wing left
+    ctx.fillRect(x - 7, y - 2, 3, 4);  // wing right
+    ctx.fillRect(x - 10, y + 4, 2, 2); // feet
+    ctx.fillRect(x - 8, y + 4, 2, 2);
+    
+    // Center bat (larger, prominent)
+    ctx.fillStyle = COLORS.darkGray;
+    ctx.fillRect(x - 6, y - 8, 12, 14);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 5, y - 6, 5, 6); // wing left
+    ctx.fillRect(x + 1, y - 6, 5, 6); // wing right
+    ctx.fillRect(x - 3, y + 4, 2, 2); // feet
+    ctx.fillRect(x + 1, y + 4, 2, 2);
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x - 2, y - 4, 2, 2); // eyes
+    ctx.fillRect(x + 2, y - 4, 2, 2);
+    
+    // Right bat
+    ctx.fillStyle = COLORS.darkGray;
+    ctx.fillRect(x + 6, y - 2, 8, 10);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x + 7, y, 3, 4); // wing left
+    ctx.fillRect(x + 13, y, 3, 4); // wing right
+    ctx.fillRect(x + 10, y + 6, 2, 2); // feet
+    ctx.fillRect(x + 12, y + 6, 2, 2);
+    
+  } else if (enemy.name === 'Cave Spider') {
+    // Large hairy spider with long legs
+    ctx.fillStyle = COLORS.darkGray;
+    // Main body (rounded)
+    ctx.beginPath();
+    ctx.arc(x, y, 8, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Head
+    ctx.beginPath();
+    ctx.arc(x, y - 10, 6, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Fangs
+    ctx.fillStyle = COLORS.white;
+    ctx.fillRect(x - 2, y - 4, 1, 3);
+    ctx.fillRect(x + 1, y - 4, 1, 3);
+    
+    // Eyes
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x - 3, y - 12, 2, 2);
+    ctx.fillRect(x + 1, y - 12, 2, 2);
+    
+    // Long spindly legs (8 legs, like a real spider)
+    ctx.strokeStyle = COLORS.black;
+    ctx.lineWidth = 1;
+    // Front left
+    ctx.beginPath();
+    ctx.moveTo(x - 6, y - 4);
+    ctx.lineTo(x - 16, y - 12);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x - 6, y - 4);
+    ctx.lineTo(x - 18, y);
+    ctx.stroke();
+    // Front right
+    ctx.beginPath();
+    ctx.moveTo(x + 6, y - 4);
+    ctx.lineTo(x + 16, y - 12);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 6, y - 4);
+    ctx.lineTo(x + 18, y);
+    ctx.stroke();
+    // Back left
+    ctx.beginPath();
+    ctx.moveTo(x - 4, y + 6);
+    ctx.lineTo(x - 14, y + 16);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x - 4, y + 6);
+    ctx.lineTo(x - 16, y + 8);
+    ctx.stroke();
+    // Back right
+    ctx.beginPath();
+    ctx.moveTo(x + 4, y + 6);
+    ctx.lineTo(x + 14, y + 16);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 4, y + 6);
+    ctx.lineTo(x + 16, y + 8);
+    ctx.stroke();
+    
+  } else if (enemy.name === 'Stone Golem') {
+    // Large blocky stone creature
+    ctx.fillStyle = '#888888'; // gray stone
+    // Main body (large cube)
+    ctx.fillRect(x - 14, y - 6, 28, 28);
+    
+    // Stone texture - cracks
+    ctx.strokeStyle = COLORS.darkGray;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x - 4, y - 6);
+    ctx.lineTo(x - 4, y + 22);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 4, y - 6);
+    ctx.lineTo(x + 4, y + 22);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x - 14, y + 6);
+    ctx.lineTo(x + 14, y + 6);
+    ctx.stroke();
+    
+    // Head/top part
+    ctx.fillStyle = '#999999';
+    ctx.fillRect(x - 10, y - 12, 20, 8);
+    
+    // Eyes (glowing)
+    ctx.fillStyle = COLORS.orange;
+    ctx.fillRect(x - 6, y - 8, 3, 3);
+    ctx.fillRect(x + 3, y - 8, 3, 3);
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x - 5, y - 7, 1, 1);
+    ctx.fillRect(x + 4, y - 7, 1, 1);
+    
+    // Heavy arms
+    ctx.fillStyle = '#888888';
+    ctx.fillRect(x - 16, y + 2, 4, 14);
+    ctx.fillRect(x + 12, y + 2, 4, 14);
+    
+  } else if (enemy.name === 'Glowing Mushroom') {
+    // Magical glowing mushroom with aura
+    ctx.fillStyle = '#ff00ff'; // magenta/purple
+    // Cap (dome shape)
+    ctx.beginPath();
+    ctx.ellipse(x, y - 6, 10, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Stem
+    ctx.fillStyle = '#cccccc';
+    ctx.fillRect(x - 3, y + 2, 6, 12);
+    
+    // Spots on cap
+    ctx.fillStyle = COLORS.white;
+    ctx.fillRect(x - 6, y - 8, 2, 2);
+    ctx.fillRect(x + 4, y - 8, 2, 2);
+    ctx.fillRect(x - 4, y - 4, 2, 2);
+    ctx.fillRect(x + 2, y - 4, 2, 2);
+    
+    // Glow aura (multiple circles)
+    ctx.strokeStyle = 'rgba(255, 0, 255, 0.4)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y, 14, 0, Math.PI * 2);
+    ctx.stroke();
+    
+    ctx.strokeStyle = 'rgba(255, 0, 255, 0.2)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y, 20, 0, Math.PI * 2);
+    ctx.stroke();
+    
+  } else if (enemy.name === 'Crystal Elemental') {
+    // Geometric crystal shape
+    ctx.fillStyle = '#00ffff'; // cyan/cyan crystal
+    // Main diamond/crystal body
+    ctx.beginPath();
+    ctx.moveTo(x, y - 16); // top point
+    ctx.lineTo(x + 12, y); // right point
+    ctx.lineTo(x, y + 16); // bottom point
+    ctx.lineTo(x - 12, y); // left point
+    ctx.closePath();
+    ctx.fill();
+    
+    // Crystal facets (lighter blue for shine)
+    ctx.fillStyle = '#00ffff';
+    ctx.beginPath();
+    ctx.moveTo(x, y - 16);
+    ctx.lineTo(x + 8, y - 4);
+    ctx.lineTo(x - 8, y - 4);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Core glow
+    ctx.fillStyle = COLORS.white;
+    ctx.beginPath();
+    ctx.arc(x, y, 6, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Glowing aura
+    ctx.strokeStyle = 'rgba(0, 255, 255, 0.5)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y, 18, 0, Math.PI * 2);
+    ctx.stroke();
+    
+  } else if (enemy.name === 'Cave Drake') {
+    // Large dragon-like creature with wings
+    ctx.fillStyle = COLORS.darkGray;
+    // Main body (large oval)
+    ctx.beginPath();
+    ctx.ellipse(x, y + 2, 14, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Head (extended forward)
+    ctx.fillStyle = COLORS.darkGray;
+    ctx.fillRect(x + 12, y - 4, 8, 8);
+    
+    // Snout/mouth
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x + 18, y - 2, 2, 4);
+    
+    // Eyes (yellow/hostile)
+    ctx.fillStyle = COLORS.yellow;
+    ctx.fillRect(x + 14, y - 4, 2, 2);
+    ctx.fillRect(x + 14, y + 2, 2, 2);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x + 14, y - 3, 1, 1);
+    
+    // Dragon wings (large, membraned)
+    ctx.fillStyle = COLORS.darkGray;
+    // Left wing
+    ctx.beginPath();
+    ctx.moveTo(x + 2, y - 4);
+    ctx.lineTo(x - 14, y - 12);
+    ctx.lineTo(x - 10, y + 4);
+    ctx.closePath();
+    ctx.fill();
+    // Right wing
+    ctx.beginPath();
+    ctx.moveTo(x + 2, y - 4);
+    ctx.lineTo(x + 18, y - 12);
+    ctx.lineTo(x + 14, y + 4);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Wing veins
+    ctx.strokeStyle = COLORS.black;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x - 8, y - 6);
+    ctx.lineTo(x - 12, y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 8, y - 6);
+    ctx.lineTo(x + 12, y);
+    ctx.stroke();
+    
+    // Tail (curved)
+    ctx.strokeStyle = COLORS.darkGray;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(x - 12, y + 8, 10, 0, Math.PI * 0.5);
+    ctx.stroke();
     
   } else {
     // Default enemy sprite (fallback)
