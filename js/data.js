@@ -82,8 +82,11 @@ export const consumableItems = [
   { name: 'Whiskey Shot', price: 35, effect: 'buffStrength', amount: 7, turns: 2, description: 'Temp +7 Strength (2 turns)', vendor: 'Bartender' },
   { name: 'IPA', price: 30, effect: 'healBoth', hpAmount: 20, mpAmount: 10, description: 'Restore 20 HP & 10 MP', vendor: 'Bartender' },
   { name: 'Cocktail', price: 45, effect: 'buffIntellect', amount: 5, turns: 3, description: 'Temp +5 Intellect (3 turns)', vendor: 'Bartender' },
+  { name: 'Wine Selection', price: 50, effect: 'buffIntellect', amount: 7, turns: 4, description: 'Temp +7 Intellect (4 turns)', vendor: 'Bartender' },
   { name: 'Craft Beer', price: 25, effect: 'buffVitality', amount: 3, turns: 3, description: 'Temp +3 Vitality (3 turns)', vendor: 'Bartender' },
-  { name: 'Wine Selection', price: 50, effect: 'buffIntellect', amount: 7, turns: 4, description: 'Temp +7 Intellect (4 turns)', vendor: 'Bartender' }
+
+  // Quest Rewards
+  { name: 'Flashlight', price: 0, effect: 'flashlight', description: 'Lights up dark caves. Never used up.' }
 ];
 
 // Cambus routes (fast travel locations)

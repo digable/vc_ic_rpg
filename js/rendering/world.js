@@ -8,6 +8,11 @@ import { ctx } from './utils.js';
 
 export function drawMap() {
   const map = maps[game.map];
+  if (game.map === 'beer_caves' && !game.flashlightOn) {
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(0, 0, 256, 240);
+    return;
+  }
   for (let y = 0; y < map.height; y++) {
     for (let x = 0; x < map.width; x++) {
       const tile = map.tiles[y][x];

@@ -10,6 +10,7 @@ export function openFoodCart(vendor) {
 }
 
 export function checkMapTransition() {
+  const fromMap = game.map;
   const currentMap = maps[game.map];
   for (let exit of currentMap.exits) {
     const dist = Math.sqrt((game.player.x - exit.x) ** 2 + (game.player.y - exit.y) ** 2);
@@ -18,6 +19,9 @@ export function checkMapTransition() {
       game.player.x = exit.toX;
       game.player.y = exit.toY;
       game.enemyEncounterSteps = 0;
+      if (fromMap === 'beer_caves' && game.map !== 'beer_caves') {
+        game.flashlightOn = false;
+      }
       return;
     }
   }

@@ -181,8 +181,10 @@ export function useItemInBattle() {
   
   applyItemEffect(item);
   
-  // Remove item from inventory
-  game.consumables.splice(game.battleState.selectedItem, 1);
+  // Remove item from inventory unless it's a permanent item
+  if (item.effect !== 'flashlight') {
+    game.consumables.splice(game.battleState.selectedItem, 1);
+  }
   
   setTimeout(() => {
     game.battleState.animating = false;
@@ -196,8 +198,10 @@ export function useItemFromMenu() {
   const item = game.consumables[game.itemMenuSelection];
   applyItemEffect(item);
   
-  // Remove item from inventory
-  game.consumables.splice(game.itemMenuSelection, 1);
+  // Remove item from inventory unless it's a permanent item
+  if (item.effect !== 'flashlight') {
+    game.consumables.splice(game.itemMenuSelection, 1);
+  }
   
   // Adjust selection if needed
   if (game.itemMenuSelection >= game.consumables.length && game.consumables.length > 0) {
@@ -256,6 +260,15 @@ export function applyItemEffect(item) {
     game.activeBuff = { type: 'vitality', amount: item.amount, turnsLeft: item.turns };
     if (game.battleState) {
       game.battleState.message = `Used ${item.name}! Vitality +${item.amount} for ${item.turns} turns!`;
+    }
+  } else if (item.effect === 'flashlight') {
+    if (game.map === 'beer_caves') {
+      game.flashlightOn = true;
+      if (game.battleState) {
+        game.battleState.message = `Used ${item.name}! The caves light up!`;
+      }
+    } else if (game.battleState) {
+      game.battleState.message = `${item.name} doesn't help here.`;
     }
   }
 }

@@ -293,6 +293,9 @@ export function handleCambusTravel() {
   game.cambusOpen = false;
   game.cambusPage = 0;
   game.cambusSelection = 0;
+  if (game.map !== 'beer_caves') {
+    game.flashlightOn = false;
+  }
   game.enemyEncounterSteps = 0;
 }
 

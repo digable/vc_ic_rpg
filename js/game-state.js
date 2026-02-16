@@ -21,7 +21,7 @@ export const game = {
   },
   map: 'downtown',
   inventory: ['Campus ID', 'Bus Pass', 'Coffee'],
-  consumables: [], // Consumable items inventory
+  consumables: [{ name: 'Flashlight', price: 0, effect: 'flashlight', description: 'Lights up dark caves. Never used up.' }], // Consumable items inventory
   skills: [],
   spells: [],
   enemyEncounterSteps: 0,
@@ -49,6 +49,7 @@ export const game = {
   itemMenuOpen: false,
   itemMenuSelection: 0,
   activeBuff: null, // { type: 'attack'/'defense'/'magic', amount: 5, turnsLeft: 3 }
+  flashlightOn: false,
   quests: [], // Active and completed quests
   textBox: null,
   levelUpDialog: null, // Stores level up info when level up occurs
@@ -76,7 +77,7 @@ export function resetGameState() {
   };
   game.map = 'downtown';
   game.inventory = ['Campus ID', 'Bus Pass', 'Coffee'];
-  game.consumables = [];
+  game.consumables = [{ name: 'Flashlight', price: 0, effect: 'flashlight', description: 'Lights up dark caves. Never used up.' }];
   game.skills = [];
   game.spells = [];
   game.enemyEncounterSteps = 0;
@@ -104,6 +105,7 @@ export function resetGameState() {
   game.itemMenuOpen = false;
   game.itemMenuSelection = 0;
   game.activeBuff = null;
+  game.flashlightOn = false;
   game.quests = [];
   game.textBox = null;
   game.levelUpDialog = null;
