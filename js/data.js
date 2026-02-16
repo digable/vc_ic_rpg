@@ -86,7 +86,12 @@ export const consumableItems = [
   { name: 'Craft Beer', price: 25, effect: 'buffVitality', amount: 3, turns: 3, description: 'Temp +3 Vitality (3 turns)', vendor: 'Bartender' },
 
   // Quest Rewards
-  { name: 'Flashlight', price: 0, effect: 'flashlight', description: 'Lights up dark caves. Never used up.' }
+  { name: 'Flashlight', price: 0, effect: 'flashlight', description: 'Lights up dark caves. Never used up.' },
+  { name: 'Hawkeye Jersey', price: 0, effect: 'buffStrength', amount: 10, turns: 5, description: 'Temp +10 Strength (5 turns)' },
+  { name: 'Music Note', price: 0, effect: 'healBoth', hpAmount: 40, mpAmount: 20, description: 'Restore 40 HP & 20 MP' },
+  { name: 'Lake Trophy', price: 0, effect: 'buffVitality', amount: 15, turns: 6, description: 'Temp +15 Vitality (6 turns)' },
+  { name: 'Camping Tent', price: 0, effect: 'healHP', amount: 60, description: 'Restores 60 HP' },
+  { name: 'Hero\'s Medal', price: 0, effect: 'heroBonus', description: 'Permanent +10 to all stats!' }
 ];
 
 // Cambus routes (fast travel locations)
@@ -97,5 +102,9 @@ export const cambusRoutes = [
   { name: 'Riverside Park', map: 'riverside', x: 80, y: 120 },
   { name: 'The Deadwood', map: 'deadwood', x: 96, y: 120 },
   { name: 'Northside', map: 'northside', x: 128, y: 96 },
-  { name: 'Beer Caves', map: 'beer_caves', x: 128, y: 96 }
+  { name: 'Beer Caves', map: 'beer_caves', x: 128, y: 96 },
+  { name: 'Kinnick Stadium', map: 'kinnick_stadium', x: 128, y: 96 },
+  { name: 'Pedestrian Mall', map: 'ped_mall', x: 128, y: 96 },
+  { name: 'Old Capitol', map: 'old_capitol', x: 128, y: 120 },
+  { name: 'Coralville Lake', map: 'coralville_lake', x: 128, y: 96 }
 ];
