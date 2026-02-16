@@ -66,7 +66,8 @@ export const maps = {
     grassWalkable: true,
     exits: [
       { x: 120, y: 224, toMap: 'downtown', toX: 120, toY: 32, direction: 'down' },
-      { x: 240, y: 120, toMap: 'library', toX: 32, toY: 120, direction: 'right' }
+      { x: 240, y: 120, toMap: 'library', toX: 32, toY: 120, direction: 'right' },
+      { x: 128, y: 16, toMap: 'kinnick_stadium', toX: 128, toY: 208, direction: 'up' }
     ]
   },
   library: {
@@ -228,6 +229,142 @@ export const maps = {
     grassWalkable: false,
     exits: [
       { x: 128, y: 0, toMap: 'northside', toX: 128, toY: 208, direction: 'up' }
+    ]
+  },
+  kinnick_stadium: {
+    width: 16,
+    height: 15,
+    tiles: [
+      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,1,2,2,2,2,2,2,2,2,2,2,2,2,1,2],
+      [2,1,2,1,1,1,1,1,1,1,1,1,1,2,1,2],
+      [2,1,2,1,1,1,1,1,1,1,1,1,1,2,1,2],
+      [2,1,2,1,1,1,1,1,1,1,1,1,1,2,1,2],
+      [2,1,2,1,1,1,1,1,1,1,1,1,1,2,1,2],
+      [2,1,2,1,1,1,1,1,1,1,1,1,1,2,0,0],
+      [2,1,2,1,1,1,1,1,1,1,1,1,1,2,1,2],
+      [2,1,2,1,1,1,1,1,1,1,1,1,1,2,1,2],
+      [2,1,2,1,1,1,1,1,1,1,1,1,1,2,1,2],
+      [2,1,2,2,2,2,2,2,2,2,2,2,2,2,1,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2]
+    ],
+    npcs: [
+      { x: 128, y: 96, name: 'Coach', hasQuest: 'hawkeye_spirit', dialogue: ['Go Hawks!', 'This stadium holds 70,000 fans!', 'The atmosphere on game day is electric!'] },
+      { x: 64, y: 80, name: 'Superfan', hasQuest: 'stadium_tour', dialogue: ['I never miss a game!', 'The wave is a tradition here.', 'Have you seen the Tigerhawk at midfield?'] },
+      { x: 192, y: 96, name: 'Athletic Trainer', type: 'healer', dialogue: ['Need a health check?', 'Athletes train hard here!', 'HP & MP restored!'] },
+      { x: 96, y: 160, name: 'Food Cart Vendor', type: 'food_cart', dialogue: ['Game day specials!', 'Hot dogs and nachos!'] },
+      { x: 48, y: 160, name: 'Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] }
+    ],
+    name: 'Kinnick Stadium',
+    grassWalkable: true,
+    exits: [
+      { x: 240, y: 112, toMap: 'ped_mall', toX: 32, toY: 112, direction: 'right' },
+      { x: 128, y: 224, toMap: 'pentacrest', toX: 128, toY: 32, direction: 'down' }
+    ]
+  },
+  ped_mall: {
+    width: 16,
+    height: 15,
+    tiles: [
+      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,1,0,0,0,0,0,0,0,0,0,0,0,0,1,2],
+      [2,1,0,3,3,0,3,3,0,3,3,0,3,3,1,2],
+      [2,1,0,3,3,0,3,3,0,3,3,0,3,3,1,2],
+      [2,1,0,0,0,0,0,0,0,0,0,0,0,0,1,2],
+      [2,1,1,1,1,0,0,0,0,0,0,1,1,1,1,2],
+      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2],
+      [2,1,0,0,0,0,0,0,0,0,0,0,0,0,1,2],
+      [2,1,0,3,3,0,3,3,0,3,3,0,3,3,1,2],
+      [2,1,0,3,3,0,3,3,0,3,3,0,3,3,1,2],
+      [2,1,0,0,0,0,0,0,0,0,0,0,0,0,1,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]
+    ],
+    npcs: [
+      { x: 80, y: 64, name: 'Street Musician', hasQuest: 'lost_guitar', dialogue: ['Music fills the air here!', 'The Ped Mall is the heart of downtown.', 'So many shops and restaurants!'] },
+      { x: 160, y: 96, name: 'Shop Owner', type: 'shop', dialogue: ['Welcome to my shop!', 'Unique items from Iowa City!'] },
+      { x: 128, y: 64, name: 'Food Cart Vendor', type: 'food_cart', dialogue: ['Fresh pretzels!', 'Best food on the mall!'] },
+      { x: 192, y: 128, name: 'Tourist', dialogue: ['This pedestrian mall is amazing!', 'So many interesting people!'] },
+      { x: 64, y: 128, name: 'Artist', dialogue: ['I sell my art here on weekends.', 'Iowa City loves creativity!'] },
+      { x: 208, y: 96, name: 'Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] }
+    ],
+    name: 'Pedestrian Mall',
+    grassWalkable: false,
+    exits: [
+      { x: 16, y: 112, toMap: 'kinnick_stadium', toX: 224, toY: 112, direction: 'left' },
+      { x: 240, y: 112, toMap: 'old_capitol', toX: 32, toY: 112, direction: 'right' }
+    ]
+  },
+  old_capitol: {
+    width: 16,
+    height: 15,
+    tiles: [
+      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
+      [2,2,2,3,3,3,3,3,3,3,3,3,3,2,2,2],
+      [2,2,2,3,1,1,1,1,1,1,1,1,3,2,2,2],
+      [2,2,2,3,1,1,1,1,1,1,1,1,3,2,2,2],
+      [2,2,2,3,1,1,4,4,4,4,1,1,3,2,2,2],
+      [2,2,2,3,1,1,4,4,4,4,1,1,3,2,2,2],
+      [0,0,0,3,1,1,1,1,1,1,1,1,3,2,2,2],
+      [2,2,2,3,1,1,1,1,1,1,1,1,3,2,2,2],
+      [2,2,2,3,1,1,1,1,1,1,1,1,3,2,2,2],
+      [2,2,2,3,3,3,3,3,3,3,3,3,3,2,2,2],
+      [2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2],
+      [2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2],
+      [2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2],
+      [2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2]
+    ],
+    npcs: [
+      { x: 128, y: 64, name: 'Historian', hasQuest: 'capitol_mystery', dialogue: ['Welcome to the Old Capitol!', 'This building served as Iowa\'s first capitol.', 'A golden dome crowns this historic site.'] },
+      { x: 96, y: 96, name: 'Tour Guide', dialogue: ['Did you know the dome is covered in gold leaf?', 'The Old Capitol was built in 1842!'] },
+      { x: 160, y: 96, name: 'Museum Curator', type: 'magic_trainer', dialogue: ['Ancient knowledge resides here.', 'I can teach you historical magic...'] },
+      { x: 48, y: 160, name: 'Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] }
+    ],
+    name: 'Old Capitol Museum',
+    grassWalkable: false,
+    exits: [
+      { x: 16, y: 112, toMap: 'ped_mall', toX: 224, toY: 112, direction: 'left' },
+      { x: 128, y: 224, toMap: 'coralville_lake', toX: 128, toY: 32, direction: 'down' }
+    ]
+  },
+  coralville_lake: {
+    width: 16,
+    height: 15,
+    tiles: [
+      [2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2],
+      [2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2],
+      [2,2,2,2,1,1,1,1,1,1,1,1,2,2,2,2],
+      [2,2,1,1,1,1,1,1,1,1,1,1,1,1,2,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,1,1,1,5,5,5,5,5,5,5,1,1,1,1,2],
+      [2,1,1,5,5,5,5,5,5,5,5,5,1,1,1,2],
+      [2,1,1,5,5,5,5,5,5,5,5,5,1,1,1,2],
+      [2,1,1,5,5,5,5,5,5,5,5,5,1,1,1,2],
+      [2,1,1,1,5,5,5,5,5,5,5,1,1,1,1,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,2,1,1,1,1,1,1,1,1,1,1,1,1,2,2],
+      [2,2,2,2,1,1,1,1,1,1,1,1,2,2,2,2],
+      [2,2,2,2,2,2,1,1,1,1,2,2,2,2,2,2],
+      [2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2]
+    ],
+    npcs: [
+      { x: 64, y: 64, name: 'Fisherman', hasQuest: 'lake_monster', dialogue: ['Great fishing here!', 'Coralville Lake is a local treasure.', 'Something big lurks in these waters...'] },
+      { x: 160, y: 80, name: 'Camper', hasQuest: 'camping_supplies', dialogue: ['Perfect spot for camping!', 'The trails around here are beautiful.'] },
+      { x: 128, y: 120, name: 'Park Ranger', type: 'healer', dialogue: ['Welcome to the lake!', 'Stay safe out there!', 'HP & MP restored!'] },
+      { x: 96, y: 64, name: 'Food Cart Vendor', type: 'food_cart', dialogue: ['Beach snacks!', 'Perfect for a day by the lake!'] },
+      { x: 48, y: 80, name: 'Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] }
+    ],
+    name: 'Coralville Lake',
+    grassWalkable: true,
+    exits: [
+      { x: 128, y: 16, toMap: 'old_capitol', toX: 128, toY: 208, direction: 'up' },
+      { x: 128, y: 224, toMap: 'downtown', toX: 128, toY: 32, direction: 'down' }
     ]
   }
 };

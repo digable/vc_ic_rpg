@@ -270,6 +270,24 @@ export function applyItemEffect(item) {
     } else if (game.battleState) {
       game.battleState.message = `${item.name} doesn't help here.`;
     }
+  } else if (item.effect === 'heroBonus') {
+    // Permanent stat boost
+    game.player.attack += 10;
+    game.player.defense += 10;
+    game.player.magic += 10;
+    game.player.strength = (game.player.strength || 0) + 10;
+    game.player.intellect = (game.player.intellect || 0) + 10;
+    game.player.agility = (game.player.agility || 0) + 10;
+    game.player.vitality = (game.player.vitality || 0) + 10;
+    game.player.spirit = (game.player.spirit || 0) + 10;
+    game.player.luck = (game.player.luck || 0) + 10;
+    game.player.maxHp += 50;
+    game.player.hp += 50;
+    game.player.maxMp += 30;
+    game.player.mp += 30;
+    if (game.battleState) {
+      game.battleState.message = `Used ${item.name}! All stats permanently increased!`;
+    }
   }
 }
 

@@ -13,6 +13,11 @@ export function advanceDialogue() {
   
   game.dialogue.currentIndex++;
   if (game.dialogue.currentIndex >= game.dialogue.messages.length) {
+    // Check if there's an afterDialogue callback
+    const callback = game.dialogue.afterDialogue;
     game.dialogue = null;
+    if (callback && typeof callback === 'function') {
+      callback();
+    }
   }
 }

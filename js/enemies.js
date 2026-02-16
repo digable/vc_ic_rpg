@@ -130,5 +130,121 @@ export const enemies = [
     gold: 120, 
     location: 'beer_caves',
     specialAttack: { name: 'Dragon Breath', damage: 25, mpCost: 0 }
+  },
+  // Stadium Enemies
+  { 
+    name: 'Rival Fan', 
+    hp: 28, 
+    maxHp: 28, 
+    attack: 9, 
+    exp: 22, 
+    gold: 45, 
+    location: 'kinnick_stadium',
+    specialAttack: { name: 'Trash Talk', damage: 13, mpCost: 0, effect: 'intimidate' }
+  },
+  { 
+    name: 'Lost Football', 
+    hp: 20, 
+    maxHp: 20, 
+    attack: 6, 
+    exp: 18, 
+    gold: 40, 
+    location: 'kinnick_stadium',
+    specialAttack: null
+  },
+  { 
+    name: 'Angry Mascot', 
+    hp: 45, 
+    maxHp: 45, 
+    attack: 13, 
+    exp: 38, 
+    gold: 80, 
+    location: 'kinnick_stadium',
+    specialAttack: { name: 'Herky Charge', damage: 20, mpCost: 0 }
+  },
+  // Pedestrian Mall Enemies
+  { 
+    name: 'Street Performer', 
+    hp: 22, 
+    maxHp: 22, 
+    attack: 7, 
+    exp: 19, 
+    gold: 42, 
+    outdoor: true,
+    specialAttack: { name: 'Distracting Act', damage: 10, mpCost: 0 }
+  },
+  { 
+    name: 'Shopping Cart', 
+    hp: 18, 
+    maxHp: 18, 
+    attack: 5, 
+    exp: 16, 
+    gold: 35, 
+    outdoor: true,
+    specialAttack: null
+  },
+  // Old Capitol Enemies
+  { 
+    name: 'Haunted Portrait', 
+    hp: 32, 
+    maxHp: 32, 
+    attack: 10, 
+    exp: 27, 
+    gold: 55, 
+    location: 'old_capitol',
+    specialAttack: { name: 'Ghostly Stare', damage: 15, mpCost: 0 }
+  },
+  { 
+    name: 'Historic Ghost', 
+    hp: 40, 
+    maxHp: 40, 
+    attack: 12, 
+    exp: 35, 
+    gold: 70, 
+    location: 'old_capitol',
+    specialAttack: { name: 'Phantom Touch', damage: 18, mpCost: 0, effect: 'chill' }
+  },
+  // Lake Enemies
+  { 
+    name: 'Lake Monster', 
+    hp: 70, 
+    maxHp: 70, 
+    attack: 17, 
+    exp: 60, 
+    gold: 130, 
+    location: 'coralville_lake',
+    specialAttack: { name: 'Tidal Wave', damage: 27, mpCost: 0 }
+  },
+  { 
+    name: 'Angry Goose', 
+    hp: 24, 
+    maxHp: 24, 
+    attack: 8, 
+    exp: 20, 
+    gold: 38, 
+    location: 'coralville_lake',
+    specialAttack: { name: 'Aggressive Honk', damage: 11, mpCost: 0 }
+  },
+  { 
+    name: 'Giant Catfish', 
+    hp: 35, 
+    maxHp: 35, 
+    attack: 11, 
+    exp: 30, 
+    gold: 65, 
+    location: 'coralville_lake',
+    specialAttack: { name: 'Tail Slap', damage: 16, mpCost: 0 }
+  },
+  // Final Boss
+  { 
+    name: 'Corrupted Administrator', 
+    hp: 150, 
+    maxHp: 150, 
+    attack: 25, 
+    exp: 200, 
+    gold: 500, 
+    location: 'old_capitol',
+    isBoss: true,
+    specialAttack: { name: 'Bureaucratic Red Tape', damage: 40, mpCost: 0 }
   }
 ];

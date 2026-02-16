@@ -6,13 +6,19 @@ A retro NES-style RPG adventure set in Iowa City! Explore campus, complete quest
 ![Platform](https://img.shields.io/badge/Platform-Web-green)
 ![Mobile](https://img.shields.io/badge/Mobile-Supported-brightgreen)
 
+## 📖 Story
+
+A dark corruption has taken root in Iowa City, emanating from the historic Old Capitol building. As a student hero, you must explore all corners of Iowa City—from the roaring crowds at Kinnick Stadium to the peaceful shores of Coralville Lake—to grow strong enough to face the Corrupted Administrator and save the city.
+
+Along the way, you'll meet colorful locals, complete quests, battle academic monsters and Iowa City creatures, and uncover the mystery behind the corruption. Will you prove yourself as the hero Iowa City needs?
+
 ## 🕹️ Play Now
 
 **[Play on GitHub Pages](https://digable.github.io/vc_ic_rpg/)**
 
 ## ✨ Features
 
-### 🗺️ Explore 7 Iowa City Locations
+### 🗺️ Explore 11 Iowa City Locations
 - **Downtown** - Coffee shops, stores, and street vendors
 - **Pentacrest** - The heart of campus
 - **Main Library** - Study spaces and magic training
@@ -20,15 +26,21 @@ A retro NES-style RPG adventure set in Iowa City! Explore campus, complete quest
 - **The Deadwood** - Local bar with food and drinks
 - **Northside** - Restaurant district with diverse cuisine
 - **Beer Caves** - Maze-like underground caverns
+- **Kinnick Stadium** - Iconic 70,000-seat football stadium
+- **Pedestrian Mall** - Downtown shopping and entertainment district
+- **Old Capitol Museum** - Historic building with golden dome
+- **Coralville Lake** - Recreational area with fishing and camping
 
 ### ⚔️ Turn-Based Combat
-- Fight academic enemies (Late Assignments, Midterms, Group Projects)
+- Fight academic and Iowa City-themed enemies
+- Battle rival fans, haunted portraits, and the legendary Lake Monster
 - Learn magic spells (Fire Bolt, Thunder, Ice Blast)
 - Use items and strategy to win battles
 - Level up with NES Final Fantasy-style progression (50 levels)
 - Class-based stat growth (6 Iowa City-themed classes)
+- Epic boss battles including the Corrupted Administrator
 
-### 📋 11 Side Quests
+### 📋 18 Side Quests
 Complete Iowa City-themed quests:
 - The Coffee Run
 - Campus Tour Guide
@@ -41,6 +53,13 @@ Complete Iowa City-themed quests:
 - Cave Exploration
 - Crystal Elemental Hunt
 - The Dragon Threat
+- **Hawkeye Spirit** - Prove your Hawkeye pride at Kinnick Stadium
+- **Stadium Tour** - Visit all major Iowa City landmarks
+- **Lost Guitar** - Help the street musician on the Ped Mall
+- **The Capitol Mystery** - Investigate haunted Old Capitol
+- **The Lake Monster** - Defeat the legendary creature
+- **Camping Supplies** - Help a camper at Coralville Lake
+- **Source of Corruption** - Main story quest to save Iowa City
 
 ### 🍕 Unique Food Vendors
 28+ food items across 4 vendors with distinct mechanics:
@@ -58,8 +77,10 @@ Complete Iowa City-themed quests:
 - **Shop System** - 8 stat-boosting items with pagination
 - **Magic Training** - 5 trainers teach spells and provide stat increases
 - **Consumable Items** - 28+ food items with temporary buff effects
-- **Cambus Fast Travel** - Navigate Iowa City quickly
+- **Cambus Fast Travel** - Navigate between 11 Iowa City locations
 - **Beer Caves Maze** - Flashlight reveals the path
+- **Main Story Quest** - Epic storyline to save Iowa City from corruption
+- **Boss Battles** - Challenging encounters with unique enemies
 
 ### 📱 Mobile Support
 - Touch controls for mobile devices
@@ -193,12 +214,16 @@ All equipment, training, and items affect 6 core statistics:
 2. **Choose Your Class** - Each class has different stat growth patterns
 3. **Complete Quests** - Great EXP and gold rewards
 4. **Buy Food** - Stat buffs help in tough battles (check vendor pagination)
-5. **Use Cambus** - Fast travel between locations
+5. **Use Cambus** - Fast travel between 11 locations
 6. **Learn Magic** - Visit the Library to train in spells (Intellect-based)
 7. **Try Yoga** - Riverside park offers defensive skills for any class
 8. **Stock Items** - Buy consumables before big fights
 9. **Explore All Vendors** - Each has unique items and effects
 10. **Watch for Strong Levels** - They provide bonus HP growth
+11. **Visit New Locations** - Kinnick Stadium, Ped Mall, Old Capitol, and Coralville Lake
+12. **Main Quest** - Reach level 10 to face the final boss and save Iowa City
+13. **Talk to Everyone** - NPCs offer valuable quests and rewards
+14. **Boss Preparation** - Stock up on healing items before facing the Lake Monster or Corrupted Administrator
 
 ## 📝 Development
 

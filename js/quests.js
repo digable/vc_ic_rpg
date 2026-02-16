@@ -188,5 +188,123 @@ const questDatabase = {
       progress: ['Beware the Drake!', 'Good luck out there!'],
       complete: ['You actually did it!', 'You are truly a legendary warrior!', 'Take this honor!']
     }
+  },
+  
+  // New Story-Driven Quests
+  hawkeye_spirit: {
+    id: 'hawkeye_spirit',
+    name: 'Hawkeye Spirit',
+    giver: 'Coach',
+    location: 'kinnick_stadium',
+    description: 'Prove your Hawkeye pride by defeating 3 Rival Fans in the stadium.',
+    objectives: [{ type: 'defeat_enemy', enemy: 'Rival Fan', count: 0, needed: 3 }],
+    rewards: { gold: 90, exp: 50, item: 'Hawkeye Jersey' },
+    dialogue: {
+      offer: ['Welcome to Kinnick!', 'Some rival fans are causing trouble.', 'Show them the true Hawkeye spirit!'],
+      progress: ['How\'s the fan situation?', 'Keep fighting!'],
+      complete: ['GO HAWKS!', 'You\'ve proven your loyalty!', 'Take this jersey with pride!']
+    }
+  },
+  
+  stadium_tour: {
+    id: 'stadium_tour',
+    name: 'Stadium Tour',
+    giver: 'Superfan',
+    location: 'kinnick_stadium',
+    description: 'Visit all the major Iowa City landmarks to prove you\'re a true local.',
+    objectives: [
+      { type: 'visit_location', location: 'ped_mall', visited: false },
+      { type: 'visit_location', location: 'old_capitol', visited: false },
+      { type: 'visit_location', location: 'coralville_lake', visited: false }
+    ],
+    rewards: { gold: 110, exp: 60, maxHp: 20 },
+    dialogue: {
+      offer: ['Want to see the real Iowa City?', 'Visit the Ped Mall, Old Capitol, and Coralville Lake!', 'Come back when you\'ve seen them all!'],
+      progress: ['Keep exploring!', 'There\'s so much to see!'],
+      complete: ['You\'re a true Iowa City local now!', 'Here\'s your reward!']
+    }
+  },
+  
+  lost_guitar: {
+    id: 'lost_guitar',
+    name: 'Lost Guitar',
+    giver: 'Street Musician',
+    location: 'ped_mall',
+    description: 'Find the musician\'s lost guitar by defeating Street Performers.',
+    objectives: [{ type: 'defeat_enemy', enemy: 'Street Performer', count: 0, needed: 2 }],
+    rewards: { gold: 70, exp: 40, item: 'Music Note' },
+    dialogue: {
+      offer: ['Someone stole my guitar!', 'Other street performers might have it.', 'Please help me find it!'],
+      progress: ['Any luck finding my guitar?'],
+      complete: ['You found it!', 'I can play music again!', 'Thank you so much!']
+    }
+  },
+  
+  capitol_mystery: {
+    id: 'capitol_mystery',
+    name: 'The Capitol Mystery',
+    giver: 'Historian',
+    location: 'old_capitol',
+    description: 'Investigate the haunted Old Capitol by defeating ghosts.',
+    objectives: [
+      { type: 'defeat_enemy', enemy: 'Haunted Portrait', count: 0, needed: 2 },
+      { type: 'defeat_enemy', enemy: 'Historic Ghost', count: 0, needed: 2 }
+    ],
+    rewards: { gold: 140, exp: 80, spell: 'Restore' },
+    dialogue: {
+      offer: ['Strange things happen at night here...', 'Haunted portraits and ghosts appear!', 'Can you investigate?'],
+      progress: ['Be careful with the ghosts!', 'They\'re quite powerful!'],
+      complete: ['The mystery is solved!', 'Thank you for cleansing this place!', 'Take this ancient spell!']
+    }
+  },
+  
+  lake_monster: {
+    id: 'lake_monster',
+    name: 'The Lake Monster',
+    giver: 'Fisherman',
+    location: 'coralville_lake',
+    description: 'Defeat the legendary Lake Monster lurking in Coralville Lake.',
+    objectives: [{ type: 'defeat_enemy', enemy: 'Lake Monster', count: 0, needed: 1 }],
+    rewards: { gold: 200, exp: 100, item: 'Lake Trophy' },
+    dialogue: {
+      offer: ['There\'s a monster in this lake!', 'It\'s huge and terrifying!', 'Only a hero can defeat it!'],
+      progress: ['Be very careful...', 'The monster is powerful!'],
+      complete: ['You did it!', 'The lake is safe now!', 'You\'re a true hero!']
+    }
+  },
+  
+  camping_supplies: {
+    id: 'camping_supplies',
+    name: 'Camping Supplies',
+    giver: 'Camper',
+    location: 'coralville_lake',
+    description: 'Collect gold to help the camper buy supplies.',
+    objectives: [{ type: 'collect_gold', amount: 0, needed: 150 }],
+    rewards: { gold: 40, exp: 45, item: 'Camping Tent' },
+    dialogue: {
+      offer: ['I need to buy camping gear...', 'Can you help me with 150 gold?', 'I\'ll pay you back!'],
+      progress: ['Thanks for helping!', 'I really appreciate it!'],
+      complete: ['Perfect!', 'Now I can go camping!', 'Take this as thanks!']
+    }
+  },
+  
+  // Main Story Quest
+  corruption_source: {
+    id: 'corruption_source',
+    name: 'Source of Corruption',
+    giver: 'Professor',
+    location: 'pentacrest',
+    description: 'Reach level 10 and defeat the Corrupted Administrator to save Iowa City.',
+    objectives: [
+      { type: 'reach_level', level: 10 },
+      { type: 'defeat_enemy', enemy: 'Corrupted Administrator', count: 0, needed: 1 }
+    ],
+    rewards: { gold: 500, exp: 200, item: 'Hero\'s Medal' },
+    isMainQuest: true,
+    dialogue: {
+      offer: ['Something dark threatens Iowa City...', 'A corrupted force has taken root in the Old Capitol.', 'Only a true hero at level 10 can stop it!'],
+      progress: ['Grow stronger...', 'Iowa City needs you!', 'The corruption spreads...'],
+      complete: ['YOU DID IT!', 'Iowa City is saved!', 'You are the hero we needed!', 'Thank you, brave warrior!']
+    }
   }
 };

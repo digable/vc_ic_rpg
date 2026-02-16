@@ -112,7 +112,24 @@ export function setupInputHandlers() {
     
     if (game.state === 'title' && e.key === ' ') {
       document.getElementById('title-screen').classList.add('hidden');
-      game.state = 'explore';
+      game.state = 'dialogue';
+      // Show intro story
+      game.dialogue = {
+        type: 'story',
+        messages: [
+          'Welcome to Iowa City!',
+          'A dark corruption has spread across\nthe city, emanating from the historic\nOld Capitol building.',
+          'As a student hero, you must explore\nIowa City, complete quests, and\ngrow stronger.',
+          'Visit Kinnick Stadium, the Ped Mall,\nCoralville Lake, and more!',
+          'When you reach Level 10, face the\nCorrupted Administrator to save\nIowa City!',
+          'Good luck, hero!\nPress SPACE to begin your adventure!'
+        ],
+        currentIndex: 0,
+        afterDialogue: () => {
+          game.state = 'explore';
+          game.dialogue = null;
+        }
+      };
     }
   });
 
