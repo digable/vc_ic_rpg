@@ -48,23 +48,7 @@ export function drawMap() {
     }
   }
 
-  if (game.map === 'beer_caves' && game.flashlightOn) {
-    const radius = Math.min(256, 240) * 0.2;
-    const centerX = game.player.x;
-    const centerY = game.player.y;
-
-    ctx.save();
-    ctx.fillStyle = 'rgba(0, 0, 0, 1)';
-    ctx.fillRect(0, 0, 256, 240);
-    ctx.globalCompositeOperation = 'destination-out';
-
-    ctx.fillStyle = 'rgba(0, 0, 0, 1)';
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
-  }
+  // Flashlight on shows full cave map (no vignette)
   
   // Draw exit labels
   if (map.exits) {
