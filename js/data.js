@@ -93,5 +93,6 @@ export const cambusRoutes = [
   { name: 'Main Library', map: 'library', x: 120, y: 120 },
   { name: 'Riverside Park', map: 'riverside', x: 80, y: 120 },
   { name: 'The Deadwood', map: 'deadwood', x: 96, y: 120 },
-  { name: 'Northside', map: 'northside', x: 128, y: 96 }
+  { name: 'Northside', map: 'northside', x: 128, y: 96 },
+  { name: 'Beer Caves', map: 'beer_caves', x: 128, y: 96 }
 ];
