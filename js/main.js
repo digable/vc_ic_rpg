@@ -4,8 +4,8 @@
 import { COLORS, CONFIG } from './constants.js';
 import { game } from './game-state.js';
 import { setupInputHandlers, handleInput } from './input.js';
-import { setupCanvas, ctx } from './rendering.js';
 import { 
+  setupCanvas,
   drawMap, 
   drawPlayer, 
   drawNPCs, 
@@ -19,13 +19,13 @@ import {
   drawCambus, 
   drawFoodCart,
   drawGameOver 
-} from './rendering.js';
+} from './rendering/index.js';
 
 console.log('Iowa City Quest - Modular version loading...');
 console.log('All modules imported successfully!');
 
 // Setup
-const { canvas } = setupCanvas();
+const { canvas, ctx } = setupCanvas();
 setupInputHandlers();
 
 // Game loop
@@ -79,37 +79,37 @@ function gameLoop() {
   
   // Render based on state
   if (game.state === 'explore' || game.state === 'dialogue') {
-    drawMap(ctx);
-    drawPlayer(ctx);
-    drawNPCs(ctx);
-    drawHUD(ctx);
+    drawMap();
+    drawPlayer();
+    drawNPCs();
+    drawHUD();
     
     if (game.dialogue) {
-      drawDialogue(ctx);
+      drawDialogue();
     }
     
     if (game.menuOpen) {
-      drawMenu(ctx);
+      drawMenu();
     }
   } else if (game.state === 'battle') {
-    drawBattle(ctx);
+    drawBattle();
   } else if (game.state === 'menu') {
-    drawMap(ctx);
-    drawPlayer(ctx);
-    drawNPCs(ctx);
-    drawMenu(ctx);
+    drawMap();
+    drawPlayer();
+    drawNPCs();
+    drawMenu();
   } else if (game.state === 'shop') {
-    drawShop(ctx);
+    drawShop();
   } else if (game.state === 'magic_trainer') {
-    drawMagicTrainer(ctx);
+    drawMagicTrainer();
   } else if (game.state === 'yoga') {
-    drawYoga(ctx);
+    drawYoga();
   } else if (game.state === 'cambus') {
-    drawCambus(ctx);
+    drawCambus();
   } else if (game.state === 'food_cart') {
-    drawFoodCart(ctx);
+    drawFoodCart();
   } else if (game.state === 'gameOver') {
-    drawGameOver(ctx);
+    drawGameOver();
   }
   
   // Animation frame
