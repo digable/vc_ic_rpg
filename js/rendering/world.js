@@ -135,6 +135,9 @@ export function drawPlayer() {
 export function drawNPCs() {
   const map = maps[game.map];
   for (let npc of map.npcs) {
+    if (npc.type === 'boss' && game.caveSovereignDefeated) {
+      continue;
+    }
     if (npc.isSign) {
       // Draw bus stop sign
       // Post
@@ -518,6 +521,47 @@ export function drawNPC(npc) {
     ctx.fillStyle = '#1a1a4e';
     ctx.fillRect(x - 5, y + 6, 4, 6);
     ctx.fillRect(x + 1, y + 6, 4, 6);
+  } else if (npc.name === 'Cave Sovereign') {
+    // Cave Sovereign - imposing boss sprite
+    const pulse = Math.sin(game.animFrame / 8) * 2;
+    ctx.strokeStyle = 'rgba(128, 0, 128, 0.7)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y + 2, 18 + pulse, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(64, 0, 96, 0.4)';
+    ctx.beginPath();
+    ctx.arc(x, y + 2, 24 + pulse * 1.5, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = '#2b2230';
+    ctx.fillRect(x - 14, y - 14, 28, 24);
+    ctx.fillStyle = COLORS.darkGray;
+    ctx.fillRect(x - 10, y - 22, 20, 8);
+
+    // Horns
+    ctx.fillStyle = COLORS.darkGray;
+    ctx.beginPath();
+    ctx.moveTo(x - 10, y - 18);
+    ctx.lineTo(x - 18, y - 28);
+    ctx.lineTo(x - 6, y - 24);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(x + 10, y - 18);
+    ctx.lineTo(x + 18, y - 28);
+    ctx.lineTo(x + 6, y - 24);
+    ctx.closePath();
+    ctx.fill();
+
+    // Face
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 8, y - 8, 16, 8);
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x - 4, y - 8, 2, 2);
+    ctx.fillRect(x + 2, y - 8, 2, 2);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 6, y - 2, 12, 2);
   } else {
     // Default NPC if none of the above
     ctx.fillStyle = COLORS.green;

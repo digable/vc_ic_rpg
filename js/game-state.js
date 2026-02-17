@@ -50,6 +50,8 @@ export const game = {
   itemMenuSelection: 0,
   activeBuff: null, // { type: 'attack'/'defense'/'magic', amount: 5, turnsLeft: 3 }
   flashlightOn: false,
+  caveSovereignDefeated: false,
+  caveSovereignIntroSeen: false,
   quests: [], // Active and completed quests
   textBox: null,
   levelUpDialog: null, // Stores level up info when level up occurs
@@ -106,6 +108,8 @@ export function resetGameState() {
   game.itemMenuSelection = 0;
   game.activeBuff = null;
   game.flashlightOn = false;
+  game.caveSovereignDefeated = false;
+  game.caveSovereignIntroSeen = false;
   game.quests = [];
   game.textBox = null;
   game.levelUpDialog = null;

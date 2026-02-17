@@ -1,6 +1,6 @@
 // Input Handling Module
 import { game, resetGameState } from './game-state.js';
-import { CONFIG, isMobile } from './constants.js';
+import { CONFIG, isMobile, CAVE_MAPS } from './constants.js';
 import { cambusRoutes, consumableItems, shopItems, magicTraining, yogaTechniques } from './data.js';
 import { 
   openShop, 
@@ -14,7 +14,7 @@ import {
   handleCambusTravel,
   healPlayer
 } from './interactions.js';
-import { advanceDialogue } from './dialogue.js';
+import { advanceDialogue, startDialogue } from './dialogue.js';
 import { executeBattleAction, startBattle, executeSpell, useItemFromMenu } from './battle.js';
 import { checkNPCInteraction, getNearbyNPC, updateQuestProgress } from './quests-logic.js';
 import { checkMapTransition, checkCollision, openFoodCart } from './world.js';
@@ -300,7 +300,8 @@ export function handleInput() {
         updateQuestProgress('visit_location', game.map);
         
         // Random encounters
-        if (game.enemyEncounterSteps > 10 && Math.random() < 0.15) {
+        const caveEncountersDisabled = game.caveSovereignDefeated && CAVE_MAPS.includes(game.map);
+        if (!caveEncountersDisabled && game.enemyEncounterSteps > 10 && Math.random() < 0.15) {
           startBattle();
           game.enemyEncounterSteps = 0;
         }
@@ -323,6 +324,21 @@ export function handleInput() {
             openCambus();
           } else if (npc.type === 'food_cart') {
             openFoodCart(npc.name);
+          } else if (npc.type === 'boss' && !game.caveSovereignDefeated) {
+            if (!game.caveSovereignIntroSeen) {
+              startDialogue([
+                'Sovereign: You dare step into my chamber?'
+              , 'You: Your reign ends here, Sovereign.'
+              ]);
+              game.dialogue.afterDialogue = () => {
+                game.caveSovereignIntroSeen = true;
+                game.state = 'explore';
+                startBattle('Cave Sovereign');
+              };
+              game.state = 'dialogue';
+            } else {
+              startBattle('Cave Sovereign');
+            }
           }
         }
         lastKeyTime = now;

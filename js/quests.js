@@ -189,6 +189,41 @@ const questDatabase = {
       complete: ['You actually did it!', 'You are truly a legendary warrior!', 'Take this honor!']
     }
   },
+
+  depths_recon: {
+    id: 'depths_recon',
+    name: 'Depths Recon',
+    giver: 'Deep Delver',
+    location: 'beer_caves_depths_2',
+    description: 'Defeat the guardians of Depths II and bring back proof of the route.',
+    objectives: [
+      { type: 'defeat_enemy', enemy: 'Crystal Warden', count: 0, needed: 2 },
+      { type: 'defeat_enemy', enemy: 'Tunnel Brute', count: 0, needed: 1 }
+    ],
+    rewards: { gold: 140, exp: 70, item: 'Crystal Infusion' },
+    dialogue: {
+      offer: ['The deeper tunnels are unstable.', 'Defeat 2 Crystal Wardens and 1 Tunnel Brute.', 'Return when the path is clear.'],
+      progress: ['Keep your light steady.', 'The wardens still roam.'],
+      complete: ['You made it back!', 'This will help chart the tunnels.', 'Take this infusion.']
+    }
+  },
+
+  sovereign_silence: {
+    id: 'sovereign_silence',
+    name: 'Silence the Sovereign',
+    giver: 'Sealed Hermit',
+    location: 'beer_caves_depths_3',
+    description: 'Defeat the Cave Sovereign that rules the deepest chamber.',
+    objectives: [
+      { type: 'defeat_enemy', enemy: 'Cave Sovereign', count: 0, needed: 1 }
+    ],
+    rewards: { gold: 220, exp: 110, item: 'Sovereign Scale' },
+    dialogue: {
+      offer: ['The Sovereign stirs beneath the stone.', 'End its reign before it wakes fully.', 'Return with the echo of silence.'],
+      progress: ['The chamber still trembles.', 'The Sovereign has not fallen.'],
+      complete: ['The caves are quiet again.', 'You have my gratitude.', 'Accept this scale.']
+    }
+  },
   
   // New Story-Driven Quests
   hawkeye_spirit: {

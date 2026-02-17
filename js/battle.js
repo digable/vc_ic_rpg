@@ -5,10 +5,10 @@ import { CAVE_MAPS } from './constants.js';
 import { spellData, consumableItems, caveLootTables, caveBossLootTables } from './data.js';
 import { maps } from './maps.js';
 import { startDialogue } from './dialogue.js';
-import { updateQuestProgress } from './quests-logic.js';
+import { updateQuestProgress, completeCaveDefeatQuests } from './quests-logic.js';
 import { addExperience } from './leveling.js';
 
-export function startBattle() {
+export function startBattle(enemyName) {
   game.state = 'battle';
   
   // Determine which enemies can appear based on location
@@ -17,19 +17,19 @@ export function startBattle() {
   let enemy;
   
   // Beer Caves has unique enemies
-  if (CAVE_MAPS.includes(game.map)) {
-    const mapEnemies = enemies.filter(e => e.location === game.map);
-    const bossEnemies = mapEnemies.filter(e => e.isBoss);
-    const normalEnemies = mapEnemies.filter(e => !e.isBoss);
-    const beerCavesEnemies = enemies.filter(e => e.location === 'beer_caves');
-    const cavePool = normalEnemies.length > 0 ? normalEnemies : beerCavesEnemies;
-
-    if (game.map === 'beer_caves_depths_3' && bossEnemies.length > 0 && Math.random() < 0.12) {
-      enemy = JSON.parse(JSON.stringify(bossEnemies[Math.floor(Math.random() * bossEnemies.length)]));
-    } else {
-      const enemyIndex = Math.min(Math.floor(game.player.level / 2), cavePool.length - 1);
-      enemy = JSON.parse(JSON.stringify(cavePool[enemyIndex]));
+  if (enemyName) {
+    const matched = enemies.find(e => e.name === enemyName);
+    if (matched) {
+      enemy = JSON.parse(JSON.stringify(matched));
     }
+  }
+
+  if (!enemy && CAVE_MAPS.includes(game.map)) {
+    const mapEnemies = enemies.filter(e => e.location === game.map && !e.isBoss);
+    const beerCavesEnemies = enemies.filter(e => e.location === 'beer_caves');
+    const cavePool = mapEnemies.length > 0 ? mapEnemies : beerCavesEnemies;
+    const enemyIndex = Math.min(Math.floor(game.player.level / 2), cavePool.length - 1);
+    enemy = JSON.parse(JSON.stringify(cavePool[enemyIndex]));
   } else {
     const isOutdoor = map.grassWalkable; // Pentacrest and Riverside are outdoor
     
@@ -60,8 +60,21 @@ export function startBattle() {
     playerTurn: true,
     animating: false,
     defenseBoost: 0,
-    boostTurnsLeft: 0
+    boostTurnsLeft: 0,
+    sovereignMidDialogShown: false
   };
+}
+
+function maybeTriggerSovereignMidDialog() {
+  const enemy = game.battleState.enemy;
+  if (enemy.name !== 'Cave Sovereign') return false;
+  if (game.battleState.sovereignMidDialogShown) return false;
+  if (enemy.hp <= enemy.maxHp / 2 && enemy.hp > 0) {
+    game.battleState.sovereignMidDialogShown = true;
+    game.battleState.message = 'Sovereign: I will not be undone by a mortal. You: Then fall to one.';
+    return true;
+  }
+  return false;
 }
 
 export function executeBattleAction() {
@@ -88,7 +101,11 @@ export function executeBattleAction() {
           victoryBattle();
         }, 800);
       } else {
-        enemyTurn();
+        if (maybeTriggerSovereignMidDialog()) {
+          setTimeout(() => enemyTurn(), 1200);
+        } else {
+          enemyTurn();
+        }
       }
     }, 1000);
   } else if (action === 'Magic') {
@@ -158,7 +175,11 @@ export function executeSpell() {
           victoryBattle();
         }, 800);
       } else {
-        enemyTurn();
+        if (maybeTriggerSovereignMidDialog()) {
+          setTimeout(() => enemyTurn(), 1200);
+        } else {
+          enemyTurn();
+        }
       }
     }, 1000);
   } else if (spell.type === 'defense') {
@@ -365,8 +386,19 @@ export function victoryBattle() {
   // Update quest progress for enemy defeats
   updateQuestProgress('defeat_enemy', game.battleState.enemy.name);
   updateQuestProgress('collect_gold', game.player.gold);
+
+  if (game.battleState.enemy.name === 'Cave Sovereign' && !game.caveSovereignDefeated) {
+    game.caveSovereignDefeated = true;
+    completeCaveDefeatQuests();
+    game.battleState.message += ' The caves fall silent.';
+  }
   
-  game.battleState.message = `Victory! Gained ${exp} EXP and $${gold}!`;
+  const isSovereign = game.battleState.enemy.name === 'Cave Sovereign';
+  if (isSovereign) {
+    game.battleState.message = 'Sovereign: The cave... grows still. You: Rest now. Victory is ours.';
+  } else {
+    game.battleState.message = `Victory! Gained ${exp} EXP and $${gold}!`;
+  }
   
   // Add experience and handle level ups
   const levelUpMessages = addExperience(exp);
@@ -391,6 +423,10 @@ export function victoryBattle() {
   
   if (regenMessage) {
     game.battleState.message += regenMessage;
+  }
+
+  if (isSovereign) {
+    game.battleState.message += ` Victory! Gained ${exp} EXP and $${gold}!`;
   }
 
   let lootGiven = false;

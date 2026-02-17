@@ -281,7 +281,9 @@ export const maps = {
       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
       [2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2]
     ],
-    npcs: [],
+    npcs: [
+      { x: 96, y: 96, name: 'Deep Delver', hasQuest: 'depths_recon', dialogue: ['Keep your steps quiet down here.', 'The wardens guard every bend.', 'If you clear them out, I will reward you.'] }
+    ],
     name: 'Beer Caves - Depths II',
     grassWalkable: false,
     exits: [
@@ -309,7 +311,10 @@ export const maps = {
       [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
       [2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2]
     ],
-    npcs: [],
+    npcs: [
+      { x: 160, y: 128, name: 'Sealed Hermit', hasQuest: 'sovereign_silence', dialogue: ['You should not linger in this chamber.', 'The Sovereign hears every breath.', 'If you silence it, I will see you rewarded.'] },
+      { x: 128, y: 208, name: 'Cave Sovereign', type: 'boss', dialogue: ['The chamber rumbles with ancient power.'] }
+    ],
     name: 'Beer Caves - Depths III',
     grassWalkable: false,
     exits: [

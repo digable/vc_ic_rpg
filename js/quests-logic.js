@@ -4,12 +4,19 @@ import { questDatabase } from './quests.js';
 import { consumableItems } from './data.js';
 import { maps } from './maps.js';
 import { startDialogue } from './dialogue.js';
+import { CAVE_MAPS } from './constants.js';
 
 export function checkNPCInteraction() {
   const map = maps[game.map];
   for (let npc of map.npcs) {
     const dist = Math.sqrt((game.player.x - npc.x) ** 2 + (game.player.y - npc.y) ** 2);
     if (dist < 24) {
+      if (npc.type === 'boss') {
+        if (game.caveSovereignDefeated) {
+          return null;
+        }
+        return npc;
+      }
       const specialTypes = ['shop', 'healer', 'magic_trainer', 'yoga', 'cambus', 'food_cart'];
       
       // Check if NPC has a quest
@@ -174,4 +181,44 @@ export function getNearbyNPC() {
     }
   }
   return null;
+}
+
+export function completeCaveDefeatQuests() {
+  const caveQuestIds = Object.values(questDatabase)
+    .filter(quest => CAVE_MAPS.includes(quest.location))
+    .filter(quest => quest.objectives.every(obj => obj.type === 'defeat_enemy'))
+    .map(quest => quest.id);
+
+  caveQuestIds.forEach(questId => {
+    const quest = questDatabase[questId];
+    const existing = game.quests.find(q => q.id === questId);
+
+    if (existing) {
+      if (existing.status === 'completed') {
+        return;
+      }
+
+      existing.objectives = quest.objectives.map(obj => ({
+        ...obj,
+        count: obj.needed
+      }));
+
+      if (existing.status === 'active') {
+        completeQuest(questId);
+      } else {
+        existing.status = 'completed';
+      }
+      return;
+    }
+
+    game.quests.push({
+      id: questId,
+      status: 'active',
+      objectives: quest.objectives.map(obj => ({
+        ...obj,
+        count: obj.needed
+      }))
+    });
+    completeQuest(questId);
+  });
 }
