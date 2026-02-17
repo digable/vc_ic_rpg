@@ -329,16 +329,17 @@ const questDatabase = {
     name: 'Source of Corruption',
     giver: 'Professor',
     location: 'pentacrest',
-    description: 'Reach level 10 and defeat the Corrupted Administrator to save Iowa City.',
+    description: 'Clear the Beer Caves and reach level 10 to defeat the Corrupted Administrator.',
     objectives: [
+      { type: 'defeat_enemy', enemy: 'Cave Sovereign', count: 0, needed: 1 },
       { type: 'reach_level', level: 10 },
       { type: 'defeat_enemy', enemy: 'Corrupted Administrator', count: 0, needed: 1 }
     ],
     rewards: { gold: 500, exp: 200, item: 'Hero\'s Medal' },
     isMainQuest: true,
     dialogue: {
-      offer: ['Something dark threatens Iowa City...', 'A corrupted force has taken root in the Old Capitol.', 'Only a true hero at level 10 can stop it!'],
-      progress: ['Grow stronger...', 'Iowa City needs you!', 'The corruption spreads...'],
+      offer: ['Something dark threatens Iowa City...', 'A corrupted force has taken root in the Old Capitol.', 'Clear the Beer Caves, then reach level 10 to stop it!'],
+      progress: ['The caves still whisper...', 'Grow stronger...', 'The corruption spreads...'],
       complete: ['YOU DID IT!', 'Iowa City is saved!', 'You are the hero we needed!', 'Thank you, brave warrior!']
     }
   }

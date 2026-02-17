@@ -121,7 +121,7 @@ export function setupInputHandlers() {
           'A dark corruption has spread across\nthe city, emanating from the historic\nOld Capitol building.',
           'As a student hero, you must explore\nIowa City, complete quests, and\ngrow stronger.',
           'Visit Kinnick Stadium, the Ped Mall,\nthe Old Capitol, Coralville Lake,\nthe mysterious Beer Caves, and more!',
-          'When you reach Level 10, face the\nCorrupted Administrator to save\nIowa City!',
+          'Clear the Beer Caves, then reach\nLevel 10 to face the Corrupted\nAdministrator and save Iowa City!',
           'Good luck, hero!\nPress SPACE to begin your adventure!'
         ],
         currentIndex: 0,

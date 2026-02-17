@@ -8,7 +8,7 @@ A retro NES-style RPG adventure set in Iowa City! Explore campus, complete quest
 
 ## 📖 Story
 
-A dark corruption has taken root in Iowa City, emanating from the historic Old Capitol building. As a student hero, you must explore all corners of Iowa City—from the roaring crowds at Kinnick Stadium to the peaceful shores of Coralville Lake—to grow strong enough to face the Corrupted Administrator and save the city.
+A dark corruption has taken root in Iowa City, emanating from the historic Old Capitol building. As a student hero, you must explore all corners of Iowa City and clear the Beer Caves—then grow strong enough to face the Corrupted Administrator and save the city.
 
 Along the way, you'll meet colorful locals, complete quests, battle academic monsters and Iowa City creatures, and uncover the mystery behind the corruption. Will you prove yourself as the hero Iowa City needs?
 
@@ -59,7 +59,7 @@ Complete Iowa City-themed quests:
 - **The Capitol Mystery** - Investigate haunted Old Capitol
 - **The Lake Monster** - Defeat the legendary creature
 - **Camping Supplies** - Help a camper at Coralville Lake
-- **Source of Corruption** - Main story quest to save Iowa City
+- **Source of Corruption** - Main story quest to clear the Beer Caves and save Iowa City
 
 ### 🍕 Unique Food Vendors
 28+ food items across 4 vendors with distinct mechanics:
@@ -106,20 +106,20 @@ Complete Iowa City-themed quests:
 vc_ic_rpg/
 ├── index.html              # Main HTML - Canvas & mobile controls
 ├── game.css                # Pixel-perfect NES-style graphics
-├── DEPLOYMENT.md           # Modularization documentation
 ├── LICENSE                 # MIT License
 ├── README.md               # This file
 ├── .gitignore              # Git ignore rules
-└── js/                     # Modular JavaScript (~4000 lines total)
-    ├── main.js             # Game loop & rendering pipeline (92 lines)
-    ├── game-state.js       # Global game state & initialization (48 lines)
+├── test.js                 # Browser console test helpers
+└── js/                     # Modular JavaScript
+    ├── main.js             # Game loop & rendering pipeline
+    ├── game-state.js       # Global game state & initialization
     ├── constants.js        # Game configuration & colors
-    ├── data.js             # Items, spells, shops, routes (~150 lines)
-    ├── quests.js           # Quest database with 8 side quests (~160 lines)
-    ├── quests-logic.js     # Quest system & NPC interactions (170 lines)
-    ├── maps.js             # Map layouts & NPC positions (350 lines)
+    ├── data.js             # Items, spells, shops, routes
+    ├── quests.js           # Quest database
+    ├── quests-logic.js     # Quest system & NPC interactions
+    ├── maps.js             # Map layouts & NPC positions
     ├── enemies.js          # Enemy definitions & encounters
-    ├── battle.js           # Combat system & spell execution (200+ lines)
+    ├── battle.js           # Combat system & spell execution
     ├── rendering/          # Modular rendering system
     │   ├── index.js         # Rendering exports & setup
     │   ├── utils.js         # Shared rendering helpers
@@ -128,8 +128,8 @@ vc_ic_rpg/
     │   ├── battle.js        # Battle rendering
     │   ├── vendors.js       # Vendor screens rendering
     │   └── gamestate.js     # Game state screens
-    ├── input.js            # Keyboard/touch input handling (426 lines)
-    ├── interactions.js     # NPC & vendor interactions (226 lines)
+    ├── input.js            # Keyboard/touch input handling
+    ├── interactions.js     # NPC & vendor interactions
     ├── dialogue.js         # Dialogue system with message flow
     ├── world.js            # World mechanics (collisions, fast travel)
     └── leveling.js         # NES FF-style leveling (50 levels, class growth)
@@ -170,10 +170,10 @@ vc_ic_rpg/
 - Rewards upon completion
 
 ### World Design
-- 6 interconnected locations
-- 12 unique NPCs with pixel art sprites
-- Random enemy encounters
-- Location-specific enemies (Raccoons in park)
+- 11+ interconnected locations including Beer Caves Depths I-III
+- Unique NPCs and quest hubs across surface zones and cave depths
+- Random encounters (caves fall silent after the Cave Sovereign is defeated)
+- Location-specific enemies and bosses (Cave Sovereign, Lake Monster, Corrupted Administrator)
 
 ## � Character Classes & Leveling
 
@@ -214,16 +214,17 @@ All equipment, training, and items affect 6 core statistics:
 2. **Choose Your Class** - Each class has different stat growth patterns
 3. **Complete Quests** - Great EXP and gold rewards
 4. **Buy Food** - Stat buffs help in tough battles (check vendor pagination)
-5. **Use Cambus** - Fast travel between 11 locations
-6. **Learn Magic** - Visit the Library to train in spells (Intellect-based)
-7. **Try Yoga** - Riverside park offers defensive skills for any class
-8. **Stock Items** - Buy consumables before big fights
-9. **Explore All Vendors** - Each has unique items and effects
-10. **Watch for Strong Levels** - They provide bonus HP growth
-11. **Visit New Locations** - Kinnick Stadium, Ped Mall, Old Capitol, and Coralville Lake
-12. **Main Quest** - Reach level 10 to face the final boss and save Iowa City
-13. **Talk to Everyone** - NPCs offer valuable quests and rewards
-14. **Boss Preparation** - Stock up on healing items before facing the Lake Monster or Corrupted Administrator
+5. **Use Cambus** - Fast travel between surface locations (cave depths are on foot)
+6. **Bring the Flashlight** - It reveals the Beer Caves and their depths
+7. **Learn Magic** - Visit the Library to train in spells (Intellect-based)
+8. **Try Yoga** - Riverside park offers defensive skills for any class
+9. **Stock Items** - Buy consumables before big fights
+10. **Explore All Vendors** - Each has unique items and effects
+11. **Watch for Strong Levels** - They provide bonus HP growth
+12. **Visit New Locations** - Kinnick Stadium, Ped Mall, Old Capitol, and Coralville Lake
+13. **Main Quest** - Clear the Beer Caves, reach level 10, and face the final boss
+14. **Talk to Everyone** - NPCs offer valuable quests and rewards
+15. **Boss Preparation** - Stock up on healing items before facing the Cave Sovereign, Lake Monster, or Corrupted Administrator
 
 ## 📝 Development
 
