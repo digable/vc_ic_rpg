@@ -181,6 +181,52 @@ function testMapTileIntegrity() {
 }
 
 /**
+ * Test: Verify NPCs do not overlap Cambus signs
+ * Checks that no non-sign NPC shares a tile with a Cambus sign
+ */
+function testCambusNpcCollisions() {
+  const { maps } = window.gameModules || {};
+  
+  if (!maps) {
+    console.error('✗ Cannot access game modules. Make sure the game has loaded.');
+    return false;
+  }
+
+  console.log('\n=== Testing NPC vs Cambus Sign Collisions ===');
+  let passed = 0;
+  let failed = 0;
+
+  Object.entries(maps).forEach(([mapName, map]) => {
+    const signs = map.npcs.filter(npc => npc.isSign && npc.type === 'cambus');
+    const npcs = map.npcs.filter(npc => !npc.isSign);
+
+    signs.forEach(sign => {
+      const signTileX = Math.floor(sign.x / 16);
+      const signTileY = Math.floor(sign.y / 16);
+
+      npcs.forEach(npc => {
+        const npcTileX = Math.floor(npc.x / 16);
+        const npcTileY = Math.floor(npc.y / 16);
+        if (npcTileX === signTileX && npcTileY === signTileY) {
+          console.error(
+            `✗ ${mapName}: NPC "${npc.name}" overlaps Cambus sign at tile (${signTileX}, ${signTileY})`
+          );
+          failed++;
+        }
+      });
+    });
+  });
+
+  if (failed === 0) {
+    console.log('✓ No NPCs overlap Cambus signs');
+    passed++;
+  }
+
+  console.log(`\nResults: ${passed} passed, ${failed} failed`);
+  return failed === 0;
+}
+
+/**
  * Helper: Check collision at specific location on a specific map
  * Simulates the checkCollision function from world.js
  */
@@ -223,7 +269,8 @@ function runAllTests() {
     routesExist: testCambusRoutesExist(),
     spawnValid: testSpawnCoordinatesValid(),
     movementOk: testMovementFromSpawn(),
-    tilesIntegrity: testMapTileIntegrity()
+    tilesIntegrity: testMapTileIntegrity(),
+    cambusNpcCollisions: testCambusNpcCollisions()
   };
 
   console.log('\n╔════════════════════════════════════════════════════════════════╗');
@@ -233,6 +280,7 @@ function runAllTests() {
   console.log(`Spawn Valid:         ${results.spawnValid ? '✓ PASS' : '✗ FAIL'}`);
   console.log(`Movement OK:         ${results.movementOk ? '✓ PASS' : '✗ FAIL'}`);
   console.log(`Tiles Integrity:     ${results.tilesIntegrity ? '✓ PASS' : '✗ FAIL'}`);
+  console.log(`Cambus NPC Collide:  ${results.cambusNpcCollisions ? '✓ PASS' : '✗ FAIL'}`);
 
   const allPassed = Object.values(results).every(r => r);
   console.log(`\nOVERALL: ${allPassed ? '✓✓✓ ALL TESTS PASSED ✓✓✓' : '✗✗✗ SOME TESTS FAILED ✗✗✗'}`);

@@ -124,7 +124,7 @@ export const maps = {
     npcs: [
       { x: 64, y: 80, name: 'Jogger', hasQuest: 'river_cleanup', dialogue: ['Nice day for a run!', 'The Iowa River is beautiful.'] },
       { x: 128, y: 120, name: 'Artist', hasQuest: 'inspiration_quest', dialogue: ['I come here for inspiration.', 'The riverside is peaceful.'] },
-      { x: 48, y: 120, name: 'Yoga Instructor', type: 'yoga', dialogue: ['Breathe in...', 'Learn peace and defense.'] },
+      { x: 80, y: 144, name: 'Yoga Instructor', type: 'yoga', dialogue: ['Breathe in...', 'Learn peace and defense.'] },
       { x: 32, y: 112, name: 'Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] },
       { x: 96, y: 80, name: 'Food Cart Vendor', type: 'food_cart', dialogue: ['Park snacks!', 'Healthy eats!'] }
     ],
