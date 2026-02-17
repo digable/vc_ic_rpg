@@ -1,5 +1,5 @@
 // Interaction Handlers Module
-import { game } from './game-state.js';
+import { game, addConsumable } from './game-state.js';
 import { shopItems, magicTraining, yogaTechniques, consumableItems, cambusRoutes } from './data.js';
 import { CAVE_MAPS } from './constants.js';
 import { startDialogue } from './dialogue.js';
@@ -260,7 +260,7 @@ export function handleFoodCartPurchase() {
   const item = vendorItems[actualIdx];
   if (game.player.gold >= item.price) {
     game.player.gold -= item.price;
-    game.consumables.push(item);
+    addConsumable(item);
     
     // Update quest progress for vendor purchases
     updateQuestProgress('buy_from_vendor', game.currentVendor);

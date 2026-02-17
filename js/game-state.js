@@ -58,6 +58,37 @@ export const game = {
   animFrame: 0
 };
 
+// Helper functions for consolidated inventory management
+export function addConsumable(item) {
+  // Check if item already exists in inventory
+  const existingItem = game.consumables.find(c => c.name === item.name);
+  
+  if (existingItem) {
+    // Item exists, increment count
+    if (!existingItem.count) {
+      existingItem.count = 1; // Initialize count if it doesn't exist
+    }
+    existingItem.count++;
+  } else {
+    // New item, add with count of 1
+    game.consumables.push({ ...item, count: 1 });
+  }
+}
+
+export function removeConsumable(index) {
+  if (index < 0 || index >= game.consumables.length) return;
+  
+  const item = game.consumables[index];
+  
+  // Decrement count
+  if (item.count && item.count > 1) {
+    item.count--;
+  } else {
+    // Remove item entirely if count reaches 0 or no count
+    game.consumables.splice(index, 1);
+  }
+}
+
 export function resetGameState() {
   game.state = 'title';
   game.player = {

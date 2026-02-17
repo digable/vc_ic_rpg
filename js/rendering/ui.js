@@ -282,7 +282,8 @@ export function drawMenu() {
         }
         
         ctx.fillStyle = COLORS.white;
-        ctx.fillText(item.name, 45, y);
+        const countText = item.count && item.count > 1 ? ` (x${item.count})` : '';
+        ctx.fillText(item.name + countText, 45, y);
         
         ctx.fillStyle = COLORS.gray;
         ctx.font = '5px "Press Start 2P"';

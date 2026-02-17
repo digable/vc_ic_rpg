@@ -1,5 +1,5 @@
 // Battle System Module
-import { game } from './game-state.js';
+import { game, removeConsumable, addConsumable } from './game-state.js';
 import { enemies } from './enemies.js';
 import { CAVE_MAPS } from './constants.js';
 import { spellData, consumableItems, caveLootTables, caveBossLootTables } from './data.js';
@@ -214,7 +214,7 @@ export function useItemInBattle() {
   
   // Remove item from inventory unless it's a permanent item
   if (item.effect !== 'flashlight') {
-    game.consumables.splice(game.battleState.selectedItem, 1);
+    removeConsumable(game.battleState.selectedItem);
   }
   
   setTimeout(() => {
@@ -231,7 +231,7 @@ export function useItemFromMenu() {
   
   // Remove item from inventory unless it's a permanent item
   if (item.effect !== 'flashlight') {
-    game.consumables.splice(game.itemMenuSelection, 1);
+    removeConsumable(game.itemMenuSelection);
   }
   
   // Adjust selection if needed
@@ -435,7 +435,7 @@ export function victoryBattle() {
     const lootName = bossLootTable.items[Math.floor(Math.random() * bossLootTable.items.length)];
     const lootItem = consumableItems.find(item => item.name === lootName);
     if (lootItem) {
-      game.consumables.push(lootItem);
+      addConsumable(lootItem);
       game.battleState.message += ` Loot: ${lootItem.name}!`;
       lootGiven = true;
     }
@@ -447,7 +447,7 @@ export function victoryBattle() {
       const lootName = lootTable.items[Math.floor(Math.random() * lootTable.items.length)];
       const lootItem = consumableItems.find(item => item.name === lootName);
       if (lootItem) {
-        game.consumables.push(lootItem);
+        addConsumable(lootItem);
         game.battleState.message += ` Loot: ${lootItem.name}!`;
       }
     }

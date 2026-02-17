@@ -1,5 +1,5 @@
 // Quest Management & NPC Module
-import { game } from './game-state.js';
+import { game, addConsumable } from './game-state.js';
 import { questDatabase } from './quests.js';
 import { consumableItems } from './data.js';
 import { maps } from './maps.js';
@@ -120,7 +120,7 @@ export function completeQuest(questId) {
   if (quest.rewards.item) {
     const item = consumableItems.find(i => i.name === quest.rewards.item);
     if (item) {
-      game.consumables.push(item);
+      addConsumable(item);
       rewardMessages.push(`Received ${quest.rewards.item}!`);
     }
   }

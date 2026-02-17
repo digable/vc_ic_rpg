@@ -94,7 +94,8 @@ export function drawBattle() {
       if (i === game.battleState.selectedItem) {
         ctx.fillText('>', 20, y);
       }
-      ctx.fillText(item.name, 35, y);
+      const countText = item.count && item.count > 1 ? ` (x${item.count})` : '';
+      ctx.fillText(item.name + countText, 35, y);
     });
     
     // Back option
