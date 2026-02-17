@@ -15,6 +15,7 @@ export function openMagicTrainer() {
   game.state = 'magic_trainer';
   game.magicTrainerOpen = true;
   game.magicTrainerSelection = 0;
+  game.magicTrainerPage = 0;
 }
 
 export function openYoga() {
@@ -92,14 +93,21 @@ export function handleShopPurchase() {
 }
 
 export function handleMagicTraining() {
-  if (game.magicTrainerSelection === magicTraining.length) {
+  const itemsPerPage = 5;
+  const startIdx = game.magicTrainerPage * itemsPerPage;
+  const pageItems = magicTraining.slice(startIdx, startIdx + itemsPerPage);
+
+  if (game.magicTrainerSelection === pageItems.length) {
     // Exit selected
     game.state = 'explore';
     game.magicTrainerOpen = false;
+    game.magicTrainerPage = 0;
+    game.magicTrainerSelection = 0;
     return;
   }
-  
-  const training = magicTraining[game.magicTrainerSelection];
+
+  const actualIdx = startIdx + game.magicTrainerSelection;
+  const training = magicTraining[actualIdx];
   
   // Check if already learned this spell
   if (training.spell && game.spells.includes(training.spell)) {

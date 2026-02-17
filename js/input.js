@@ -479,14 +479,34 @@ export function handleInput() {
       lastKeyTime = now;
     }
   } else if (game.state === 'magic_trainer') {
+    const itemsPerPage = 5;
+    const totalPages = Math.ceil(magicTraining.length / itemsPerPage);
+    const startIdx = game.magicTrainerPage * itemsPerPage;
+    const pageItems = magicTraining.slice(startIdx, startIdx + itemsPerPage);
+
     if (keys['ArrowUp']) {
       game.magicTrainerSelection = Math.max(0, game.magicTrainerSelection - 1);
       lastKeyTime = now;
     }
     if (keys['ArrowDown']) {
-      game.magicTrainerSelection = Math.min(magicTraining.length, game.magicTrainerSelection + 1);
+      game.magicTrainerSelection = Math.min(pageItems.length, game.magicTrainerSelection + 1);
       lastKeyTime = now;
     }
+    if (keys['ArrowLeft']) {
+      if (game.magicTrainerPage > 0) {
+        game.magicTrainerPage--;
+        game.magicTrainerSelection = 0;
+        lastKeyTime = now;
+      }
+    }
+    if (keys['ArrowRight']) {
+      if (game.magicTrainerPage < totalPages - 1) {
+        game.magicTrainerPage++;
+        game.magicTrainerSelection = 0;
+        lastKeyTime = now;
+      }
+    }
+
     if (keys[' ']) {
       if (now - lastKeyTime > keyDelay) {
         handleMagicTraining();
@@ -496,6 +516,8 @@ export function handleInput() {
     if (keys['Escape']) {
       game.state = 'explore';
       game.magicTrainerOpen = false;
+        game.magicTrainerPage = 0;
+        game.magicTrainerSelection = 0;
       lastKeyTime = now;
     }
   } else if (game.state === 'yoga') {

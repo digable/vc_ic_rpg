@@ -73,6 +73,12 @@ export function drawMagicTrainer() {
   
   if (!game.magicTrainerOpen) return;
   
+  const itemsPerPage = 5;
+  const startIdx = game.magicTrainerPage * itemsPerPage;
+  const endIdx = startIdx + itemsPerPage;
+  const pageItems = magicTraining.slice(startIdx, endIdx);
+  const totalPages = Math.ceil(magicTraining.length / itemsPerPage);
+  
   // Background
   ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
   ctx.fillRect(15, 25, 226, 190);
@@ -89,8 +95,13 @@ export function drawMagicTrainer() {
   ctx.fillText(`Gold: $${game.player.gold}`, 25, 55);
   ctx.fillText(`Magic: ${game.player.magic}`, 140, 55);
   
+  // Page indicator
+  ctx.fillStyle = COLORS.gray;
+  ctx.font = '5px "Press Start 2P"';
+  ctx.fillText(`Page ${game.magicTrainerPage + 1}/${totalPages}`, 150, 66);
+  
   // Training options
-  magicTraining.forEach((training, i) => {
+  pageItems.forEach((training, i) => {
     const y = 75 + i * 20;
     const alreadyLearned = training.spell && game.spells.includes(training.spell);
     
@@ -123,16 +134,20 @@ export function drawMagicTrainer() {
   });
   
   // Exit option
-  const exitY = 75 + magicTraining.length * 20;
-  ctx.fillStyle = game.magicTrainerSelection === magicTraining.length ? COLORS.purple : COLORS.white;
-  if (game.magicTrainerSelection === magicTraining.length) {
+  const exitY = 75 + pageItems.length * 20;
+  ctx.fillStyle = game.magicTrainerSelection === pageItems.length ? COLORS.purple : COLORS.white;
+  if (game.magicTrainerSelection === pageItems.length) {
     ctx.fillText('>', 25, exitY);
   }
   ctx.fillText('Exit Training', 40, exitY);
   
   ctx.fillStyle = COLORS.gray;
   ctx.font = '5px "Press Start 2P"';
-  ctx.fillText(isMobile ? 'A: Train | M: Exit' : 'SPACE: Train | ESC: Exit', 45, 205);
+  if (totalPages > 1) {
+    ctx.fillText(isMobile ? 'A: Train | M: Exit | </>: Pages' : 'SPACE: Train | ESC: Exit | L/R: Pages', 30, 205);
+  } else {
+    ctx.fillText(isMobile ? 'A: Train | M: Exit' : 'SPACE: Train | ESC: Exit', 45, 205);
+  }
 }
 
 export function drawYoga() {
