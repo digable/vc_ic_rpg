@@ -15,7 +15,7 @@ import {
   healPlayer
 } from './interactions.js';
 import { advanceDialogue, startDialogue } from './dialogue.js';
-import { executeBattleAction, startBattle, executeSpell, useItemFromMenu } from './battle.js';
+import { executeBattleAction, startBattle, executeSpell, useItemFromMenu, useItemInBattle } from './battle.js';
 import { checkNPCInteraction, getNearbyNPC, updateQuestProgress } from './quests-logic.js';
 import { checkMapTransition, checkCollision, openFoodCart } from './world.js';
 
@@ -203,21 +203,11 @@ export function handleInput() {
     return;
   }
   
-  // Escape key should always work to toggle menu or exit dialogs
-  if (game.state === 'explore' && keys['Escape']) {
-    if (now - lastKeyTime > keyDelay) {
-      game.menuOpen = !game.menuOpen;
-      if (game.menuOpen) {
-        game.menuSelection = 0;
-        game.menuTab = 0;
-      }
-      lastKeyTime = now;
+  // Handle dialogue (including level-up) regardless of current state
+  if (game.dialogue) {
+    if (game.state !== 'dialogue') {
+      game.state = 'dialogue';
     }
-    return;
-  }
-  
-  // Handle dialogue state - allow space/enter to advance or exit
-  if (game.state === 'dialogue') {
     if (keys[' '] || keys['Enter']) {
       if (now - lastKeyTime > keyDelay) {
         advanceDialogue();
@@ -238,19 +228,17 @@ export function handleInput() {
     }
     return; // Block all other input during dialogue
   }
-  
-  if (game.state === 'dialogue' && keys['Escape']) {
+
+  // Escape key should always work to toggle menu or exit dialogs
+  if (game.state === 'explore' && keys['Escape']) {
     if (now - lastKeyTime > keyDelay) {
-      game.dialogue = null;
-      game.levelUpDialog = null;
-      game.state = 'explore';
+      game.menuOpen = !game.menuOpen;
+      if (game.menuOpen) {
+        game.menuSelection = 0;
+        game.menuTab = 0;
+      }
       lastKeyTime = now;
     }
-    return;
-  }
-  
-  // Block all other input during dialogue
-  if (game.state === 'dialogue') {
     return;
   }
   
