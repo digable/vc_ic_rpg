@@ -1,5 +1,5 @@
 // Battle Module - Battle screen and enemy sprite rendering
-import { COLORS } from '../constants.js';
+import { COLORS, CAVE_MAPS } from '../constants.js';
 import { game } from '../game-state.js';
 import { spellData } from '../data.js';
 import { getButtonLabel, setCtx, wrapText } from './utils.js';
@@ -129,7 +129,7 @@ export function drawEnemySprite(enemy, x, y) {
   const caveMonsters = ['Bat Swarm', 'Cave Spider', 'Stone Golem', 'Glowing Mushroom', 'Crystal Elemental', 'Cave Drake'];
   const isCaveMonster = caveMonsters.includes(enemy.name);
   
-  if (isCaveMonster && !game.flashlightOn && game.map === 'beer_caves') {
+  if (isCaveMonster && !game.flashlightOn && CAVE_MAPS.includes(game.map)) {
     // Don't render cave monsters if flashlight is off in cave
     return;
   }
@@ -568,6 +568,112 @@ export function drawEnemySprite(enemy, x, y) {
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.arc(x - 12, y + 8, 10, 0, Math.PI * 0.5);
+    ctx.stroke();
+
+  } else if (enemy.name === 'Fungal Stalker') {
+    ctx.fillStyle = '#6a4b7a';
+    ctx.beginPath();
+    ctx.ellipse(x, y + 4, 12, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = COLORS.darkGray;
+    ctx.fillRect(x - 10, y - 6, 20, 10);
+    ctx.fillStyle = COLORS.lightGray;
+    ctx.fillRect(x - 6, y - 4, 12, 6);
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x - 4, y - 2, 2, 2);
+    ctx.fillRect(x + 2, y - 2, 2, 2);
+
+  } else if (enemy.name === 'Cave Leech') {
+    ctx.fillStyle = '#2f3f2f';
+    ctx.beginPath();
+    ctx.ellipse(x, y + 2, 12, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 10, y + 1, 4, 2);
+    ctx.fillRect(x + 6, y + 1, 4, 2);
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x - 2, y - 1, 4, 2);
+
+  } else if (enemy.name === 'Crystal Warden') {
+    ctx.fillStyle = '#44c8e0';
+    ctx.beginPath();
+    ctx.moveTo(x, y - 16);
+    ctx.lineTo(x + 12, y);
+    ctx.lineTo(x, y + 16);
+    ctx.lineTo(x - 12, y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = COLORS.white;
+    ctx.fillRect(x - 3, y - 3, 6, 6);
+    ctx.strokeStyle = COLORS.lightGray;
+    ctx.strokeRect(x - 8, y - 8, 16, 16);
+
+  } else if (enemy.name === 'Tunnel Brute') {
+    ctx.fillStyle = '#6b5b4b';
+    ctx.fillRect(x - 12, y - 6, 24, 24);
+    ctx.fillStyle = COLORS.darkGray;
+    ctx.fillRect(x - 8, y - 10, 16, 8);
+    ctx.fillStyle = COLORS.orange;
+    ctx.fillRect(x - 6, y - 6, 4, 4);
+    ctx.fillRect(x + 2, y - 6, 4, 4);
+    ctx.fillStyle = COLORS.darkGray;
+    ctx.fillRect(x - 16, y + 4, 4, 12);
+    ctx.fillRect(x + 12, y + 4, 4, 12);
+
+  } else if (enemy.name === 'Abyssal Drake') {
+    ctx.fillStyle = '#3a2a3f';
+    ctx.beginPath();
+    ctx.ellipse(x, y + 2, 14, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 6, y - 8, 12, 8);
+    ctx.fillStyle = COLORS.yellow;
+    ctx.fillRect(x - 4, y - 6, 2, 2);
+    ctx.fillRect(x + 2, y - 6, 2, 2);
+    ctx.fillStyle = '#3a2a3f';
+    ctx.beginPath();
+    ctx.moveTo(x - 4, y - 2);
+    ctx.lineTo(x - 16, y - 10);
+    ctx.lineTo(x - 12, y + 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(x + 4, y - 2);
+    ctx.lineTo(x + 16, y - 10);
+    ctx.lineTo(x + 12, y + 2);
+    ctx.closePath();
+    ctx.fill();
+
+  } else if (enemy.name === 'Void Mycelium') {
+    ctx.fillStyle = '#513a66';
+    ctx.beginPath();
+    ctx.ellipse(x, y - 6, 12, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = COLORS.lightGray;
+    ctx.fillRect(x - 4, y + 2, 8, 12);
+    ctx.fillStyle = COLORS.purple;
+    ctx.fillRect(x - 8, y - 10, 3, 3);
+    ctx.fillRect(x + 5, y - 10, 3, 3);
+    ctx.strokeStyle = 'rgba(80, 40, 110, 0.5)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y, 16, 0, Math.PI * 2);
+    ctx.stroke();
+
+  } else if (enemy.name === 'Cave Sovereign') {
+    ctx.fillStyle = '#2b2230';
+    ctx.fillRect(x - 14, y - 8, 28, 28);
+    ctx.fillStyle = COLORS.darkGray;
+    ctx.fillRect(x - 10, y - 14, 20, 8);
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x - 6, y - 8, 4, 4);
+    ctx.fillRect(x + 2, y - 8, 4, 4);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 4, y + 2, 8, 2);
+    ctx.strokeStyle = COLORS.purple;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y + 2, 18, 0, Math.PI * 2);
     ctx.stroke();
     
   } else {

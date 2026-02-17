@@ -44,3 +44,11 @@ export const CONFIG = {
   encounterRate: 0.02,
   encounterStepsMin: 50
 };
+
+// Maps considered part of the Beer Caves region
+export const CAVE_MAPS = [
+  'beer_caves',
+  'beer_caves_depths_1',
+  'beer_caves_depths_2',
+  'beer_caves_depths_3'
+];

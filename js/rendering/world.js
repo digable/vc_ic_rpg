@@ -1,5 +1,5 @@
 // Rendering World - Map, Player, and NPCs
-import { COLORS, tileColors } from '../constants.js';
+import { COLORS, tileColors, CAVE_MAPS } from '../constants.js';
 import { game } from '../game-state.js';
 import { maps } from '../maps.js';
 import { questDatabase } from '../quests.js';
@@ -8,7 +8,7 @@ import { ctx } from './utils.js';
 
 export function drawMap() {
   const map = maps[game.map];
-  if (game.map === 'beer_caves' && !game.flashlightOn) {
+  if (CAVE_MAPS.includes(game.map) && !game.flashlightOn) {
     ctx.fillStyle = COLORS.black;
     ctx.fillRect(0, 0, 256, 240);
     return;
@@ -17,14 +17,14 @@ export function drawMap() {
     for (let x = 0; x < map.width; x++) {
       const tile = map.tiles[y][x];
       let fillStyle = tileColors[tile];
-      if (game.map === 'beer_caves' && game.flashlightOn) {
+      if (CAVE_MAPS.includes(game.map) && game.flashlightOn) {
         if (tile === 0) fillStyle = COLORS.lightGray;
         if (tile === 6) fillStyle = COLORS.darkGray;
         if (tile === 2) fillStyle = COLORS.black;
       }
       ctx.fillStyle = fillStyle;
       ctx.fillRect(x * 16, y * 16, 16, 16);
-      if (game.map === 'beer_caves' && game.flashlightOn && (tile === 6 || tile === 2)) {
+      if (CAVE_MAPS.includes(game.map) && game.flashlightOn && (tile === 6 || tile === 2)) {
         ctx.strokeStyle = COLORS.lightGray;
         ctx.strokeRect(x * 16 + 1, y * 16 + 1, 14, 14);
       }

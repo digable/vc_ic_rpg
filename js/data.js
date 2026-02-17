@@ -89,6 +89,26 @@ export const consumableItems = [
   { name: 'Wine Selection', price: 50, effect: 'buffIntellect', amount: 7, turns: 4, description: 'Temp +7 Intellect (4 turns)', vendor: 'Bartender' },
   { name: 'Craft Beer', price: 25, effect: 'buffVitality', amount: 3, turns: 3, description: 'Temp +3 Vitality (3 turns)', vendor: 'Bartender' },
 
+  // Cave Loot (Depths I)
+  { name: 'Cave Jerky', price: 0, effect: 'healHP', amount: 35, description: 'Restores 35 HP' },
+  { name: 'Miner\'s Tea', price: 0, effect: 'healMP', amount: 25, description: 'Restores 25 MP' },
+  { name: 'Glowcap Bite', price: 0, effect: 'buffVitality', amount: 3, turns: 3, description: 'Temp +3 Vitality (3 turns)' },
+
+  // Cave Loot (Depths II)
+  { name: 'Crystal Infusion', price: 0, effect: 'healBoth', hpAmount: 40, mpAmount: 20, description: 'Restore 40 HP & 20 MP' },
+  { name: 'Golem Biscuit', price: 0, effect: 'buffDefense', amount: 4, turns: 3, description: 'Temp +4 Defense (3 turns)' },
+  { name: 'Spider Silk Wrap', price: 0, effect: 'buffAgility', amount: 4, turns: 3, description: 'Temp +4 Agility (3 turns)' },
+
+  // Cave Loot (Depths III)
+  { name: 'Drakefire Tonic', price: 0, effect: 'healBoth', hpAmount: 60, mpAmount: 30, description: 'Restore 60 HP & 30 MP' },
+  { name: 'Abyssal Draught', price: 0, effect: 'buffStrength', amount: 6, turns: 4, description: 'Temp +6 Strength (4 turns)' },
+  { name: 'Starlit Elixir', price: 0, effect: 'buffIntellect', amount: 6, turns: 4, description: 'Temp +6 Intellect (4 turns)' },
+
+  // Cave Loot (Depths III Boss)
+  { name: 'Sovereign Scale', price: 0, effect: 'buffDefense', amount: 8, turns: 5, description: 'Temp +8 Defense (5 turns)' },
+  { name: 'Voidcore Elixir', price: 0, effect: 'buffIntellect', amount: 8, turns: 5, description: 'Temp +8 Intellect (5 turns)' },
+  { name: 'Drakeheart Tonic', price: 0, effect: 'healBoth', hpAmount: 90, mpAmount: 45, description: 'Restore 90 HP & 45 MP' },
+
   // Quest Rewards
   { name: 'Flashlight', price: 0, effect: 'flashlight', description: 'Lights up dark caves. Never used up.' },
   { name: 'Hawkeye Jersey', price: 0, effect: 'buffStrength', amount: 10, turns: 5, description: 'Temp +10 Strength (5 turns)' },
@@ -97,6 +117,29 @@ export const consumableItems = [
   { name: 'Camping Tent', price: 0, effect: 'healHP', amount: 60, description: 'Restores 60 HP' },
   { name: 'Hero\'s Medal', price: 0, effect: 'heroBonus', description: 'Permanent +10 to all stats!' }
 ];
+
+// Cave loot tables per depth (deeper = better)
+export const caveLootTables = {
+  beer_caves_depths_1: {
+    chance: 0.35,
+    items: ['Cave Jerky', 'Miner\'s Tea', 'Glowcap Bite']
+  },
+  beer_caves_depths_2: {
+    chance: 0.45,
+    items: ['Crystal Infusion', 'Golem Biscuit', 'Spider Silk Wrap']
+  },
+  beer_caves_depths_3: {
+    chance: 0.6,
+    items: ['Drakefire Tonic', 'Abyssal Draught', 'Starlit Elixir']
+  }
+};
+
+export const caveBossLootTables = {
+  beer_caves_depths_3: {
+    chance: 0.5,
+    items: ['Sovereign Scale', 'Voidcore Elixir', 'Drakeheart Tonic']
+  }
+};
 
 // Cambus routes (fast travel locations)
 export const cambusRoutes = [

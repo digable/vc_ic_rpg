@@ -1,6 +1,7 @@
 // Interaction Handlers Module
 import { game } from './game-state.js';
 import { shopItems, magicTraining, yogaTechniques, consumableItems, cambusRoutes } from './data.js';
+import { CAVE_MAPS } from './constants.js';
 import { startDialogue } from './dialogue.js';
 import { updateQuestProgress } from './quests-logic.js';
 
@@ -293,7 +294,7 @@ export function handleCambusTravel() {
   game.cambusOpen = false;
   game.cambusPage = 0;
   game.cambusSelection = 0;
-  if (game.map !== 'beer_caves') {
+  if (!CAVE_MAPS.includes(game.map)) {
     game.flashlightOn = false;
   }
   game.enemyEncounterSteps = 0;

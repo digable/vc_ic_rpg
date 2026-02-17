@@ -1,6 +1,7 @@
 // World & Map Module
 import { game } from './game-state.js';
 import { maps } from './maps.js';
+import { CAVE_MAPS } from './constants.js';
 
 export function openFoodCart(vendor) {
   game.currentVendor = vendor;
@@ -19,7 +20,7 @@ export function checkMapTransition() {
       game.player.x = exit.toX;
       game.player.y = exit.toY;
       game.enemyEncounterSteps = 0;
-      if (fromMap === 'beer_caves' && game.map !== 'beer_caves') {
+      if (CAVE_MAPS.includes(fromMap) && !CAVE_MAPS.includes(game.map)) {
         game.flashlightOn = false;
       }
       return;

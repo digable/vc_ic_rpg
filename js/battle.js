@@ -1,7 +1,8 @@
 // Battle System Module
 import { game } from './game-state.js';
 import { enemies } from './enemies.js';
-import { spellData, consumableItems } from './data.js';
+import { CAVE_MAPS } from './constants.js';
+import { spellData, consumableItems, caveLootTables, caveBossLootTables } from './data.js';
 import { maps } from './maps.js';
 import { startDialogue } from './dialogue.js';
 import { updateQuestProgress } from './quests-logic.js';
@@ -16,10 +17,19 @@ export function startBattle() {
   let enemy;
   
   // Beer Caves has unique enemies
-  if (game.map === 'beer_caves') {
+  if (CAVE_MAPS.includes(game.map)) {
+    const mapEnemies = enemies.filter(e => e.location === game.map);
+    const bossEnemies = mapEnemies.filter(e => e.isBoss);
+    const normalEnemies = mapEnemies.filter(e => !e.isBoss);
     const beerCavesEnemies = enemies.filter(e => e.location === 'beer_caves');
-    const enemyIndex = Math.min(Math.floor(game.player.level / 2), beerCavesEnemies.length - 1);
-    enemy = JSON.parse(JSON.stringify(beerCavesEnemies[enemyIndex]));
+    const cavePool = normalEnemies.length > 0 ? normalEnemies : beerCavesEnemies;
+
+    if (game.map === 'beer_caves_depths_3' && bossEnemies.length > 0 && Math.random() < 0.12) {
+      enemy = JSON.parse(JSON.stringify(bossEnemies[Math.floor(Math.random() * bossEnemies.length)]));
+    } else {
+      const enemyIndex = Math.min(Math.floor(game.player.level / 2), cavePool.length - 1);
+      enemy = JSON.parse(JSON.stringify(cavePool[enemyIndex]));
+    }
   } else {
     const isOutdoor = map.grassWalkable; // Pentacrest and Riverside are outdoor
     
@@ -262,7 +272,7 @@ export function applyItemEffect(item) {
       game.battleState.message = `Used ${item.name}! Vitality +${item.amount} for ${item.turns} turns!`;
     }
   } else if (item.effect === 'flashlight') {
-    if (game.map === 'beer_caves') {
+    if (CAVE_MAPS.includes(game.map)) {
       game.flashlightOn = true;
       if (game.battleState) {
         game.battleState.message = `Used ${item.name}! The caves light up!`;
@@ -381,6 +391,30 @@ export function victoryBattle() {
   
   if (regenMessage) {
     game.battleState.message += regenMessage;
+  }
+
+  let lootGiven = false;
+  const bossLootTable = caveBossLootTables[game.map];
+  if (game.battleState.enemy.isBoss && bossLootTable && Math.random() < bossLootTable.chance) {
+    const lootName = bossLootTable.items[Math.floor(Math.random() * bossLootTable.items.length)];
+    const lootItem = consumableItems.find(item => item.name === lootName);
+    if (lootItem) {
+      game.consumables.push(lootItem);
+      game.battleState.message += ` Loot: ${lootItem.name}!`;
+      lootGiven = true;
+    }
+  }
+
+  if (!lootGiven) {
+    const lootTable = caveLootTables[game.map];
+    if (lootTable && Math.random() < lootTable.chance) {
+      const lootName = lootTable.items[Math.floor(Math.random() * lootTable.items.length)];
+      const lootItem = consumableItems.find(item => item.name === lootName);
+      if (lootItem) {
+        game.consumables.push(lootItem);
+        game.battleState.message += ` Loot: ${lootItem.name}!`;
+      }
+    }
   }
   
   setTimeout(() => {

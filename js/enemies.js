@@ -131,6 +131,87 @@ export const enemies = [
     location: 'beer_caves',
     specialAttack: { name: 'Dragon Breath', damage: 25, mpCost: 0 }
   },
+  // Beer Caves Depths I Enemies
+  {
+    name: 'Fungal Stalker',
+    hp: 32,
+    maxHp: 32,
+    attack: 9,
+    exp: 26,
+    gold: 55,
+    location: 'beer_caves_depths_1',
+    color: '#6a4b7a',
+    specialAttack: { name: 'Spore Burst', damage: 14, mpCost: 0 }
+  },
+  {
+    name: 'Cave Leech',
+    hp: 28,
+    maxHp: 28,
+    attack: 8,
+    exp: 24,
+    gold: 50,
+    location: 'beer_caves_depths_1',
+    color: '#2f3f2f',
+    specialAttack: { name: 'Siphon Bite', damage: 12, mpCost: 0, effect: 'drainMP', drainAmount: 4 }
+  },
+  // Beer Caves Depths II Enemies
+  {
+    name: 'Crystal Warden',
+    hp: 55,
+    maxHp: 55,
+    attack: 15,
+    exp: 52,
+    gold: 115,
+    location: 'beer_caves_depths_2',
+    color: '#44c8e0',
+    specialAttack: { name: 'Shard Lance', damage: 22, mpCost: 0 }
+  },
+  {
+    name: 'Tunnel Brute',
+    hp: 70,
+    maxHp: 70,
+    attack: 18,
+    exp: 60,
+    gold: 130,
+    location: 'beer_caves_depths_2',
+    color: '#6b5b4b',
+    specialAttack: { name: 'Ground Smash', damage: 26, mpCost: 0 }
+  },
+  // Beer Caves Depths III Enemies
+  {
+    name: 'Abyssal Drake',
+    hp: 85,
+    maxHp: 85,
+    attack: 22,
+    exp: 80,
+    gold: 170,
+    location: 'beer_caves_depths_3',
+    color: '#3a2a3f',
+    specialAttack: { name: 'Void Flame', damage: 32, mpCost: 0 }
+  },
+  {
+    name: 'Void Mycelium',
+    hp: 62,
+    maxHp: 62,
+    attack: 20,
+    exp: 72,
+    gold: 155,
+    location: 'beer_caves_depths_3',
+    color: '#513a66',
+    specialAttack: { name: 'Spore Nova', damage: 28, mpCost: 0 }
+  },
+  {
+    name: 'Cave Sovereign',
+    hp: 120,
+    maxHp: 120,
+    attack: 28,
+    exp: 120,
+    gold: 260,
+    location: 'beer_caves_depths_3',
+    isBoss: true,
+    color: '#2b2230',
+    specialAttack: { name: 'Royal Cataclysm', damage: 38, mpCost: 0 }
+  },
   // Stadium Enemies
   { 
     name: 'Rival Fan', 
