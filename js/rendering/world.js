@@ -83,6 +83,11 @@ export function drawMap() {
     ctx.font = '5px "Press Start 2P"';
     const exitGroupCounts = {};
     for (let exit of map.exits) {
+      const distToExit = Math.sqrt((game.player.x - exit.x) ** 2 + (game.player.y - exit.y) ** 2);
+      if (distToExit > 20) {
+        continue;
+      }
+
       const destMap = maps[exit.toMap];
       const groupKey = `${exit.direction}:${exit.y}`;
       const groupIndex = exitGroupCounts[groupKey] || 0;

@@ -34,6 +34,7 @@ export function drawHUD() {
   
   // Contextual controls at bottom
   const nearbyNPC = getNearbyNPC();
+  const cambusPromptActive = nearbyNPC && nearbyNPC.type === 'cambus';
   if (nearbyNPC) {
     ctx.fillStyle = COLORS.black;
     ctx.fillRect(0, 226, 256, 14);
@@ -58,18 +59,20 @@ export function drawHUD() {
   }
   
   // Check for nearby exits
-  const map = maps[game.map];
-  if (map.exits) {
-    for (let exit of map.exits) {
-      const dist = Math.sqrt((game.player.x - exit.x) ** 2 + (game.player.y - exit.y) ** 2);
-      if (dist < 30) {
-        ctx.fillStyle = COLORS.black;
-        ctx.fillRect(0, 226, 256, 14);
-        ctx.fillStyle = COLORS.lightGreen;
-        ctx.font = '6px "Press Start 2P"';
-        const destName = maps[exit.toMap].name;
-        ctx.fillText(`Entering: ${destName}`, 8, 235);
-        break;
+  if (!cambusPromptActive) {
+    const map = maps[game.map];
+    if (map.exits) {
+      for (let exit of map.exits) {
+        const dist = Math.sqrt((game.player.x - exit.x) ** 2 + (game.player.y - exit.y) ** 2);
+        if (dist < 30) {
+          ctx.fillStyle = COLORS.black;
+          ctx.fillRect(0, 226, 256, 14);
+          ctx.fillStyle = COLORS.lightGreen;
+          ctx.font = '6px "Press Start 2P"';
+          const destName = maps[exit.toMap].name;
+          ctx.fillText(`Entering: ${destName}`, 8, 235);
+          break;
+        }
       }
     }
   }
