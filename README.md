@@ -76,7 +76,6 @@ Complete Iowa City-themed quests:
 - **Defensive Skills** - Yoga techniques for defensive tactics
 - **Shop System** - 8 stat-boosting items with pagination
 - **Magic Training** - 5 trainers teach spells and provide stat increases
-- **Consumable Items** - 28+ food items with temporary buff effects
 - **Cambus Fast Travel** - Navigate between 11 Iowa City locations
 - **Beer Caves Maze** - Flashlight reveals the path
 - **Main Story Quest** - Epic storyline to save Iowa City from corruption
