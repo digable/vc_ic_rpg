@@ -304,7 +304,13 @@ export function applyItemEffect(item) {
         game.battleState.message = `Used ${item.name}! The caves light up!`;
       }
     } else if (game.battleState) {
-      game.battleState.message = `${item.name} doesn't help here.`;
+      game.battleState.message = `Failed to use ${item.name}! Even the bravest bulb can't outshine broad daylight.`;
+    } else {
+      startDialogue([
+        `Failed to use ${item.name}!`,
+        'Even the bravest bulb cannot outshine daylight.'
+      ]);
+      game.state = 'dialogue';
     }
   } else if (item.effect === 'angel_dodge') {
     if (game.battleState) {
@@ -312,8 +318,8 @@ export function applyItemEffect(item) {
       game.battleState.message = `Used ${item.name}! 50% dodge chance for the next 3 enemy attacks!`;
     } else {
       startDialogue([
-        `${item.name} only activates during battle.`,
-        'Use it when enemies are about to strike.'
+        `Failed to use ${item.name}!`,
+        'The Black Angel whispers: I\'m sorry but you\'re not ready for this power.'
       ]);
       game.state = 'dialogue';
     }
@@ -334,6 +340,16 @@ export function applyItemEffect(item) {
     game.player.mp += 30;
     if (game.battleState) {
       game.battleState.message = `Used ${item.name}! All stats permanently increased!`;
+    }
+  } else {
+    if (game.battleState) {
+      game.battleState.message = `Failed to use ${item.name}! It stares back at you... ominously.`;
+    } else {
+      startDialogue([
+        `Failed to use ${item.name}!`,
+        'It stares back at you... ominously.'
+      ]);
+      game.state = 'dialogue';
     }
   }
 }
