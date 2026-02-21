@@ -311,16 +311,28 @@ export function drawMenu() {
 // Helper function to get nearby NPC
 function getNearbyNPC() {
   const map = maps[game.map];
+  let nearestCambus = null;
+  let nearestCambusDist = Infinity;
+  let nearestNpc = null;
+  let nearestNpcDist = Infinity;
+
   for (let npc of map.npcs) {
-    if (npc.isSign) continue;
-    
     const dist = Math.sqrt(
       (game.player.x - npc.x) ** 2 + (game.player.y - npc.y) ** 2
     );
     
     if (dist < 25) {
-      return npc;
+      if (npc.type === 'cambus') {
+        if (dist < nearestCambusDist) {
+          nearestCambus = npc;
+          nearestCambusDist = dist;
+        }
+      } else if (dist < nearestNpcDist) {
+        nearestNpc = npc;
+        nearestNpcDist = dist;
+      }
     }
   }
-  return null;
+
+  return nearestCambus || nearestNpc;
 }
