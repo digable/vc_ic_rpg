@@ -25,12 +25,12 @@ const questDatabase = {
     description: 'The Professor needs you to visit all major campus locations for a research survey.',
     objectives: [
       { type: 'visit_location', location: 'library', visited: false },
-      { type: 'visit_location', location: 'riverside', visited: false },
+      { type: 'visit_location', location: 'city_park', visited: false },
       { type: 'visit_location', location: 'deadwood', visited: false }
     ],
     rewards: { gold: 100, exp: 50, spell: 'Shield' },
     dialogue: {
-      offer: ["I'm conducting campus research.", 'Visit the Library, Riverside, and Deadwood.', 'Report back when done!'],
+      offer: ["I'm conducting campus research.", 'Visit the Library, City Park, and Deadwood.', 'Report back when done!'],
       progress: ['Keep exploring campus!', 'Visit all three locations.'],
       complete: ['Excellent fieldwork!', 'This will help my research greatly.', 'Take this reward!']
     }
@@ -57,7 +57,7 @@ const questDatabase = {
     id: 'river_cleanup',
     name: 'River Cleanup Crew',
     giver: 'Jogger',
-    location: 'riverside',
+    location: 'city_park',
     description: 'Clear out 3 Raccoons that have been making a mess in the park.',
     objectives: [{ type: 'defeat_enemy', enemy: 'Raccoon', count: 0, needed: 3 }],
     rewards: { gold: 60, exp: 30, item: 'Green Smoothie' },
@@ -128,7 +128,7 @@ const questDatabase = {
     id: 'inspiration_quest',
     name: 'Seeking Inspiration',
     giver: 'Artist',
-    location: 'riverside',
+    location: 'city_park',
     description: 'Reach level 5 to inspire the artist with your heroic journey.',
     objectives: [{ type: 'reach_level', level: 5 }],
     rewards: { gold: 100, exp: 0, item: 'Chef Special' },

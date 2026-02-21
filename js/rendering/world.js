@@ -67,7 +67,7 @@ export function drawMap() {
       }
       
       // Draw bridge effect for road tiles in riverside that connect to water
-      if (game.map === 'riverside' && tile === 0 && y === 7 && x >= 10) {
+      if (game.map === 'city_park' && tile === 0 && y === 7 && x >= 10) {
         // Add bridge railings
         ctx.fillStyle = COLORS.brown;
         ctx.fillRect(x * 16, y * 16, 16, 2); // top railing

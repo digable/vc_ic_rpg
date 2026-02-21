@@ -45,7 +45,7 @@ export function startBattle(enemyName) {
       });
       
       // Special: 20% chance for Raccoon in Riverside Park
-      if (game.map === 'riverside' && Math.random() < 0.2) {
+      if (game.map === 'city_park' && Math.random() < 0.2) {
         enemy = JSON.parse(JSON.stringify(enemies.find(e => e.name === 'Raccoon')));
       } else {
         const enemyIndex = Math.min(Math.floor(game.player.level / 2), availableEnemies.length - 1);

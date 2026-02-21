@@ -71,7 +71,7 @@ export const maps = {
     exits: [
       { x: 120, y: 16, toMap: 'pentacrest', toX: 120, toY: 208, direction: 'up' },
       { x: 128, y: 16, toMap: 'coralville_lake', toX: 128, toY: 208, direction: 'up' },
-      { x: 16, y: 120, toMap: 'riverside', toX: 224, toY: 120, direction: 'left' },
+      { x: 16, y: 120, toMap: 'city_park', toX: 224, toY: 120, direction: 'left' },
       { x: 224, y: 96, toMap: 'deadwood', toX: 32, toY: 112, direction: 'right' },
       { x: 128, y: 224, toMap: 'northside', toX: 128, toY: 32, direction: 'down' }
     ]
@@ -141,7 +141,7 @@ export const maps = {
       { x: 16, y: 120, toMap: 'pentacrest', toX: 224, toY: 120, direction: 'left' }
     ]
   },
-  riverside: {
+  city_park: {
     width: 16,
     height: 15,
     tiles: [
