@@ -80,6 +80,38 @@ export function drawMap() {
   
   // Draw exit labels
   if (map.exits) {
+    // Always-visible directional markers near transition points
+    ctx.font = '7px "Press Start 2P"';
+    for (let exit of map.exits) {
+      let markerX = exit.x;
+      let markerY = exit.y;
+      let marker = '';
+
+      if (exit.direction === 'up') {
+        marker = '^';
+        markerY = exit.y + 6;
+      } else if (exit.direction === 'down') {
+        marker = 'v';
+        markerY = exit.y - 6;
+      } else if (exit.direction === 'left') {
+        marker = '<';
+        markerX = exit.x + 6;
+      } else if (exit.direction === 'right') {
+        marker = '>';
+        markerX = exit.x - 6;
+      }
+
+      if (marker) {
+        const drawX = Math.max(2, Math.min(250, markerX - 2));
+        const drawY = Math.max(8, Math.min(236, markerY));
+
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(drawX - 2, drawY - 7, 8, 8);
+        ctx.fillStyle = COLORS.lightGreen;
+        ctx.fillText(marker, drawX, drawY);
+      }
+    }
+
     ctx.font = '5px "Press Start 2P"';
     const exitGroupCounts = {};
     for (let exit of map.exits) {
