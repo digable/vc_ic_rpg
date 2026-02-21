@@ -4,6 +4,7 @@ import { setCtx } from './utils.js';
 
 export function drawGameOver() {
   const ctx = setCtx();
+  ctx.save();
   
   // Semi-transparent black overlay
   ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
@@ -39,4 +40,6 @@ export function drawGameOver() {
   ctx.font = '6px "Press Start 2P"';
   ctx.textAlign = 'center';
   ctx.fillText(isMobile ? 'Tap button to restart' : 'Press SPACE or click button', 128, 210);
+
+  ctx.restore();
 }
