@@ -111,7 +111,7 @@ export const consumableItems = [
 
   // Quest Rewards
   { name: 'Flashlight', price: 0, effect: 'flashlight', description: 'Lights up dark caves. Never used up.' },
-  { name: 'Angel Ward', price: 0, effect: 'angel_dodge', description: 'Blessing of the Black Angel. Guarantees a dodge on the next enemy turn. Never used up.' },
+  { name: 'Angel Ward', price: 0, effect: 'angel_dodge', description: 'Blessing of the Black Angel. 50% dodge chance on the next 3 enemy attacks. Never used up.' },
   { name: 'Hawkeye Jersey', price: 0, effect: 'buffStrength', amount: 10, turns: 5, description: 'Temp +10 Strength (5 turns)' },
   { name: 'Music Note', price: 0, effect: 'healBoth', hpAmount: 40, mpAmount: 20, description: 'Restore 40 HP & 20 MP' },
   { name: 'Lake Trophy', price: 0, effect: 'buffVitality', amount: 15, turns: 6, description: 'Temp +15 Vitality (6 turns)' },

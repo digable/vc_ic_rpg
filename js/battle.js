@@ -308,8 +308,8 @@ export function applyItemEffect(item) {
     }
   } else if (item.effect === 'angel_dodge') {
     if (game.battleState) {
-      game.autoDodgeNextTurn = true;
-      game.battleState.message = `Used ${item.name}! You'll auto-dodge the next enemy turn!`;
+      game.angelWardDodgeCharges = 3;
+      game.battleState.message = `Used ${item.name}! 50% dodge chance for the next 3 enemy attacks!`;
     } else {
       startDialogue([
         `${item.name} only activates during battle.`,
@@ -355,16 +355,18 @@ export function enemyTurn() {
     }
   }
 
-  if (game.autoDodgeNextTurn) {
-    game.autoDodgeNextTurn = false;
-    game.battleState.message = 'Angel Ward glows! You dodge the attack automatically!';
-    game.battleState.animating = true;
+  if (game.angelWardDodgeCharges > 0) {
+    game.angelWardDodgeCharges--;
+    if (Math.random() < 0.5) {
+      game.battleState.message = `Angel Ward flares! You dodge the attack! (${game.angelWardDodgeCharges} ward left)`;
+      game.battleState.animating = true;
 
-    setTimeout(() => {
-      game.battleState.animating = false;
-      game.battleState.message = 'What will you do?';
-    }, 1000);
-    return;
+      setTimeout(() => {
+        game.battleState.animating = false;
+        game.battleState.message = 'What will you do?';
+      }, 1000);
+      return;
+    }
   }
   
   const enemy = game.battleState.enemy;

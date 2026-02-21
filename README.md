@@ -80,7 +80,7 @@ Complete Iowa City-themed quests:
 - **Magic Training** - 5 trainers teach spells and provide stat increases
 - **Cambus Fast Travel** - Navigate between 12 Iowa City locations
 - **Beer Caves Maze** - Flashlight reveals the path
-- **Black Angel Relic** - Find Angel Ward for a reusable next-turn auto-dodge in battle
+- **Black Angel Relic** - Find Angel Ward for a reusable 50% dodge chance on the next 3 enemy attacks
 - **Main Story Quest** - Epic storyline to save Iowa City from corruption
 - **Boss Battles** - Challenging encounters with unique enemies
 
@@ -219,7 +219,7 @@ All equipment, training, and items affect 6 core statistics:
 5. **Use Cambus** - Fast travel between surface locations (cave depths are on foot)
 6. **Bring the Flashlight** - It reveals the Beer Caves and their depths
 7. **Visit Oakland Cemetery** - Interact with the Black Angel to receive Angel Ward
-8. **Use Angel Ward Smartly** - It gives an automatic dodge on the next enemy turn and is not consumed
+8. **Use Angel Ward Smartly** - It gives a 50% dodge chance on the next 3 enemy attacks and is not consumed
 9. **Learn Magic** - Visit the Library to train in spells (Intellect-based)
 10. **Try Yoga** - Riverside park offers defensive skills for any class
 11. **Stock Items** - Buy consumables before big fights

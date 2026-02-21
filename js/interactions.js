@@ -332,7 +332,7 @@ export function interactBlackAngel() {
     'You kneel before the Black Angel statue.',
     'A cold light settles into your hands...',
     'Received Angel Ward!',
-    'Use it in battle to auto-dodge the next enemy turn.'
+    'Use it in battle for a 50% dodge chance\non the next 3 enemy attacks.'
   ]);
   game.state = 'dialogue';
 }
