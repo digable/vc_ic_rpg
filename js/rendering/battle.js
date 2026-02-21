@@ -661,6 +661,138 @@ export function drawEnemySprite(enemy, x, y) {
     ctx.arc(x, y, 16, 0, Math.PI * 2);
     ctx.stroke();
 
+  } else if (enemy.name === 'Restless Zombie') {
+    // Tattered zombie with staggered stance
+    ctx.fillStyle = '#5b7a56';
+    ctx.fillRect(x - 8, y - 2, 16, 18);
+    ctx.fillStyle = '#6b8f66';
+    ctx.fillRect(x - 7, y - 12, 14, 10);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 4, y - 9, 2, 2);
+    ctx.fillRect(x + 2, y - 9, 2, 2);
+    ctx.fillRect(x - 2, y - 5, 4, 1);
+    ctx.fillStyle = COLORS.darkGray;
+    ctx.fillRect(x - 12, y + 2, 4, 10);
+    ctx.fillRect(x + 8, y + 4, 4, 9);
+    ctx.fillStyle = COLORS.brown;
+    ctx.fillRect(x - 8, y + 12, 6, 4);
+    ctx.fillRect(x + 2, y + 12, 6, 4);
+
+  } else if (enemy.name === 'Cemetery Witch') {
+    // Witch with hat and violet aura
+    ctx.fillStyle = '#2f1f3f';
+    ctx.fillRect(x - 7, y - 1, 14, 17);
+    ctx.fillStyle = '#c3b091';
+    ctx.fillRect(x - 5, y - 11, 10, 10);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 10, y - 13, 20, 2);
+    ctx.beginPath();
+    ctx.moveTo(x - 6, y - 13);
+    ctx.lineTo(x, y - 24);
+    ctx.lineTo(x + 6, y - 13);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x - 4, y - 8, 2, 2);
+    ctx.fillRect(x + 2, y - 8, 2, 2);
+    ctx.strokeStyle = 'rgba(188, 0, 188, 0.6)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y - 2, 16, 0, Math.PI * 2);
+    ctx.stroke();
+
+  } else if (enemy.name === 'Wailing Ghost') {
+    // Floating ghost with soft cyan glow
+    ctx.fillStyle = 'rgba(190, 230, 255, 0.85)';
+    ctx.beginPath();
+    ctx.arc(x, y - 4, 10, Math.PI, 0);
+    ctx.lineTo(x + 10, y + 10);
+    ctx.lineTo(x + 6, y + 6);
+    ctx.lineTo(x + 2, y + 10);
+    ctx.lineTo(x - 2, y + 6);
+    ctx.lineTo(x - 6, y + 10);
+    ctx.lineTo(x - 10, y + 6);
+    ctx.lineTo(x - 10, y - 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 4, y - 6, 2, 2);
+    ctx.fillRect(x + 2, y - 6, 2, 2);
+    ctx.fillRect(x - 2, y - 1, 4, 1);
+    ctx.strokeStyle = 'rgba(135, 206, 235, 0.55)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y, 15, 0, Math.PI * 2);
+    ctx.stroke();
+
+  } else if (enemy.name === 'Skeletal Groundskeeper') {
+    // Skeleton with shovel
+    ctx.fillStyle = COLORS.lightGray;
+    ctx.fillRect(x - 3, y - 14, 6, 6); // skull
+    ctx.fillRect(x - 2, y - 8, 4, 10); // spine
+    ctx.fillRect(x - 8, y - 3, 16, 2); // arms
+    ctx.fillRect(x - 6, y + 2, 2, 10); // left leg
+    ctx.fillRect(x + 4, y + 2, 2, 10); // right leg
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 2, y -12, 1, 1);
+    ctx.fillRect(x + 1, y -12, 1, 1);
+    ctx.fillStyle = COLORS.brown;
+    ctx.fillRect(x + 9, y -8, 2, 20); // shovel handle
+    ctx.fillStyle = COLORS.darkGray;
+    ctx.fillRect(x + 8, y + 9, 4, 4); // shovel blade
+
+  } else if (enemy.name === 'Raven Swarm') {
+    // Three ravens in motion
+    ctx.fillStyle = COLORS.black;
+    const ravens = [
+      { dx: -10, dy: -4 },
+      { dx: 0, dy: -10 },
+      { dx: 10, dy: -2 }
+    ];
+    ravens.forEach(raven => {
+      const px = x + raven.dx;
+      const py = y + raven.dy;
+      ctx.fillRect(px - 4, py - 1, 8, 3); // body
+      ctx.beginPath(); // wings
+      ctx.moveTo(px - 4, py);
+      ctx.lineTo(px - 9, py - 4);
+      ctx.lineTo(px - 2, py - 2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(px + 4, py);
+      ctx.lineTo(px + 9, py - 4);
+      ctx.lineTo(px + 2, py - 2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = COLORS.red;
+      ctx.fillRect(px + 4, py, 2, 1); // beak
+      ctx.fillStyle = COLORS.black;
+    });
+
+  } else if (enemy.name === 'Lantern Wisp') {
+    // Haunted lantern with spectral flame
+    ctx.fillStyle = '#4a3a2a';
+    ctx.fillRect(x - 8, y - 4, 16, 18); // lantern body
+    ctx.strokeStyle = COLORS.lightGray;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x - 8, y - 4, 16, 18);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 4, y - 9, 8, 4); // top
+    ctx.strokeStyle = COLORS.lightGray;
+    ctx.beginPath();
+    ctx.arc(x, y - 10, 5, Math.PI, 0);
+    ctx.stroke();
+    ctx.fillStyle = COLORS.lightBlue;
+    ctx.beginPath();
+    ctx.ellipse(x, y + 3, 4, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(135, 206, 235, 0.6)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y + 3, 15, 0, Math.PI * 2);
+    ctx.stroke();
+
   } else if (enemy.name === 'Cave Sovereign') {
     ctx.fillStyle = '#2b2230';
     ctx.fillRect(x - 14, y - 8, 28, 28);
