@@ -18,12 +18,13 @@ Along the way, you'll meet colorful locals, complete quests, battle academic mon
 
 ## ✨ Features
 
-### 🗺️ Explore 11 Iowa City Locations
+### 🗺️ Explore 12 Iowa City Locations
 - **Downtown** - Coffee shops, stores, and street vendors
 - **Pentacrest** - The heart of campus
 - **Main Library** - Study spaces and magic training
 - **Iowa River Park** - Peaceful riverside area with yoga
 - **The Deadwood** - Local bar with food and drinks
+- **Oakland Cemetery** - Historic cemetery with the Black Angel statue
 - **Northside** - Restaurant district with diverse cuisine
 - **Beer Caves** - Maze-like underground caverns
 - **Kinnick Stadium** - Iconic 70,000-seat football stadium
@@ -76,8 +77,9 @@ Complete Iowa City-themed quests:
 - **Defensive Skills** - Yoga techniques for defensive tactics
 - **Shop System** - 8 stat-boosting items with pagination
 - **Magic Training** - 5 trainers teach spells and provide stat increases
-- **Cambus Fast Travel** - Navigate between 11 Iowa City locations
+- **Cambus Fast Travel** - Navigate between 12 Iowa City locations
 - **Beer Caves Maze** - Flashlight reveals the path
+- **Black Angel Relic** - Find Angel Ward for a reusable next-turn auto-dodge in battle
 - **Main Story Quest** - Epic storyline to save Iowa City from corruption
 - **Boss Battles** - Challenging encounters with unique enemies
 
@@ -169,7 +171,7 @@ vc_ic_rpg/
 - Rewards upon completion
 
 ### World Design
-- 11+ interconnected locations including Beer Caves Depths I-III
+- 12+ interconnected locations including Oakland Cemetery and Beer Caves Depths I-III
 - Unique NPCs and quest hubs across surface zones and cave depths
 - Random encounters (caves fall silent after the Cave Sovereign is defeated)
 - Location-specific enemies and bosses (Cave Sovereign, Lake Monster, Corrupted Administrator)
@@ -215,15 +217,17 @@ All equipment, training, and items affect 6 core statistics:
 4. **Buy Food** - Stat buffs help in tough battles (check vendor pagination)
 5. **Use Cambus** - Fast travel between surface locations (cave depths are on foot)
 6. **Bring the Flashlight** - It reveals the Beer Caves and their depths
-7. **Learn Magic** - Visit the Library to train in spells (Intellect-based)
-8. **Try Yoga** - Riverside park offers defensive skills for any class
-9. **Stock Items** - Buy consumables before big fights
-10. **Explore All Vendors** - Each has unique items and effects
-11. **Watch for Strong Levels** - They provide bonus HP growth
-12. **Visit New Locations** - Kinnick Stadium, Ped Mall, Old Capitol, and Coralville Lake
-13. **Main Quest** - Clear the Beer Caves, reach level 10, and face the final boss
-14. **Talk to Everyone** - NPCs offer valuable quests and rewards
-15. **Boss Preparation** - Stock up on healing items before facing the Cave Sovereign, Lake Monster, or Corrupted Administrator
+7. **Visit Oakland Cemetery** - Interact with the Black Angel to receive Angel Ward
+8. **Use Angel Ward Smartly** - It gives an automatic dodge on the next enemy turn and is not consumed
+9. **Learn Magic** - Visit the Library to train in spells (Intellect-based)
+10. **Try Yoga** - Riverside park offers defensive skills for any class
+11. **Stock Items** - Buy consumables before big fights
+12. **Explore All Vendors** - Each has unique items and effects
+13. **Watch for Strong Levels** - They provide bonus HP growth
+14. **Visit New Locations** - Kinnick Stadium, Ped Mall, Old Capitol, Coralville Lake, and Oakland Cemetery
+15. **Main Quest** - Clear the Beer Caves, reach level 10, and face the final boss
+16. **Talk to Everyone** - NPCs offer valuable quests and rewards
+17. **Boss Preparation** - Stock up on healing items before facing the Cave Sovereign, Lake Monster, or Corrupted Administrator
 
 ## 📝 Development
 

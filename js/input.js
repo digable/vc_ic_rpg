@@ -12,7 +12,8 @@ import {
   handleYogaTraining,
   handleFoodCartPurchase,
   handleCambusTravel,
-  healPlayer
+  healPlayer,
+  interactBlackAngel
 } from './interactions.js';
 import { advanceDialogue, startDialogue } from './dialogue.js';
 import { executeBattleAction, startBattle, executeSpell, useItemFromMenu, useItemInBattle } from './battle.js';
@@ -314,6 +315,8 @@ export function handleInput() {
             openCambus();
           } else if (npc.type === 'food_cart') {
             openFoodCart(npc.name);
+          } else if (npc.type === 'black_angel') {
+            interactBlackAngel();
           } else if (npc.type === 'boss' && !game.caveSovereignDefeated) {
             if (!game.caveSovereignIntroSeen) {
               startDialogue([

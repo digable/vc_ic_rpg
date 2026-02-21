@@ -163,7 +163,44 @@ export const maps = {
     name: 'The Deadwood',
     grassWalkable: false,
     exits: [
-      { x: 16, y: 112, toMap: 'downtown', toX: 224, toY: 64, direction: 'left' }
+      { x: 16, y: 112, toMap: 'downtown', toX: 224, toY: 64, direction: 'left' },
+      { x: 112, y: 224, toMap: 'oakland_cemetery', toX: 112, toY: 32, direction: 'down' },
+      { x: 128, y: 224, toMap: 'oakland_cemetery', toX: 128, toY: 32, direction: 'down' }
+    ]
+  },
+  oakland_cemetery: {
+    width: 16,
+    height: 15,
+    tiles: [
+      [2,2,2,2,2,2,2,0,0,2,2,2,2,2,2,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,1,3,1,3,1,3,1,1,3,1,3,1,3,1,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,1,3,1,3,1,3,1,1,3,1,3,1,3,1,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,1,3,1,3,1,3,1,1,3,1,3,1,3,1,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,1,3,1,3,1,3,1,1,3,1,3,1,3,1,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,1,3,1,3,1,3,1,1,3,1,3,1,3,1,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
+      [2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2]
+    ],
+    npcs: [
+      {
+        x: 128,
+        y: 112,
+        name: 'Black Angel',
+        type: 'black_angel',
+        dialogue: ['A dark bronze statue watches in silence.']
+      }
+    ],
+    name: 'Oakland Cemetery',
+    grassWalkable: false,
+    exits: [
+      { x: 128, y: 16, toMap: 'deadwood', toX: 128, toY: 208, direction: 'up' }
     ]
   },
   northside: {

@@ -213,7 +213,7 @@ export function useItemInBattle() {
   applyItemEffect(item);
   
   // Remove item from inventory unless it's a permanent item
-  if (item.effect !== 'flashlight') {
+  if (item.effect !== 'flashlight' && item.effect !== 'angel_dodge') {
     removeConsumable(game.battleState.selectedItem);
   }
   
@@ -230,7 +230,7 @@ export function useItemFromMenu() {
   applyItemEffect(item);
   
   // Remove item from inventory unless it's a permanent item
-  if (item.effect !== 'flashlight') {
+  if (item.effect !== 'flashlight' && item.effect !== 'angel_dodge') {
     removeConsumable(game.itemMenuSelection);
   }
   
@@ -301,6 +301,17 @@ export function applyItemEffect(item) {
     } else if (game.battleState) {
       game.battleState.message = `${item.name} doesn't help here.`;
     }
+  } else if (item.effect === 'angel_dodge') {
+    if (game.battleState) {
+      game.autoDodgeNextTurn = true;
+      game.battleState.message = `Used ${item.name}! You'll auto-dodge the next enemy turn!`;
+    } else {
+      startDialogue([
+        `${item.name} only activates during battle.`,
+        'Use it when enemies are about to strike.'
+      ]);
+      game.state = 'dialogue';
+    }
   } else if (item.effect === 'heroBonus') {
     // Permanent stat boost
     game.player.attack += 10;
@@ -337,6 +348,18 @@ export function enemyTurn() {
     if (game.activeBuff.turnsLeft === 0) {
       game.activeBuff = null;
     }
+  }
+
+  if (game.autoDodgeNextTurn) {
+    game.autoDodgeNextTurn = false;
+    game.battleState.message = 'Angel Ward glows! You dodge the attack automatically!';
+    game.battleState.animating = true;
+
+    setTimeout(() => {
+      game.battleState.animating = false;
+      game.battleState.message = 'What will you do?';
+    }, 1000);
+    return;
   }
   
   const enemy = game.battleState.enemy;

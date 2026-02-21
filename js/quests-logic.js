@@ -17,7 +17,7 @@ export function checkNPCInteraction() {
         }
         return npc;
       }
-      const specialTypes = ['shop', 'healer', 'magic_trainer', 'yoga', 'cambus', 'food_cart'];
+      const specialTypes = ['shop', 'healer', 'magic_trainer', 'yoga', 'cambus', 'food_cart', 'black_angel'];
       
       // Check if NPC has a quest
       if (npc.hasQuest) {

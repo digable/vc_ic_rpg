@@ -308,3 +308,32 @@ export function handleCambusTravel() {
   game.enemyEncounterSteps = 0;
 }
 
+export function interactBlackAngel() {
+  const hasAngelWard = game.consumables.some(item => item.name === 'Angel Ward');
+
+  if (hasAngelWard) {
+    startDialogue([
+      'The Black Angel stands unmoving.',
+      'Its blessing is already with you.'
+    ]);
+    game.state = 'dialogue';
+    return;
+  }
+
+  const angelWard = consumableItems.find(item => item.name === 'Angel Ward');
+  if (!angelWard) {
+    startDialogue(['A strange stillness lingers here.']);
+    game.state = 'dialogue';
+    return;
+  }
+
+  addConsumable(angelWard);
+  startDialogue([
+    'You kneel before the Black Angel statue.',
+    'A cold light settles into your hands...',
+    'Received Angel Ward!',
+    'Use it in battle to auto-dodge the next enemy turn.'
+  ]);
+  game.state = 'dialogue';
+}
+

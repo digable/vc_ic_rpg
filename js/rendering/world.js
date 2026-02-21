@@ -562,6 +562,27 @@ export function drawNPC(npc) {
     ctx.fillRect(x + 2, y - 8, 2, 2);
     ctx.fillStyle = COLORS.black;
     ctx.fillRect(x - 6, y - 2, 12, 2);
+  } else if (npc.name === 'Black Angel') {
+    const pulse = Math.sin(game.animFrame / 12) * 1.5;
+
+    ctx.fillStyle = COLORS.darkGray;
+    ctx.fillRect(x - 10, y + 6, 20, 6);
+
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 7, y - 8, 14, 16);
+
+    ctx.fillStyle = COLORS.darkGray;
+    ctx.fillRect(x - 14, y - 4, 7, 3);
+    ctx.fillRect(x + 7, y - 4, 7, 3);
+
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 8, y - 12, 16, 4);
+
+    ctx.strokeStyle = `rgba(188, 0, 188, ${0.4 + (pulse / 8)})`;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(x, y - 2, 14 + pulse, 0, Math.PI * 2);
+    ctx.stroke();
   } else {
     // Default NPC if none of the above
     ctx.fillStyle = COLORS.green;

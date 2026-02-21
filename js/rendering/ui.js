@@ -215,7 +215,8 @@ export function drawMenu() {
       { name: 'Library', x: 9, y: 0, w: 3, h: 3, color: COLORS.brown, map: 'library' },
       { name: 'Riverside', x: 0, y: 4, w: 3, h: 3, color: COLORS.lightBlue, map: 'riverside' },
       { name: 'Deadwood', x: 9, y: 4, w: 3, h: 3, color: COLORS.orange, map: 'deadwood' },
-      { name: 'Northside', x: 4, y: 8, w: 4, h: 3, color: COLORS.red, map: 'northside' }
+      { name: 'Northside', x: 4, y: 8, w: 4, h: 3, color: COLORS.red, map: 'northside' },
+      { name: 'Cemetery', x: 9, y: 8, w: 3, h: 3, color: COLORS.darkGray, map: 'oakland_cemetery' }
     ];
     
     areas.forEach(area => {
@@ -250,6 +251,7 @@ export function drawMenu() {
     ctx.fillText('Pentacrest', 90, 77);
     ctx.fillText('Library', 145, 77);
     ctx.fillText('Northside', 95, 115);
+    ctx.fillText('Cemetery', 133, 115);
     
     // Current location indicator
     const currentArea = areas.find(a => a.map === game.map);

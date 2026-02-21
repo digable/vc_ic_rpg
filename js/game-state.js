@@ -49,6 +49,7 @@ export const game = {
   itemMenuOpen: false,
   itemMenuSelection: 0,
   activeBuff: null, // { type: 'attack'/'defense'/'magic', amount: 5, turnsLeft: 3 }
+  autoDodgeNextTurn: false,
   flashlightOn: false,
   caveSovereignDefeated: false,
   caveSovereignIntroSeen: false,
@@ -138,6 +139,7 @@ export function resetGameState() {
   game.itemMenuOpen = false;
   game.itemMenuSelection = 0;
   game.activeBuff = null;
+  game.autoDodgeNextTurn = false;
   game.flashlightOn = false;
   game.caveSovereignDefeated = false;
   game.caveSovereignIntroSeen = false;

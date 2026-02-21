@@ -111,6 +111,7 @@ export const consumableItems = [
 
   // Quest Rewards
   { name: 'Flashlight', price: 0, effect: 'flashlight', description: 'Lights up dark caves. Never used up.' },
+  { name: 'Angel Ward', price: 0, effect: 'angel_dodge', description: 'Blessing of the Black Angel. Guarantees a dodge on the next enemy turn. Never used up.' },
   { name: 'Hawkeye Jersey', price: 0, effect: 'buffStrength', amount: 10, turns: 5, description: 'Temp +10 Strength (5 turns)' },
   { name: 'Music Note', price: 0, effect: 'healBoth', hpAmount: 40, mpAmount: 20, description: 'Restore 40 HP & 20 MP' },
   { name: 'Lake Trophy', price: 0, effect: 'buffVitality', amount: 15, turns: 6, description: 'Temp +15 Vitality (6 turns)' },
@@ -151,6 +152,7 @@ export const cambusRoutes = [
   { name: 'Northside', map: 'northside', x: 128, y: 96 },
   { name: 'Beer Caves', map: 'beer_caves', x: 128, y: 96 },
   { name: 'Kinnick Stadium', map: 'kinnick_stadium', x: 128, y: 96 },
+  { name: 'Oakland Cemetery', map: 'oakland_cemetery', x: 128, y: 96 },
   { name: 'Pedestrian Mall', map: 'ped_mall', x: 128, y: 96 },
   { name: 'Old Capitol', map: 'old_capitol', x: 128, y: 120 },
   { name: 'Coralville Lake', map: 'coralville_lake', x: 128, y: 160 }
