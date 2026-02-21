@@ -17,8 +17,14 @@ export function drawMap() {
     for (let x = 0; x < map.width; x++) {
       const tile = map.tiles[y][x];
       let fillStyle = tileColors[tile];
-      if (game.map === 'oakland_cemetery' && tile === 3) {
-        fillStyle = COLORS.gray;
+      if (game.map === 'oakland_cemetery') {
+        if (tile === 3) {
+          fillStyle = COLORS.green;
+        } else if (tile === 1) {
+          fillStyle = COLORS.lightGray;
+        } else if (tile === 0) {
+          fillStyle = COLORS.gray;
+        }
       }
       if (CAVE_MAPS.includes(game.map) && game.flashlightOn) {
         if (tile === 0) fillStyle = COLORS.lightGray;
@@ -27,6 +33,16 @@ export function drawMap() {
       }
       ctx.fillStyle = fillStyle;
       ctx.fillRect(x * 16, y * 16, 16, 16);
+
+      if (game.map === 'oakland_cemetery' && (tile === 0 || tile === 1)) {
+        ctx.strokeStyle = COLORS.darkGray;
+        ctx.strokeRect(x * 16 + 1, y * 16 + 1, 14, 14);
+        if ((x + y) % 2 === 0) {
+          ctx.fillStyle = COLORS.gray;
+          ctx.fillRect(x * 16 + 6, y * 16 + 1, 1, 14);
+        }
+      }
+
       if (CAVE_MAPS.includes(game.map) && game.flashlightOn && (tile === 6 || tile === 2)) {
         ctx.strokeStyle = COLORS.lightGray;
         ctx.strokeRect(x * 16 + 1, y * 16 + 1, 14, 14);
