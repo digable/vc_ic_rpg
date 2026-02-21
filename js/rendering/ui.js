@@ -34,8 +34,12 @@ export function drawHUD() {
   
   // Contextual controls at bottom
   const nearbyNPC = getNearbyNPC();
-  const cambusPromptActive = nearbyNPC && nearbyNPC.type === 'cambus';
+  const canInteractNow = game.state === 'explore' && !game.menuOpen && !game.dialogue;
+  const cambusPromptActive = nearbyNPC && nearbyNPC.type === 'cambus' && canInteractNow;
   if (nearbyNPC) {
+    if (nearbyNPC.type === 'cambus' && !canInteractNow) {
+      // Hide Cambus prompt unless action can be used immediately
+    } else {
     ctx.fillStyle = COLORS.black;
     ctx.fillRect(0, 226, 256, 14);
     ctx.fillStyle = COLORS.yellow;
@@ -55,6 +59,7 @@ export function drawHUD() {
       ctx.fillText(getButtonLabel('Buy Food'), 8, 235);
     } else {
       ctx.fillText(getButtonLabel(`Talk to ${nearbyNPC.name}`), 8, 235);
+    }
     }
   }
   
@@ -321,7 +326,7 @@ function getNearbyNPC() {
       (game.player.x - npc.x) ** 2 + (game.player.y - npc.y) ** 2
     );
     
-    if (dist < 25) {
+    if (dist < 24) {
       if (npc.type === 'cambus') {
         if (dist < nearestCambusDist) {
           nearestCambus = npc;
