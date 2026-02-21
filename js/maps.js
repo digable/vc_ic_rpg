@@ -168,7 +168,7 @@ export const maps = {
       { x: 32, y: 112, name: 'Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] },
       { x: 96, y: 80, name: 'Food Cart Vendor', type: 'food_cart', dialogue: ['Park snacks!', 'Healthy eats!'] }
     ],
-    name: 'Iowa River Park',
+    name: 'City Park',
     grassWalkable: true,
     exits: [
       { x: 240, y: 120, toMap: 'downtown', toX: 32, toY: 120, direction: 'right' }

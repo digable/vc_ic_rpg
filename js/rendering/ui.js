@@ -221,7 +221,7 @@ export function drawMenu() {
       { name: 'Downtown', x: 4, y: 4, w: 4, h: 3, color: COLORS.gray, map: 'downtown' },
       { name: 'Pentacrest', x: 4, y: 0, w: 4, h: 3, color: COLORS.green, map: 'pentacrest' },
       { name: 'Library', x: 9, y: 0, w: 3, h: 3, color: COLORS.brown, map: 'library' },
-      { name: 'Riverside', x: 0, y: 4, w: 3, h: 3, color: COLORS.lightBlue, map: 'riverside' },
+      { name: 'City Park', x: 0, y: 4, w: 3, h: 3, color: COLORS.lightBlue, map: 'riverside' },
       { name: 'Deadwood', x: 9, y: 4, w: 3, h: 3, color: COLORS.orange, map: 'deadwood' },
       { name: 'Northside', x: 4, y: 8, w: 4, h: 3, color: COLORS.red, map: 'northside' },
       { name: 'Cemetery', x: 9, y: 8, w: 3, h: 3, color: COLORS.darkGray, map: 'oakland_cemetery' }
@@ -253,7 +253,7 @@ export function drawMenu() {
     // Draw location names
     ctx.fillStyle = COLORS.white;
     ctx.font = '5px "Press Start 2P"';
-    ctx.fillText('Riverside', 40, 95);
+    ctx.fillText('City Park', 40, 95);
     ctx.fillText('Downtown', 95, 95);
     ctx.fillText('Deadwood', 133, 95);
     ctx.fillText('Pentacrest', 90, 77);
