@@ -152,7 +152,7 @@ export const cambusRoutes = [
   { name: 'Northside', map: 'northside', x: 128, y: 96 },
   { name: 'Beer Caves', map: 'beer_caves', x: 128, y: 96 },
   { name: 'Kinnick Stadium', map: 'kinnick_stadium', x: 128, y: 96 },
-  { name: 'Oakland Cemetery', map: 'oakland_cemetery', x: 128, y: 96 },
+  { name: 'Oakland Cemetery', map: 'oakland_cemetery', x: 224, y: 208 },
   { name: 'Pedestrian Mall', map: 'ped_mall', x: 128, y: 96 },
   { name: 'Old Capitol', map: 'old_capitol', x: 128, y: 120 },
   { name: 'Coralville Lake', map: 'coralville_lake', x: 128, y: 160 }

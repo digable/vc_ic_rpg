@@ -17,6 +17,9 @@ export function drawMap() {
     for (let x = 0; x < map.width; x++) {
       const tile = map.tiles[y][x];
       let fillStyle = tileColors[tile];
+      if (game.map === 'oakland_cemetery' && tile === 3) {
+        fillStyle = COLORS.gray;
+      }
       if (CAVE_MAPS.includes(game.map) && game.flashlightOn) {
         if (tile === 0) fillStyle = COLORS.lightGray;
         if (tile === 6) fillStyle = COLORS.darkGray;
@@ -31,11 +34,20 @@ export function drawMap() {
       
       // Add texture for buildings
       if (tile === 3) {
-        ctx.fillStyle = COLORS.darkGray;
-        ctx.fillRect(x * 16 + 2, y * 16 + 2, 5, 5);
-        ctx.fillRect(x * 16 + 9, y * 16 + 2, 5, 5);
-        ctx.fillRect(x * 16 + 2, y * 16 + 9, 5, 5);
-        ctx.fillRect(x * 16 + 9, y * 16 + 9, 5, 5);
+        if (game.map === 'oakland_cemetery') {
+          ctx.fillStyle = COLORS.darkGray;
+          ctx.fillRect(x * 16 + 5, y * 16 + 4, 6, 8);
+          ctx.fillStyle = COLORS.lightGray;
+          ctx.fillRect(x * 16 + 6, y * 16 + 5, 4, 1);
+          ctx.fillStyle = COLORS.darkGray;
+          ctx.fillRect(x * 16 + 7, y * 16 + 12, 2, 2);
+        } else {
+          ctx.fillStyle = COLORS.darkGray;
+          ctx.fillRect(x * 16 + 2, y * 16 + 2, 5, 5);
+          ctx.fillRect(x * 16 + 9, y * 16 + 2, 5, 5);
+          ctx.fillRect(x * 16 + 2, y * 16 + 9, 5, 5);
+          ctx.fillRect(x * 16 + 9, y * 16 + 9, 5, 5);
+        }
       }
       
       // Draw bridge effect for road tiles in riverside that connect to water
@@ -163,25 +175,37 @@ export function drawNPCs() {
       continue;
     }
     if (npc.isSign) {
-      // Draw bus stop sign
+      // Compact, high-contrast Cambus sign
       // Post
       ctx.fillStyle = COLORS.darkGray;
-      ctx.fillRect(npc.x - 2, npc.y - 4, 4, 12);
-      
-      // Sign
-      ctx.fillStyle = COLORS.yellow;
-      ctx.fillRect(npc.x - 6, npc.y - 12, 12, 8);
-      
-      // Border
+      ctx.fillRect(npc.x - 1, npc.y - 2, 2, 10);
+
+      // Sign plate
+      ctx.fillStyle = COLORS.white;
+      ctx.fillRect(npc.x - 5, npc.y - 12, 10, 8);
       ctx.strokeStyle = COLORS.black;
       ctx.lineWidth = 1;
-      ctx.strokeRect(npc.x - 6, npc.y - 12, 12, 8);
-      
-      // Bus symbol (simplified)
+      ctx.strokeRect(npc.x - 5, npc.y - 12, 10, 8);
+
+      // Yellow route strip (top) for quick recognition
+      ctx.fillStyle = COLORS.yellow;
+      ctx.fillRect(npc.x - 4, npc.y - 11, 8, 2);
+
+      // Bus glyph (center)
       ctx.fillStyle = COLORS.black;
-      ctx.fillRect(npc.x - 4, npc.y - 10, 8, 4);
-      ctx.fillRect(npc.x - 3, npc.y - 7, 2, 1);
-      ctx.fillRect(npc.x + 1, npc.y - 7, 2, 1);
+      ctx.fillRect(npc.x - 3, npc.y - 8, 6, 2);
+      ctx.fillRect(npc.x - 3, npc.y - 6, 1, 1);
+      ctx.fillRect(npc.x + 2, npc.y - 6, 1, 1);
+
+      // Tiny wheels
+      ctx.fillRect(npc.x - 2, npc.y - 5, 1, 1);
+      ctx.fillRect(npc.x + 1, npc.y - 5, 1, 1);
+
+      // Tiny C marker for Cambus
+      ctx.fillStyle = COLORS.black;
+      ctx.fillRect(npc.x - 4, npc.y - 8, 1, 3);
+      ctx.fillRect(npc.x - 3, npc.y - 8, 1, 1);
+      ctx.fillRect(npc.x - 3, npc.y - 6, 1, 1);
     } else {
       // Draw NPC based on their name/role
       drawNPC(npc);

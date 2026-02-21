@@ -1,3 +1,43 @@
+// Map Data Reference
+// ------------------
+// Each entry in `maps` uses this structure:
+// {
+//   width: number,         // tile columns (16 = 256px at 16px tiles)
+//   height: number,        // tile rows
+//   tiles: number[][],     // 2D tile grid, indexed [y][x]
+//   npcs: [
+//     {
+//       x: number,         // world pixel x (usually multiples of 16)
+//       y: number,         // world pixel y (usually multiples of 16)
+//       name: string,
+//       type?: string,     // e.g. shop, healer, yoga, cambus, food_cart, boss
+//       hasQuest?: string, // quest id from quests.js
+//       isSign?: boolean,  // marks sign-style NPC rendering
+//       dialogue: string[]
+//     }
+//   ],
+//   name: string,          // display name used in HUD/minimap/exit labels
+//   grassWalkable?: boolean,
+//   exits: [
+//     {
+//       x: number,         // world pixel x for transition trigger
+//       y: number,         // world pixel y for transition trigger
+//       toMap: string,     // destination map key in this file
+//       toX: number,       // destination player x
+//       toY: number,       // destination player y
+//       direction: 'up' | 'down' | 'left' | 'right'
+//     }
+//   ]
+// }
+//
+// Tile value legend:
+// 0 = road / path (walkable)
+// 1 = sidewalk / floor (walkable)
+// 2 = grass / terrain (walkable only when map.grassWalkable === true)
+// 3 = building / obstacle / grave marker (solid)
+// 4 = bookshelf / interior obstacle (solid)
+// 5 = water (solid)
+// 6 = cave wall (solid; used in Beer Caves)
 export const maps = {
   downtown: {
     width: 16,
@@ -172,26 +212,33 @@ export const maps = {
     width: 16,
     height: 15,
     tiles: [
-      [2,2,2,2,2,2,2,0,0,2,2,2,2,2,2,2],
-      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
-      [2,1,3,1,3,1,3,1,1,3,1,3,1,3,1,2],
-      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
-      [2,1,3,1,3,1,3,1,1,3,1,3,1,3,1,2],
-      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
-      [2,1,3,1,3,1,3,1,1,3,1,3,1,3,1,2],
-      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
-      [2,1,3,1,3,1,3,1,1,3,1,3,1,3,1,2],
-      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
-      [2,1,3,1,3,1,3,1,1,3,1,3,1,3,1,2],
-      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
-      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
-      [2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2],
-      [2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2]
+      [2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2],
+      [2,3,3,3,2,2,2,2,1,2,2,2,2,2,2,2],
+      [2,3,1,3,3,3,3,3,1,3,3,3,3,3,3,2],
+      [2,3,2,2,2,2,3,2,1,3,2,2,2,2,3,2],
+      [2,3,3,3,3,2,3,2,1,3,2,3,3,2,3,2],
+      [2,2,2,2,3,2,3,2,1,3,2,3,2,2,3,2],
+      [2,3,3,2,3,3,3,2,1,3,3,3,2,3,3,2],
+      [2,3,2,2,2,2,3,2,1,2,2,3,2,3,2,2],
+      [2,3,3,3,3,2,3,3,1,3,2,3,3,3,3,2],
+      [2,2,2,2,3,2,2,2,1,3,2,2,2,2,3,2],
+      [2,3,3,2,3,3,3,2,1,3,3,3,3,2,3,2],
+      [2,3,2,2,2,2,3,2,1,2,2,2,3,2,3,2],
+      [2,3,3,3,3,2,3,3,1,3,3,2,3,3,3,2],
+      [2,2,2,2,3,3,3,3,1,3,3,3,3,3,1,2],
+      [2,2,2,2,2,2,2,2,0,1,3,3,3,3,3,2]
     ],
     npcs: [
       {
-        x: 128,
-        y: 112,
+        x: 96,
+        y: 144,
+        name: 'Groundskeeper',
+        hasQuest: 'cemetery_cleansing',
+        dialogue: ['These grounds never sleep...', 'Please help calm the restless spirits.']
+      },
+      {
+        x: 32,
+        y: 32,
         name: 'Black Angel',
         type: 'black_angel',
         dialogue: ['A dark bronze statue watches in silence.']

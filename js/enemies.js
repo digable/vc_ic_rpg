@@ -316,6 +316,67 @@ export const enemies = [
     location: 'coralville_lake',
     specialAttack: { name: 'Tail Slap', damage: 16, mpCost: 0 }
   },
+  // Oakland Cemetery Enemies
+  {
+    name: 'Restless Zombie',
+    hp: 38,
+    maxHp: 38,
+    attack: 11,
+    exp: 32,
+    gold: 68,
+    location: 'oakland_cemetery',
+    specialAttack: { name: 'Grave Grasp', damage: 16, mpCost: 0 }
+  },
+  {
+    name: 'Cemetery Witch',
+    hp: 34,
+    maxHp: 34,
+    attack: 12,
+    exp: 36,
+    gold: 74,
+    location: 'oakland_cemetery',
+    specialAttack: { name: 'Hex Bolt', damage: 18, mpCost: 0, effect: 'drainMP', drainAmount: 4 }
+  },
+  {
+    name: 'Wailing Ghost',
+    hp: 30,
+    maxHp: 30,
+    attack: 10,
+    exp: 34,
+    gold: 72,
+    location: 'oakland_cemetery',
+    specialAttack: { name: 'Haunting Cry', damage: 15, mpCost: 0 }
+  },
+  {
+    name: 'Skeletal Groundskeeper',
+    hp: 42,
+    maxHp: 42,
+    attack: 13,
+    exp: 40,
+    gold: 80,
+    location: 'oakland_cemetery',
+    specialAttack: { name: 'Rusty Cleave', damage: 19, mpCost: 0 }
+  },
+  {
+    name: 'Raven Swarm',
+    hp: 33,
+    maxHp: 33,
+    attack: 11,
+    exp: 33,
+    gold: 66,
+    location: 'oakland_cemetery',
+    specialAttack: { name: 'Shadow Peck', damage: 16, mpCost: 0 }
+  },
+  {
+    name: 'Lantern Wisp',
+    hp: 36,
+    maxHp: 36,
+    attack: 12,
+    exp: 38,
+    gold: 78,
+    location: 'oakland_cemetery',
+    specialAttack: { name: 'Cold Flicker', damage: 17, mpCost: 0 }
+  },
   // Final Boss
   { 
     name: 'Corrupted Administrator', 

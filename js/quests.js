@@ -322,6 +322,25 @@ const questDatabase = {
       complete: ['Perfect!', 'Now I can go camping!', 'Take this as thanks!']
     }
   },
+
+  cemetery_cleansing: {
+    id: 'cemetery_cleansing',
+    name: 'Cemetery Cleansing',
+    giver: 'Groundskeeper',
+    location: 'oakland_cemetery',
+    description: 'Calm the restless dead by defeating zombies, witches, and ghosts haunting Oakland Cemetery.',
+    objectives: [
+      { type: 'defeat_enemy', enemy: 'Restless Zombie', count: 0, needed: 2 },
+      { type: 'defeat_enemy', enemy: 'Cemetery Witch', count: 0, needed: 1 },
+      { type: 'defeat_enemy', enemy: 'Wailing Ghost', count: 0, needed: 2 }
+    ],
+    rewards: { gold: 160, exp: 85, item: 'Starlit Elixir' },
+    dialogue: {
+      offer: ['The graves are disturbed every night.', 'Defeat 2 Restless Zombies, 1 Cemetery Witch, and 2 Wailing Ghosts.', 'Please bring peace back to these grounds.'],
+      progress: ['The cemetery is still restless...', 'Please keep going.'],
+      complete: ['The air feels lighter now.', 'You have cleansed Oakland Cemetery.', 'Take this for your courage.']
+    }
+  },
   
   // Main Story Quest
   corruption_source: {

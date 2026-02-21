@@ -41,7 +41,7 @@ Along the way, you'll meet colorful locals, complete quests, battle academic mon
 - Class-based stat growth (6 Iowa City-themed classes)
 - Epic boss battles including the Corrupted Administrator
 
-### 📋 18 Side Quests
+### 📋 19 Side Quests
 Complete Iowa City-themed quests:
 - The Coffee Run
 - Campus Tour Guide
@@ -60,6 +60,7 @@ Complete Iowa City-themed quests:
 - **The Capitol Mystery** - Investigate haunted Old Capitol
 - **The Lake Monster** - Defeat the legendary creature
 - **Camping Supplies** - Help a camper at Coralville Lake
+- **Cemetery Cleansing** - Defeat restless undead and spirits in Oakland Cemetery
 - **Source of Corruption** - Main story quest to clear the Beer Caves and save Iowa City
 
 ### 🍕 Unique Food Vendors
