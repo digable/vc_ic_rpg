@@ -200,7 +200,8 @@ export const maps = {
     name: 'Oakland Cemetery',
     grassWalkable: false,
     exits: [
-      { x: 128, y: 16, toMap: 'deadwood', toX: 128, toY: 208, direction: 'up' }
+      { x: 128, y: 16, toMap: 'deadwood', toX: 128, toY: 208, direction: 'up' },
+      { x: 128, y: 224, toMap: 'northside', toX: 136, toY: 32, direction: 'down' }
     ]
   },
   northside: {
@@ -234,7 +235,8 @@ export const maps = {
     name: 'Northside',
     grassWalkable: false,
     exits: [
-      { x: 128, y: 16, toMap: 'downtown', toX: 128, toY: 208, direction: 'up' },
+      { x: 136, y: 16, toMap: 'oakland_cemetery', toX: 128, toY: 208, direction: 'up' },
+      { x: 120, y: 16, toMap: 'downtown', toX: 128, toY: 208, direction: 'up' },
       { x: 128, y: 224, toMap: 'beer_caves', toX: 128, toY: 16, direction: 'down' }
     ]
   },

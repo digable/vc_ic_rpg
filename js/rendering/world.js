@@ -53,39 +53,63 @@ export function drawMap() {
   // Draw exit labels
   if (map.exits) {
     ctx.font = '5px "Press Start 2P"';
+    const exitGroupCounts = {};
     for (let exit of map.exits) {
       const destMap = maps[exit.toMap];
-      const labelX = exit.x;
-      const labelY = exit.y;
-      
+      const groupKey = `${exit.direction}:${exit.y}`;
+      const groupIndex = exitGroupCounts[groupKey] || 0;
+      exitGroupCounts[groupKey] = groupIndex + 1;
+
+      let labelX = exit.x;
+      let labelY = exit.y;
+
+      // Stagger labels for nearby exits on the same edge so text stays readable
+      if (exit.direction === 'up' || exit.direction === 'down') {
+        if (groupIndex > 0) {
+          const xShift = 18 * Math.ceil(groupIndex / 2);
+          labelX += groupIndex % 2 === 1 ? xShift : -xShift;
+        }
+      } else if (groupIndex > 0) {
+        const yShift = 10 * Math.ceil(groupIndex / 2);
+        labelY += groupIndex % 2 === 1 ? yShift : -yShift;
+      }
+
       // Draw background for text
       ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
       const textWidth = ctx.measureText(destMap.name).width;
       
       if (exit.direction === 'up') {
-        ctx.fillRect(labelX - textWidth/2 - 2, labelY - 12, textWidth + 4, 8);
+        const bgX = Math.max(0, Math.min(256 - (textWidth + 4), labelX - textWidth / 2 - 2));
+        const bgY = Math.max(0, labelY - 12);
+        ctx.fillRect(bgX, bgY, textWidth + 4, 8);
         ctx.fillStyle = COLORS.yellow;
-        ctx.fillText(destMap.name, labelX - textWidth/2, labelY - 6);
+        ctx.fillText(destMap.name, bgX + 2, bgY + 6);
         // Arrow
-        ctx.fillText('^', labelX - 3, labelY + 2);
+        ctx.fillText('^', Math.max(0, Math.min(252, labelX - 3)), Math.max(8, Math.min(236, labelY + 2)));
       } else if (exit.direction === 'down') {
-        ctx.fillRect(labelX - textWidth/2 - 2, labelY + 8, textWidth + 4, 8);
+        const bgX = Math.max(0, Math.min(256 - (textWidth + 4), labelX - textWidth / 2 - 2));
+        const bgY = Math.max(0, Math.min(232, labelY + 8));
+        ctx.fillRect(bgX, bgY, textWidth + 4, 8);
         ctx.fillStyle = COLORS.yellow;
-        ctx.fillText(destMap.name, labelX - textWidth/2, labelY + 14);
+        ctx.fillText(destMap.name, bgX + 2, bgY + 6);
         // Arrow
-        ctx.fillText('v', labelX - 3, labelY - 2);
+        ctx.fillText('v', Math.max(0, Math.min(252, labelX - 3)), Math.max(8, Math.min(236, labelY - 2)));
       } else if (exit.direction === 'left') {
-        ctx.fillRect(labelX - textWidth - 10, labelY - 6, textWidth + 4, 8);
+        const bgX = Math.max(0, Math.min(256 - (textWidth + 4), labelX - textWidth - 10));
+        const bgY = Math.max(0, Math.min(232, labelY - 6));
+        ctx.fillRect(bgX, bgY, textWidth + 4, 8);
         ctx.fillStyle = COLORS.yellow;
-        ctx.fillText(destMap.name, labelX - textWidth - 8, labelY);
+        ctx.fillText(destMap.name, bgX + 2, bgY + 6);
         // Arrow
-        ctx.fillText('<', labelX + 2, labelY);
+        ctx.fillText('<', Math.max(0, Math.min(252, labelX + 2)), Math.max(8, Math.min(236, labelY)));
       } else if (exit.direction === 'right') {
-        ctx.fillRect(labelX + 6, labelY - 6, textWidth + 4, 8);
+        const bgX = Math.max(0, Math.min(256 - (textWidth + 4), labelX + 6));
+        const bgY = Math.max(0, Math.min(232, labelY - 6));
+        ctx.fillRect(bgX, bgY, textWidth + 4, 8);
         ctx.fillStyle = COLORS.yellow;
-        ctx.fillText(destMap.name, labelX + 8, labelY);
+        ctx.fillText(destMap.name, bgX + 2, bgY + 6);
         // Arrow
-        ctx.fillText('>', labelX - 4, labelY);
+        ctx.fillText('>', Math.max(0, Math.min(252, labelX - 4)), Math.max(8, Math.min(236, labelY)));
       }
     }
   }
