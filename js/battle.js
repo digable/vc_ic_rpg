@@ -82,6 +82,23 @@ function maybeTriggerSovereignMidDialog() {
   return false;
 }
 
+function getRunSuccessChance(enemy) {
+  const runChanceByEnemy = {
+    'Restless Zombie': 0.95,
+    'Skeletal Groundskeeper': 0.75,
+    'Cemetery Witch': 0.6,
+    'Wailing Ghost': 0.5,
+    'Lantern Wisp': 0.45,
+    'Raven Swarm': 0.35,
+    'Lake Monster': 0.2,
+    'Cave Drake': 0.3,
+    'Cave Sovereign': 0.05,
+    'Corrupted Administrator': 0.03
+  };
+
+  return runChanceByEnemy[enemy.name] ?? 0.5;
+}
+
 export function executeBattleAction() {
   if (game.battleState.animating) return;
   
@@ -128,7 +145,8 @@ export function executeBattleAction() {
       game.battleState.message = 'Choose an item:';
     }
   } else if (action === 'Run') {
-    if (Math.random() < 0.5) {
+    const runSuccessChance = getRunSuccessChance(game.battleState.enemy);
+    if (Math.random() < runSuccessChance) {
       game.battleState.message = 'You ran away!';
       setTimeout(() => {
         game.state = 'explore';
