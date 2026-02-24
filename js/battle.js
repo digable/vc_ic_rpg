@@ -90,7 +90,7 @@ function getRunSuccessChance(enemy) {
     'Wailing Ghost': 0.5,
     'Lantern Wisp': 0.45,
     'Raven Swarm': 0.35,
-    'Lake Monster': 0.2,
+    'Lake Monster': 0.8,
     'Cave Drake': 0.3,
     'Cave Sovereign': 0.05,
     'Corrupted Administrator': 0.03
