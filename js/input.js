@@ -19,6 +19,7 @@ import { advanceDialogue, startDialogue } from './dialogue.js';
 import { executeBattleAction, startBattle, executeSpell, useItemFromMenu, useItemInBattle } from './battle.js';
 import { checkNPCInteraction, getNearbyNPC, updateQuestProgress } from './quests-logic.js';
 import { checkMapTransition, checkCollision, openFoodCart } from './world.js';
+import { clearLocalSave, loadGameFromLocal, MAX_LOCAL_SAVES, saveGameToLocal } from './save.js';
 
 // Input state
 export const keys = {};
@@ -34,7 +35,32 @@ export function setSpacePressed(value) {
   spacePressed = value;
 }
 
+function resetSaveMenuState() {
+  game.saveMenuMode = 'actions';
+  game.saveMenuAction = null;
+  game.saveSlotSelection = 0;
+}
+
+function showSystemMessage(text) {
+  game.systemMessage = {
+    text,
+    expiresAt: Date.now() + 1800
+  };
+}
+
 export function setupInputHandlers() {
+  const updateTitleControlsText = () => {
+    const controlsText = document.getElementById('controls-text');
+    if (!controlsText) return;
+
+    if (isMobile) {
+      controlsText.textContent = 'D-PAD: Move | A: Action | M: Menu';
+      return;
+    }
+
+    controlsText.textContent = 'ARROW KEYS: Move | SPACE: Action/Advance Text | ESC: Menu';
+  };
+
   const startIntroStory = () => {
     document.getElementById('title-screen').classList.add('hidden');
     game.state = 'dialogue';
@@ -123,6 +149,8 @@ export function setupInputHandlers() {
       e.preventDefault();
     }, { passive: false });
   }
+
+  updateTitleControlsText();
 
   document.addEventListener('keydown', (e) => {
     if (e.key === ' ') {
@@ -239,6 +267,9 @@ export function handleInput() {
       if (game.menuOpen) {
         game.menuSelection = 0;
         game.menuTab = 0;
+        resetSaveMenuState();
+      } else {
+        resetSaveMenuState();
       }
       lastKeyTime = now;
     }
@@ -341,10 +372,34 @@ export function handleInput() {
     if (game.menuOpen) {
       if (keys['ArrowLeft']) {
         game.menuTab = Math.max(0, game.menuTab - 1);
+        if (game.menuTab !== 3) {
+          game.menuSelection = 0;
+          resetSaveMenuState();
+        }
         lastKeyTime = now;
       }
       if (keys['ArrowRight']) {
-        game.menuTab = Math.min(2, game.menuTab + 1);
+        game.menuTab = Math.min(3, game.menuTab + 1);
+        if (game.menuTab !== 3) {
+          game.menuSelection = 0;
+          resetSaveMenuState();
+        }
+        lastKeyTime = now;
+      }
+      if (keys['ArrowUp'] && game.menuTab === 3) {
+        if (game.saveMenuMode === 'slots') {
+          game.saveSlotSelection = Math.max(0, game.saveSlotSelection - 1);
+        } else {
+          game.menuSelection = Math.max(0, game.menuSelection - 1);
+        }
+        lastKeyTime = now;
+      }
+      if (keys['ArrowDown'] && game.menuTab === 3) {
+        if (game.saveMenuMode === 'slots') {
+          game.saveSlotSelection = Math.min(2, game.saveSlotSelection + 1);
+        } else {
+          game.menuSelection = Math.min(2, game.menuSelection + 1);
+        }
         lastKeyTime = now;
       }
       if (keys['ArrowUp'] && game.menuTab === 2) {
@@ -354,6 +409,57 @@ export function handleInput() {
       if (keys['ArrowDown'] && game.menuTab === 2) {
         game.itemMenuSelection = Math.min(game.consumables.length - 1, game.itemMenuSelection + 1);
         lastKeyTime = now;
+      }
+      if (keys['Escape'] && game.menuTab === 3 && game.saveMenuMode === 'slots') {
+        if (now - lastKeyTime > keyDelay) {
+          resetSaveMenuState();
+          lastKeyTime = now;
+        }
+      }
+
+      if (keys[' '] && game.menuTab === 3) {
+        if (now - lastKeyTime > keyDelay) {
+          if (game.saveMenuMode === 'actions') {
+            if (game.menuSelection === 0) {
+              game.saveMenuMode = 'slots';
+              game.saveMenuAction = 'save';
+              game.saveSlotSelection = 0;
+            } else if (game.menuSelection === 1) {
+              game.saveMenuMode = 'slots';
+              game.saveMenuAction = 'load';
+              game.saveSlotSelection = 0;
+            } else if (game.menuSelection === 2) {
+              game.saveMenuMode = 'slots';
+              game.saveMenuAction = 'delete';
+              game.saveSlotSelection = 0;
+            }
+          } else if (game.saveMenuMode === 'slots' && game.saveMenuAction) {
+            if (game.saveMenuAction === 'save') {
+              const result = saveGameToLocal(game.saveSlotSelection);
+              if (result.success) {
+                showSystemMessage(`Saved to slot ${result.slot + 1} (${result.count}/${MAX_LOCAL_SAVES})`);
+              } else {
+                showSystemMessage('Save failed');
+              }
+            } else if (game.saveMenuAction === 'load') {
+              const result = loadGameFromLocal(game.saveSlotSelection);
+              if (result.success) {
+                showSystemMessage(`Loaded slot ${result.slot + 1}`);
+              } else {
+                showSystemMessage('No save in that slot');
+              }
+            } else if (game.saveMenuAction === 'delete') {
+              const result = clearLocalSave(game.saveSlotSelection);
+              if (result.success) {
+                showSystemMessage(`Deleted slot ${result.slot + 1} (${result.count}/${MAX_LOCAL_SAVES})`);
+              } else {
+                showSystemMessage('No save in that slot');
+              }
+            }
+            resetSaveMenuState();
+          }
+          lastKeyTime = now;
+        }
       }
       if (keys[' '] && game.menuTab === 2 && game.consumables.length > 0) {
         if (now - lastKeyTime > keyDelay) {

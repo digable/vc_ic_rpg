@@ -6,6 +6,7 @@ import { game } from './game-state.js';
 import { setupInputHandlers, handleInput } from './input.js';
 import { maps } from './maps.js';
 import { cambusRoutes } from './data.js';
+import { loadGameFromLocal } from './save.js';
 import { 
   setupCanvas,
   drawMap, 
@@ -33,6 +34,11 @@ console.log('Test modules available: window.gameModules');
 // Setup
 const { canvas, ctx } = setupCanvas();
 setupInputHandlers();
+
+const loadedFromSave = loadGameFromLocal();
+if (loadedFromSave.success) {
+  console.log('Loaded local save data.');
+}
 
 // Game loop
 function gameLoop() {

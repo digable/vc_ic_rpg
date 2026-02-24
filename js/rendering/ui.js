@@ -2,6 +2,7 @@
 import { COLORS, isMobile } from '../constants.js';
 import { game } from '../game-state.js';
 import { maps } from '../maps.js';
+import { getSaveCount, getSaveSlots, MAX_LOCAL_SAVES } from '../save.js';
 import { getButtonLabel, getMenuLabel, wrapText, setCtx } from './utils.js';
 
 export function drawHUD() {
@@ -31,6 +32,23 @@ export function drawHUD() {
   const mpWidth = (game.player.mp / game.player.maxMp) * 60;
   ctx.fillRect(180, 14, mpWidth, 6);
   ctx.strokeRect(180, 14, 60, 6);
+
+  if (game.systemMessage && game.systemMessage.text) {
+    if (Date.now() <= game.systemMessage.expiresAt) {
+      const messageText = game.systemMessage.text;
+      ctx.font = '6px "Press Start 2P"';
+      const width = Math.min(236, Math.max(70, ctx.measureText(messageText).width + 10));
+      const x = Math.floor((256 - width) / 2);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+      ctx.fillRect(x, 26, width, 12);
+      ctx.strokeStyle = COLORS.yellow;
+      ctx.strokeRect(x, 26, width, 12);
+      ctx.fillStyle = COLORS.yellow;
+      ctx.fillText(messageText, x + 5, 34);
+    } else {
+      game.systemMessage = null;
+    }
+  }
   
   // Contextual controls at bottom
   const nearbyNPC = getNearbyNPC();
@@ -163,6 +181,9 @@ export function drawMenu() {
   
   ctx.fillStyle = game.menuTab === 2 ? COLORS.yellow : COLORS.gray;
   ctx.fillText('ITEMS', 145, 43);
+
+  ctx.fillStyle = game.menuTab === 3 ? COLORS.yellow : COLORS.gray;
+  ctx.fillText('SAVE', 190, 43);
   
   // Tab indicator
   ctx.fillStyle = COLORS.yellow;
@@ -170,8 +191,10 @@ export function drawMenu() {
     ctx.fillRect(30, 46, 40, 2);
   } else if (game.menuTab === 1) {
     ctx.fillRect(90, 46, 25, 2);
-  } else {
+  } else if (game.menuTab === 2) {
     ctx.fillRect(140, 46, 35, 2);
+  } else {
+    ctx.fillRect(186, 46, 30, 2);
   }
   
   if (game.menuTab === 0) {
@@ -191,6 +214,7 @@ export function drawMenu() {
     
     // Skills
     if (game.skills.length > 0) {
+      ctx.fillStyle = COLORS.white;
       ctx.fillText('SKILLS', 30, 158);
       game.skills.slice(0, 2).forEach((skill, i) => {
         ctx.fillText(`- ${skill}`, 30, 170 + i * 10);
@@ -200,6 +224,7 @@ export function drawMenu() {
     // Spells
     if (game.spells.length > 0) {
       const spellY = game.skills.length > 0 ? 158 : 158;
+      ctx.fillStyle = COLORS.white;
       ctx.fillText('SPELLS', 130, spellY);
       game.spells.slice(0, 2).forEach((spell, i) => {
         ctx.fillText(`- ${spell}`, 130, spellY + 12 + i * 10);
@@ -304,6 +329,76 @@ export function drawMenu() {
       ctx.fillStyle = COLORS.gray;
       ctx.font = '5px "Press Start 2P"';
       ctx.fillText(getButtonLabel('Use item'), 60, 190);
+    }
+  } else if (game.menuTab === 3) {
+    const saveCount = getSaveCount();
+    const saveExists = saveCount > 0;
+    const saveActions = [
+      { label: 'Save Game', enabled: true },
+      { label: 'Load Game', enabled: saveExists },
+      { label: 'Delete Save', enabled: saveExists }
+    ];
+    const actionName = game.saveMenuAction ? game.saveMenuAction.toUpperCase() : 'SAVE';
+    const slots = getSaveSlots();
+
+    ctx.fillStyle = COLORS.white;
+    ctx.font = '6px "Press Start 2P"';
+    ctx.fillText('SAVE DATA', 86, 58);
+    ctx.fillStyle = COLORS.gray;
+    ctx.fillText(`${saveCount}/${MAX_LOCAL_SAVES} saves`, 86, 68);
+
+    if (game.saveMenuMode === 'slots') {
+      ctx.fillStyle = COLORS.yellow;
+      ctx.font = '5px "Press Start 2P"';
+      ctx.fillText(`SELECT SLOT TO ${actionName}`, 40, 70);
+
+      ctx.fillStyle = COLORS.black;
+      ctx.fillRect(30, 80, 196, 58);
+      ctx.strokeStyle = COLORS.gray;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(30, 80, 196, 58);
+
+      ctx.font = '5px "Press Start 2P"';
+      slots.forEach((slot, i) => {
+        const rowTop = 82 + i * 18;
+        const y = rowTop + 11;
+
+        ctx.fillStyle = COLORS.black;
+        ctx.fillRect(32, rowTop, 192, 16);
+
+        if (game.saveSlotSelection === i) {
+          ctx.fillStyle = COLORS.yellow;
+          ctx.fillRect(32, rowTop, 192, 16);
+          ctx.strokeStyle = COLORS.yellow;
+          ctx.lineWidth = 1;
+          ctx.strokeRect(32, rowTop, 192, 16);
+          ctx.fillStyle = COLORS.black;
+          ctx.fillText('>', 38, y);
+          ctx.fillText(`SLOT ${i + 1}: ${slot.label}`, 50, y);
+        } else {
+          ctx.fillStyle = slot.occupied ? COLORS.white : COLORS.gray;
+          ctx.fillText(`SLOT ${i + 1}: ${slot.label}`, 50, y);
+        }
+      });
+
+      ctx.fillStyle = COLORS.gray;
+      ctx.font = '5px "Press Start 2P"';
+      ctx.fillText('UP/DOWN + SPACE', 86, 166);
+      ctx.fillText('ESC OR <-/-> TO CANCEL', 64, 176);
+    } else {
+      saveActions.forEach((action, i) => {
+        const y = 98 + i * 16;
+        if (game.menuSelection === i) {
+          ctx.fillStyle = COLORS.yellow;
+          ctx.fillText('>', 74, y);
+        }
+        ctx.fillStyle = action.enabled ? COLORS.white : COLORS.gray;
+        ctx.fillText(action.label, 86, y);
+      });
+
+      ctx.fillStyle = COLORS.gray;
+      ctx.font = '5px "Press Start 2P"';
+      ctx.fillText('UP/DOWN + SPACE', 86, 166);
     }
   }
   

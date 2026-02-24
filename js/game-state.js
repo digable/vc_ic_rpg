@@ -29,7 +29,10 @@ export const game = {
   battleState: null,
   menuOpen: false,
   menuSelection: 0,
-  menuTab: 0, // 0=stats, 1=map, 2=items
+  menuTab: 0, // 0=stats, 1=map, 2=items, 3=save
+  saveMenuMode: 'actions', // actions, slots
+  saveMenuAction: null, // save, load, delete
+  saveSlotSelection: 0,
   shopOpen: false,
   shopSelection: 0,
   shopPage: 0, // For pagination
@@ -55,6 +58,7 @@ export const game = {
   caveSovereignIntroSeen: false,
   quests: [], // Active and completed quests
   textBox: null,
+  systemMessage: null,
   levelUpDialog: null, // Stores level up info when level up occurs
   animFrame: 0
 };
@@ -120,6 +124,9 @@ export function resetGameState() {
   game.menuOpen = false;
   game.menuSelection = 0;
   game.menuTab = 0;
+  game.saveMenuMode = 'actions';
+  game.saveMenuAction = null;
+  game.saveSlotSelection = 0;
   game.shopOpen = false;
   game.shopSelection = 0;
   game.shopPage = 0;
@@ -145,6 +152,7 @@ export function resetGameState() {
   game.caveSovereignIntroSeen = false;
   game.quests = [];
   game.textBox = null;
+  game.systemMessage = null;
   game.levelUpDialog = null;
   game.animFrame = 0;
   
