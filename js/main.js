@@ -35,10 +35,12 @@ console.log('Test modules available: window.gameModules');
 const { canvas, ctx } = setupCanvas();
 setupInputHandlers();
 
-const loadedFromSave = loadGameFromLocal();
-if (loadedFromSave.success) {
-  console.log('Loaded local save data.');
-}
+// Do not auto-load saved games on page reload
+// Game starts fresh, user can load saves manually from menu
+// const loadedFromSave = loadGameFromLocal();
+// if (loadedFromSave.success) {
+//   console.log('Loaded local save data.');
+// }
 
 // Game loop
 function gameLoop() {
