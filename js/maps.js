@@ -73,7 +73,7 @@ export const maps = {
       { x: 128, y: 16, toMap: 'coralville_lake', toX: 128, toY: 208, direction: 'up' },
       { x: 16, y: 120, toMap: 'city_park', toX: 224, toY: 120, direction: 'left' },
       { x: 224, y: 112, toMap: 'deadwood', toX: 32, toY: 112, direction: 'right' },
-      { x: 128, y: 224, toMap: 'northside', toX: 128, toY: 32, direction: 'down' }
+      { x: 128, y: 224, toMap: 'northside', toX: 128, toY: 16, direction: 'down' }
     ]
   },
   pentacrest: {
@@ -427,7 +427,6 @@ export const maps = {
     npcs: [
       { x: 128, y: 96, name: 'Coach', hasQuest: 'hawkeye_spirit', dialogue: ['Go Hawks!', 'This stadium holds 70,000 fans!', 'The atmosphere on game day is electric!'] },
       { x: 64, y: 80, name: 'Superfan', hasQuest: 'stadium_tour', dialogue: ['I never miss a game!', 'The wave is a tradition here.', 'Have you seen the Tigerhawk at midfield?'] },
-      { x: 192, y: 96, name: 'Athletic Trainer', type: 'healer', dialogue: ['Need a health check?', 'Athletes train hard here!', 'HP & MP restored!'] },
       { x: 96, y: 160, name: 'Food Cart Vendor', type: 'food_cart', dialogue: ['Game day specials!', 'Hot dogs and nachos!'] },
       { x: 48, y: 160, name: 'Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] }
     ],
@@ -529,7 +528,6 @@ export const maps = {
     npcs: [
       { x: 64, y: 64, name: 'Fisherman Hank', hasQuest: 'lake_monster', dialogue: ['Been fishing these waters forty years!', 'Coralville Lake is a local treasure.', 'Something big lurks in these waters...', 'But the catfish are worth the risk!'] },
       { x: 160, y: 80, name: 'Camper Jenny', hasQuest: 'camping_supplies', dialogue: ['Nothing beats a weekend in the outdoors!', 'The trails around here are beautiful.', 'The sunsets over the lake are unforgettable.'] },
-      { x: 128, y: 120, name: 'Park Ranger Steve', type: 'healer', dialogue: ['Welcome to Coralville Lake State Park!', 'Stay safe out there!', 'HP & MP restored!', 'Remember to protect nature!'] },
       { x: 96, y: 64, name: 'Beach Vendor Rosa', type: 'food_cart', dialogue: ['Fresh beach snacks!', 'Cold drinks for hot days!', 'Perfect for a day by the lake!'] },
       { x: 48, y: 80, name: 'Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] }
     ],

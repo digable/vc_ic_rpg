@@ -528,27 +528,6 @@ export function drawNPC(npc) {
     ctx.fillStyle = COLORS.darkGray;
     ctx.fillRect(x - 5, y + 6, 4, 6);
     ctx.fillRect(x + 1, y + 6, 4, 6);
-  } else if (npc.name === 'Restaurant Owner' || npc.name === 'Chef') {
-    ctx.fillStyle = COLORS.white;
-    ctx.fillRect(x - 6, y - 4, 12, 10);
-    ctx.fillStyle = COLORS.darkGray;
-    ctx.fillRect(x - 4, y - 2, 2, 2);
-    ctx.fillRect(x - 4, y + 2, 2, 2);
-    ctx.fillRect(x + 2, y - 2, 2, 2);
-    ctx.fillRect(x + 2, y + 2, 2, 2);
-    ctx.fillStyle = '#c68642';
-    ctx.fillRect(x - 5, y - 13, 10, 9);
-    ctx.fillStyle = COLORS.white;
-    ctx.fillRect(x - 6, y - 18, 12, 6);
-    ctx.fillRect(x - 4, y - 19, 8, 1);
-    ctx.fillStyle = COLORS.black;
-    ctx.fillRect(x - 3, y - 9, 2, 1);
-    ctx.fillRect(x + 1, y - 9, 2, 1);
-    ctx.fillStyle = COLORS.black;
-    ctx.fillRect(x - 4, y - 6, 8, 2);
-    ctx.fillStyle = COLORS.gray;
-    ctx.fillRect(x - 5, y + 6, 4, 6);
-    ctx.fillRect(x + 1, y + 6, 4, 6);
   } else if (npc.name === 'Diner') {
     ctx.fillStyle = COLORS.blue;
     ctx.fillRect(x - 6, y - 4, 12, 10);
@@ -586,23 +565,74 @@ export function drawNPC(npc) {
     ctx.fillStyle = COLORS.darkGray;
     ctx.fillRect(x - 5, y + 6, 4, 6);
     ctx.fillRect(x + 1, y + 6, 4, 6);
-  } else if (npc.name === 'Caver' || npc.name === 'Veteran Caver') {
-    // Cave explorer - rugged, brown leather
-    ctx.fillStyle = '#8b6914';
+  } else if (npc.name === 'Caver') {
+    // Young cave explorer - basic leather gear
+    ctx.fillStyle = '#8b6914'; // Tan leather jacket
     ctx.fillRect(x - 6, y - 4, 12, 10);
     ctx.fillStyle = COLORS.tan;
     ctx.fillRect(x - 5, y - 13, 10, 9);
     ctx.fillStyle = COLORS.brown;
     ctx.fillRect(x - 5, y - 13, 10, 3);
+    // Torch light (glowing)
+    ctx.fillStyle = '#ffaa00';
+    ctx.beginPath();
+    ctx.arc(x + 7, y - 5, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    // Torch stick
+    ctx.fillStyle = COLORS.brown;
+    ctx.fillRect(x + 6, y - 2, 1, 6);
+    // Quick eyes
     ctx.fillStyle = COLORS.black;
     ctx.fillRect(x - 3, y - 9, 2, 1);
     ctx.fillRect(x + 1, y - 9, 2, 1);
+    // Rope on belt
+    ctx.fillStyle = '#d4a76a';
+    ctx.fillRect(x - 3, y + 2, 6, 1);
+    // Legs in leather pants
+    ctx.fillStyle = COLORS.brown;
+    ctx.fillRect(x - 5, y + 6, 4, 6);
+    ctx.fillRect(x + 1, y + 6, 4, 6);
+  } else if (npc.name === 'Veteran Caver') {
+    // Veteran cave explorer - experienced, full gear
+    ctx.fillStyle = '#6b4914'; // Darker worn leather jacket
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#c68642'; // More tan face (weathered)
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#4a3728'; // Dark brown hair
+    ctx.fillRect(x - 5, y - 13, 10, 3);
+    // Scars on face (experience marks)
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#8b6914';
+    ctx.beginPath();
+    ctx.moveTo(x - 4, y - 7);
+    ctx.lineTo(x - 2, y - 6);
+    ctx.stroke();
+    // Mining helmet with lamp
+    ctx.fillStyle = COLORS.yellow;
+    ctx.fillRect(x - 6, y - 14, 12, 1);
+    // Lamp (brighter than Caver's torch)
+    ctx.fillStyle = '#ffff00';
+    ctx.beginPath();
+    ctx.arc(x - 5, y - 14, 1.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffdd00';
+    ctx.beginPath();
+    ctx.arc(x - 5, y - 14, 0.6, 0, Math.PI * 2);
+    ctx.fill();
+    // Experienced eyes
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y - 9, 2, 1);
+    ctx.fillRect(x + 1, y - 9, 2, 1);
+    // Heavy pack on back
+    ctx.fillStyle = COLORS.darkGray;
+    ctx.fillRect(x - 8, y - 1, 3, 5);
     // Pickaxe
     ctx.fillStyle = COLORS.brown;
-    ctx.fillRect(x + 5, y - 8, 1, 14);
+    ctx.fillRect(x + 5, y - 6, 1, 10);
     ctx.fillStyle = COLORS.darkGray;
-    ctx.fillRect(x + 4, y - 9, 3, 2);
-    ctx.fillStyle = COLORS.darkGray;
+    ctx.fillRect(x + 4, y - 7, 3, 2);
+    // Legs in heavy boots/leather pants
+    ctx.fillStyle = '#2c1810';
     ctx.fillRect(x - 5, y + 6, 4, 6);
     ctx.fillRect(x + 1, y + 6, 4, 6);
   } else if (npc.name === 'Explorer') {
@@ -899,6 +929,352 @@ export function drawNPC(npc) {
     ctx.fill();
     // Legs under robes
     ctx.fillStyle = '#5c4033';
+    ctx.fillRect(x - 4, y + 6, 3, 6);
+    ctx.fillRect(x + 1, y + 6, 3, 6);
+  } else if (npc.name === 'Groundskeeper') {
+    // Elder groundskeeper with work clothes
+    ctx.fillStyle = '#8B7355'; // Brown work jacket
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#d4a574'; // Weathered face
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#4a4a4a'; // Gray hair
+    ctx.fillRect(x - 5, y - 13, 10, 3);
+    // Wrinkles
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#a68b6a';
+    ctx.beginPath();
+    ctx.arc(x - 2, y - 8, 1.5, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(x + 2, y - 8, 1.5, 0, Math.PI * 2);
+    ctx.stroke();
+    // Eyes tired but determined
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y - 9, 2, 1);
+    ctx.fillRect(x + 1, y - 9, 2, 1);
+    // Shovel
+    ctx.strokeStyle = '#654321';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x + 7, y - 2);
+    ctx.lineTo(x + 10, y - 8);
+    ctx.stroke();
+    // Shovel blade
+    ctx.fillStyle = '#888888';
+    ctx.fillRect(x + 10, y - 9, 3, 2);
+    // Work pants
+    ctx.fillStyle = '#3a3a3a';
+    ctx.fillRect(x - 4, y + 6, 3, 6);
+    ctx.fillRect(x + 1, y + 6, 3, 6);
+  } else if (npc.name === 'Tourist') {
+    // Enthusiastic visitor with camera and sunglasses
+    ctx.fillStyle = '#FF6347'; // Red vacation shirt
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#ffdbac'; // Tan face
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#D2B48C'; // Light brown hair
+    ctx.fillRect(x - 5, y - 13, 10, 4);
+    // Sunglasses
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 4, y - 9, 2, 2);
+    ctx.fillRect(x + 2, y - 9, 2, 2);
+    ctx.fillStyle = COLORS.gray;
+    ctx.fillRect(x - 1, y - 9, 2, 1); // Sunglasses bridge
+    // Camera hanging
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x + 6, y + 1, 2, 3);
+    ctx.fillStyle = COLORS.yellow;
+    ctx.fillRect(x + 6, y + 1, 1, 1); // Camera lens
+    // Shorts
+    ctx.fillStyle = '#4169E1';
+    ctx.fillRect(x - 4, y + 6, 3, 4);
+    ctx.fillRect(x + 1, y + 6, 3, 4);
+    // Sandals/shoes
+    ctx.fillStyle = '#FFD700';
+    ctx.fillRect(x - 4, y + 10, 3, 1);
+    ctx.fillRect(x + 1, y + 10, 3, 1);
+  } else if (npc.name === 'Coach') {
+    // Athletic coach in team wear
+    ctx.fillStyle = '#FFD700'; // Golden/black team colors
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#c68642'; // Tan face
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#1a1a1a'; // Black hair
+    ctx.fillRect(x - 5, y - 13, 10, 3);
+    // Whistle around neck
+    ctx.fillStyle = COLORS.white;
+    ctx.beginPath();
+    ctx.arc(x, y - 2, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 1, y - 2, 2, 1);
+    // Whistle string
+    ctx.strokeStyle = COLORS.black;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x - 2, y - 1);
+    ctx.lineTo(x + 2, y - 1);
+    ctx.stroke();
+    // Face: serious expression
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y - 9, 2, 1);
+    ctx.fillRect(x + 1, y - 9, 2, 1);
+    // Whiskers/stubble
+    ctx.strokeStyle = '#8b7355';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x - 4, y - 3);
+    ctx.lineTo(x - 3, y - 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 4, y - 3);
+    ctx.lineTo(x + 3, y - 2);
+    ctx.stroke();
+    // Coach pants
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(x - 4, y + 6, 3, 6);
+    ctx.fillRect(x + 1, y + 6, 3, 6);
+  } else if (npc.name === 'Superfan') {
+    // Enthusiastic fan in team spirit
+    ctx.fillStyle = '#FFD700'; // Gold team colors
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#ffdbac'; // Peachy face
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#8B4513'; // Brown hair
+    ctx.fillRect(x - 5, y - 13, 10, 4);
+    // Team hat/headband
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 6, y - 14, 12, 2);
+    ctx.fillStyle = COLORS.white;
+    ctx.fillRect(x - 4, y - 12, 8, 1); // Team logo area
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 2, y - 11, 4, 1); // Logo
+    // Excited face with big smile
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y - 9, 2, 1);
+    ctx.fillRect(x + 1, y - 9, 2, 1);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = COLORS.black;
+    ctx.beginPath();
+    ctx.arc(x, y - 2, 2, 0, Math.PI);
+    ctx.stroke();
+    // Pom-poms or foam fingers
+    ctx.fillStyle = COLORS.white;
+    ctx.fillRect(x - 8, y - 1, 2, 3);
+    ctx.fillRect(x + 6, y - 1, 2, 3);
+    // Legs in team colors
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(x - 4, y + 6, 3, 6);
+    ctx.fillRect(x + 1, y + 6, 3, 6);
+  } else if (npc.name === 'Street Musician') {
+    // Musician with instrument and street style
+    ctx.fillStyle = '#4169E1'; // Blue jacket
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#ffdbac'; // Face
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#FF6347'; // Red hair/hat
+    ctx.fillRect(x - 5, y - 13, 10, 4);
+    ctx.fillRect(x - 6, y - 13, 12, 1); // hat brim
+    // Musician's hands visible
+    ctx.fillStyle = '#ffdbac';
+    ctx.fillRect(x - 7, y - 2, 2, 3);
+    ctx.fillRect(x + 5, y - 2, 2, 3);
+    // Guitar/instrument body
+    ctx.fillStyle = '#8B4513';
+    ctx.beginPath();
+    ctx.arc(x + 8, y + 1, 2, 0, Math.PI * 2);
+    ctx.fill();
+    // Guitar neck
+    ctx.fillStyle = '#654321';
+    ctx.fillRect(x + 9, y - 8, 1, 10);
+    // Strings
+    ctx.strokeStyle = '#FFD700';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 6; i++) {
+      ctx.beginPath();
+      ctx.moveTo(x + 9, y - 6 + i);
+      ctx.lineTo(x + 8, y + 3);
+      ctx.stroke();
+    }
+    // Happy face
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y - 9, 2, 1);
+    ctx.fillRect(x + 1, y - 9, 2, 1);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = COLORS.black;
+    ctx.beginPath();
+    ctx.arc(x, y - 3, 2, 0, Math.PI);
+    ctx.stroke();
+    // Legs
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(x - 4, y + 6, 3, 6);
+    ctx.fillRect(x + 1, y + 6, 3, 6);
+  } else if (npc.name === 'Deep Delver') {
+    // Deep cave explorer with mining gear
+    ctx.fillStyle = '#5a5a5a'; // Dark gray mining suit
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#c68642'; // Tan face
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#2c1810'; // Dark brown hair
+    ctx.fillRect(x - 5, y - 13, 10, 3);
+    // Mining helmet
+    ctx.fillStyle = COLORS.yellow;
+    ctx.fillRect(x - 6, y - 14, 12, 1);
+    // Helmet lamp (glowing)
+    ctx.fillStyle = '#ffff00';
+    ctx.beginPath();
+    ctx.arc(x - 5, y - 14, 1, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffcc00';
+    ctx.beginPath();
+    ctx.arc(x - 5, y - 14, 0.5, 0, Math.PI * 2);
+    ctx.fill();
+    // Light glow
+    ctx.strokeStyle = 'rgba(255, 255, 0, 0.3)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x - 5, y - 14, 3, 0, Math.PI * 2);
+    ctx.stroke();
+    // Serious eyes (cave explorer)
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y - 9, 2, 1);
+    ctx.fillRect(x + 1, y - 9, 2, 1);
+    // Pickaxe
+    ctx.strokeStyle = '#654321';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x + 7, y - 2);
+    ctx.lineTo(x + 10, y - 8);
+    ctx.stroke();
+    // Pickaxe head
+    ctx.fillStyle = '#888888';
+    ctx.fillRect(x + 10, y - 9, 2, 3);
+    // Mining suit straps/pockets
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 2, y + 1, 1, 2);
+    ctx.fillRect(x + 1, y + 1, 1, 2);
+    // Legs in heavy boots
+    ctx.fillStyle = '#2c1810';
+    ctx.fillRect(x - 4, y + 6, 3, 6);
+    ctx.fillRect(x + 1, y + 6, 3, 6);
+    // Boot emphasis
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 4, y + 12, 3, 1);
+    ctx.fillRect(x + 1, y + 12, 3, 1);
+  } else if (npc.name === 'Sealed Hermit') {
+    // Mysterious isolated figure in heavy robes
+    ctx.globalAlpha = 0.85; // Ghostly appearance
+    ctx.fillStyle = '#1a1a3a'; // Very dark blue/purple robes
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#8b7355'; // Gray/brown face (aged)
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#4a4a4a'; // Gray-white hair
+    ctx.fillRect(x - 5, y - 13, 10, 4);
+    // Hood/deep shadow eyes
+    ctx.fillStyle = '#0a0a1a';
+    ctx.fillRect(x - 6, y - 11, 12, 2);
+    // Eyes barely visible in shadow (green glow)
+    ctx.fillStyle = COLORS.green;
+    ctx.fillRect(x - 3, y - 9, 1, 1);
+    ctx.fillRect(x + 2, y - 9, 1, 1);
+    // Mystical aura (glow effect)
+    ctx.strokeStyle = 'rgba(100, 255, 100, 0.4)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y + 2, 13, 0, Math.PI * 2);
+    ctx.stroke();
+    // Mystical orb/staff orb
+    ctx.fillStyle = COLORS.green;
+    ctx.beginPath();
+    ctx.arc(x + 7, y, 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#00ff00';
+    ctx.beginPath();
+    ctx.arc(x + 7, y, 1, 0, Math.PI * 2);
+    ctx.fill();
+    // Orb glow
+    ctx.strokeStyle = 'rgba(0, 255, 0, 0.5)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x + 7, y, 3, 0, Math.PI * 2);
+    ctx.stroke();
+    // Empty robe legs (flowing)
+    ctx.fillStyle = '#0a0a2a';
+    ctx.fillRect(x - 4, y + 6, 3, 6);
+    ctx.fillRect(x + 1, y + 6, 3, 6);
+    ctx.globalAlpha = 1; // Reset alpha for next NPC
+  } else if (npc.name === 'Chef') {
+    // Professional chef in whites and toque
+    ctx.fillStyle = COLORS.white; // White chef's coat
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#ffdbac'; // Light face
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#2c1810'; // Dark hair under chef hat
+    ctx.fillRect(x - 5, y - 13, 10, 3);
+    // Toque (chef's hat)
+    ctx.fillStyle = COLORS.white;
+    ctx.fillRect(x - 6, y - 18, 12, 6);
+    ctx.fillRect(x - 4, y - 20, 8, 2); // Hat crown
+    ctx.fillStyle = '#cccccc';
+    ctx.fillRect(x - 4, y - 19, 8, 1); // Hat band
+    // Focused professional look
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y - 9, 2, 1);
+    ctx.fillRect(x + 1, y - 9, 2, 1);
+    // Chef's smile (concentration)
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = COLORS.black;
+    ctx.beginPath();
+    ctx.moveTo(x - 2, y - 3);
+    ctx.lineTo(x + 2, y - 3);
+    ctx.stroke();
+    // Apron
+    ctx.fillStyle = COLORS.white;
+    ctx.fillRect(x - 5, y + 2, 10, 4);
+    // Apron pocket
+    ctx.fillStyle = '#e0e0e0';
+    ctx.fillRect(x - 2, y + 3, 4, 2);
+    // Chef's knife
+    ctx.fillStyle = '#888888';
+    ctx.fillRect(x + 6, y - 2, 1, 5); // Knife blade
+    ctx.fillStyle = '#8B4513';
+    ctx.fillRect(x + 5, y + 3, 2, 1); // Knife handle
+    // Legs in white chef pants
+    ctx.fillStyle = COLORS.white;
+    ctx.fillRect(x - 4, y + 6, 3, 6);
+    ctx.fillRect(x + 1, y + 6, 3, 6);
+    // Chef's clogs/shoes
+    ctx.fillStyle = '#aaaaaa';
+    ctx.fillRect(x - 4, y + 12, 3, 1);
+    ctx.fillRect(x + 1, y + 12, 3, 1);
+  } else if (npc.name === 'Restaurant Owner') {
+    // Proud restaurant owner with apron
+    ctx.fillStyle = '#8B0000'; // Deep red/burgundy business wear
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#ffdbac'; // Tan face
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#1a1a1a'; // Black hair
+    ctx.fillRect(x - 5, y - 13, 10, 3);
+    // Name badge/pin
+    ctx.fillStyle = COLORS.gold;
+    ctx.fillRect(x - 1, y - 1, 2, 2);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x, y - 1, 1, 1);
+    // Professional look - suit
+    ctx.fillStyle = '#4a4a4a'; // Gray suit vest
+    ctx.fillRect(x - 4, y + 2, 8, 3);
+    // Tie
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x - 1, y - 1, 2, 3);
+    // Confident face
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y - 9, 2, 1);
+    ctx.fillRect(x + 1, y - 9, 2, 1);
+    // Mustache
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(x - 2, y - 4, 4, 1);
+    // Legs in dress pants
+    ctx.fillStyle = COLORS.black;
     ctx.fillRect(x - 4, y + 6, 3, 6);
     ctx.fillRect(x + 1, y + 6, 3, 6);
   } else {
