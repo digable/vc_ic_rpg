@@ -89,6 +89,13 @@ export const consumableItems = [
   { name: 'Wine Selection', price: 50, effect: 'buffIntellect', amount: 7, turns: 4, description: 'Temp +7 Intellect (4 turns)', vendor: 'Bartender' },
   { name: 'Craft Beer', price: 25, effect: 'buffVitality', amount: 3, turns: 3, description: 'Temp +3 Vitality (3 turns)', vendor: 'Bartender' },
 
+  // Beach Vendor Rosa (Lake Snacks)
+  { name: 'Beach Lemonade', price: 22, effect: 'healMP', amount: 18, description: 'Restores 18 MP', vendor: 'Beach Vendor Rosa' },
+  { name: 'Watermelon Slice', price: 18, effect: 'healHP', amount: 22, description: 'Restores 22 HP', vendor: 'Beach Vendor Rosa' },
+  { name: 'Sunscreen Snack', price: 25, effect: 'buffVitality', amount: 4, turns: 4, description: 'Temp +4 Vitality (4 turns)', vendor: 'Beach Vendor Rosa' },
+  { name: 'Fishing Bait Mix', price: 30, effect: 'buffLuck', amount: 6, turns: 5, description: 'Temp +6 Luck (5 turns)', vendor: 'Beach Vendor Rosa' },
+  { name: 'Lake Water Ice', price: 20, effect: 'healBoth', hpAmount: 25, mpAmount: 10, description: 'Restore 25 HP & 10 MP', vendor: 'Beach Vendor Rosa' },
+
   // Cave Loot (Depths I)
   { name: 'Cave Jerky', price: 0, effect: 'healHP', amount: 35, description: 'Restores 35 HP' },
   { name: 'Miner\'s Tea', price: 0, effect: 'healMP', amount: 25, description: 'Restores 25 MP' },

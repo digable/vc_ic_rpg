@@ -793,22 +793,332 @@ export function drawEnemySprite(enemy, x, y) {
     ctx.arc(x, y + 3, 15, 0, Math.PI * 2);
     ctx.stroke();
 
-  } else if (enemy.name === 'Cave Sovereign') {
-    ctx.fillStyle = '#2b2230';
-    ctx.fillRect(x - 14, y - 8, 28, 28);
+  } else if (enemy.name === 'Haunted Portrait') {
+    // Ornate portrait frame with creepy ghostly face
+    ctx.fillStyle = '#8B4513'; // brown frame
+    ctx.fillRect(x - 14, y - 16, 28, 32); // outer frame
+    ctx.fillStyle = COLORS.white;
+    ctx.fillRect(x - 10, y - 12, 20, 24); // portrait background
+    
+    // Ornate frame corners
+    ctx.fillStyle = '#654321'; // darker brown
+    ctx.fillRect(x - 14, y - 16, 3, 3); // top left
+    ctx.fillRect(x + 11, y - 16, 3, 3); // top right
+    ctx.fillRect(x - 14, y + 13, 3, 3); // bottom left
+    ctx.fillRect(x + 11, y + 13, 3, 3); // bottom right
+    
+    // Frame lines
+    ctx.strokeStyle = '#654321';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x - 14, y - 16, 28, 32);
+    
+    // Ghostly face (fades in/out with alpha)
+    ctx.fillStyle = 'rgba(200, 200, 220, 0.8)'; // pale ghostly color
+    // Head oval
+    ctx.beginPath();
+    ctx.ellipse(x, y - 2, 6, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Haunted eyes (hollow, staring)
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 4, y - 4, 2, 3);
+    ctx.fillRect(x + 2, y - 4, 2, 3);
     ctx.fillStyle = COLORS.darkGray;
+    ctx.fillRect(x - 3, y - 3, 1, 1);
+    ctx.fillRect(x + 3, y - 3, 1, 1);
+    
+    // Sad/haunted mouth
+    ctx.strokeStyle = COLORS.black;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x - 2, y + 2);
+    ctx.quadraticCurveTo(x, y + 4, x + 2, y + 2);
+    ctx.stroke();
+    
+    // Ghostly aura
+    ctx.strokeStyle = 'rgba(150, 150, 200, 0.4)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(x, y, 12, 14, 0, 0, Math.PI * 2);
+    ctx.stroke();
+
+  } else if (enemy.name === 'Historic Ghost') {
+    // Colonial-era ghost figure
+    ctx.fillStyle = 'rgba(220, 220, 240, 0.9)'; // ghostly white
+    // Body (trapezoid shape like ghost)
+    ctx.beginPath();
+    ctx.moveTo(x - 8, y - 6);
+    ctx.lineTo(x + 8, y - 6);
+    ctx.lineTo(x + 12, y + 14);
+    ctx.lineTo(x - 12, y + 14);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Ghost outline
+    ctx.strokeStyle = 'rgba(150, 150, 200, 0.7)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    // Head circle
+    ctx.fillStyle = 'rgba(220, 220, 240, 0.9)';
+    ctx.beginPath();
+    ctx.arc(x, y - 8, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(150, 150, 200, 0.7)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    // Haunted eyes
+    ctx.fillStyle = COLORS.purple;
+    ctx.fillRect(x - 3, y - 10, 2, 3);
+    ctx.fillRect(x + 1, y - 10, 2, 3);
+    
+    // Spectral glow
+    ctx.fillStyle = 'rgba(100, 150, 255, 0.3)';
+    ctx.beginPath();
+    ctx.arc(x, y + 4, 18, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Period clothing: colonial coat outline
+    ctx.strokeStyle = 'rgba(100, 100, 150, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x - 8, y - 2);
+    ctx.lineTo(x - 12, y + 8);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 8, y - 2);
+    ctx.lineTo(x + 12, y + 8);
+    ctx.stroke();
+
+  } else if (enemy.name === 'Cave Sovereign') {
+    // Boss crystal creature
+    ctx.fillStyle = '#3a4a7a'; // Deep purple blue
+    // Large armored body
+    ctx.fillRect(x - 14, y - 8, 28, 28);
+    // Crown/head
+    ctx.fillStyle = '#5a6aaa';
     ctx.fillRect(x - 10, y - 14, 20, 8);
+    // Glowing eyes
     ctx.fillStyle = COLORS.red;
     ctx.fillRect(x - 6, y - 8, 4, 4);
     ctx.fillRect(x + 2, y - 8, 4, 4);
+    // Crown points
+    ctx.fillStyle = '#aabbdd';
+    ctx.fillRect(x - 10, y - 14, 3, 3);
+    ctx.fillRect(x - 2, y - 14, 3, 3);
+    ctx.fillRect(x + 6, y - 14, 3, 3);
+    // Boss aura
+    ctx.strokeStyle = 'rgba(150, 100, 255, 0.8)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(x, y + 2, 22, 0, Math.PI * 2);
+    ctx.stroke();
+
+  } else if (enemy.name === 'Rival Fan') {
+    // Angry fan with jersey and foam finger
+    ctx.fillStyle = '#d4a520'; // Gold team colors
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = COLORS.tan;
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#2c2c2c'; // Dark hair
+    ctx.fillRect(x - 5, y - 13, 10, 3);
+    // Angry face
     ctx.fillStyle = COLORS.black;
-    ctx.fillRect(x - 4, y + 2, 8, 2);
-    ctx.strokeStyle = COLORS.purple;
+    ctx.fillRect(x - 3, y - 9, 2, 1);
+    ctx.fillRect(x + 1, y - 9, 2, 1);
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x - 2, y - 4, 4, 2); // angry mouth
+    // Foam finger
+    ctx.fillStyle = COLORS.yellow;
+    ctx.fillRect(x + 6, y - 8, 4, 14);
+    ctx.fillStyle = COLORS.white;
+    ctx.fillRect(x + 7, y - 6, 2, 4);
+
+  } else if (enemy.name === 'Lost Football') {
+    // Football object
+    ctx.fillStyle = COLORS.orange;
+    ctx.beginPath();
+    ctx.ellipse(x, y, 10, 6, 0.3, 0, Math.PI * 2);
+    ctx.fill();
+    // Laces
+    ctx.strokeStyle = COLORS.white;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x - 4, y - 2);
+    ctx.lineTo(x - 4, y + 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, y - 3);
+    ctx.lineTo(x, y + 3);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 4, y - 2);
+    ctx.lineTo(x + 4, y + 2);
+    ctx.stroke();
+
+  } else if (enemy.name === 'Angry Mascot') {
+    // Large intimidating mascot
+    ctx.fillStyle = '#FFD700'; // Gold
+    ctx.beginPath();
+    // Mascot head
+    ctx.arc(x, y - 8, 10, 0, Math.PI * 2);
+    ctx.fill();
+    // Mascot body
+    ctx.fillRect(x - 8, y + 2, 16, 14);
+    // Red eyes (angry)
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x - 4, y - 10, 3, 3);
+    ctx.fillRect(x + 1, y - 10, 3, 3);
+    // Angry mouth
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y - 4, 6, 2);
+
+  } else if (enemy.name === 'Street Performer') {
+    // Energetic street entertainer
+    ctx.fillStyle = COLORS.blue; // Blue outfit
+    ctx.fillRect(x - 6, y - 2, 12, 10);
+    ctx.fillStyle = '#ffccaa'; // Tan face
+    ctx.fillRect(x - 5, y - 12, 10, 10);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 5, y - 12, 10, 3);
+    ctx.fillStyle = COLORS.yellow;
+    ctx.fillRect(x + 5, y - 6, 2, 4); // juggling ball
+    ctx.fillRect(x + 5, y - 2, 2, 4);
+    ctx.beginPath();
+    ctx.arc(x + 6, y + 2, 1.5, 0, Math.PI * 2);
+    ctx.fillStyle = COLORS.red;
+    ctx.fill();
+
+  } else if (enemy.name === 'Shopping Cart') {
+    // Rogue shopping cart
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x - 10, y - 2, 20, 10);
+    ctx.fillStyle = COLORS.gray;
+    // Wheels
+    ctx.beginPath();
+    ctx.arc(x - 6, y + 10, 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x + 6, y + 10, 2, 0, Math.PI * 2);
+    ctx.fill();
+    // Handle
+    ctx.strokeStyle = COLORS.gray;
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(x, y + 2, 18, 0, Math.PI * 2);
+    ctx.moveTo(x - 8, y);
+    ctx.lineTo(x - 12, y - 6);
+    ctx.stroke();
+
+  } else if (enemy.name === 'Lake Monster') {
+    // Massive lake creature
+    ctx.fillStyle = '#2a4a4a'; // Deep water green
+    // Huge bulbous body
+    ctx.beginPath();
+    ctx.ellipse(x, y + 4, 16, 14, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Head (extending up)
+    ctx.fillStyle = '#3a5a5a';
+    ctx.fillRect(x - 8, y - 12, 16, 10);
+    // Large eyes
+    ctx.fillStyle = COLORS.yellow;
+    ctx.fillRect(x - 4, y - 8, 3, 3);
+    ctx.fillRect(x + 1, y - 8, 3, 3);
+    // Spikes on back
+    ctx.fillStyle = '#4a6a6a';
+    for (let i = -6; i <= 6; i += 4) {
+      ctx.fillRect(x + i, y - 2, 2, 4);
+    }
+
+  } else if (enemy.name === 'Angry Goose') {
+    // Aggressive goose
+    ctx.fillStyle = '#ffffff'; // White goose
+    // Body
+    ctx.beginPath();
+    ctx.ellipse(x, y + 4, 8, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Neck and head
+    ctx.fillStyle = '#999999';
+    ctx.fillRect(x - 2, y - 8, 4, 10);
+    ctx.fillStyle = '#666666';
+    ctx.fillRect(x - 3, y - 10, 6, 4);
+    // Red angry beak
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x + 2, y - 9, 3, 1);
+    // Angry eyes
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x + 2, y - 8, 1, 1);
+    ctx.fillRect(x + 4, y - 8, 1, 1);
+
+  } else if (enemy.name === 'Giant Catfish') {
+    // Large whiskered catfish
+    ctx.fillStyle = '#8b6f47'; // Brown fish
+    // Main body
+    ctx.beginPath();
+    ctx.ellipse(x, y, 14, 8, 0.1, 0, Math.PI * 2);
+    ctx.fill();
+    // Tail fin
+    ctx.fillStyle = '#6b5f37';
+    ctx.beginPath();
+    ctx.moveTo(x + 14, y - 2);
+    ctx.lineTo(x + 20, y - 10);
+    ctx.lineTo(x + 20, y + 10);
+    ctx.closePath();
+    ctx.fill();
+    // Barbels (whiskers)
+    ctx.strokeStyle = '#4a4a2a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x - 4, y - 4);
+    ctx.lineTo(x - 10, y - 6);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x - 4, y + 4);
+    ctx.lineTo(x - 10, y + 6);
+    ctx.stroke();
+    // Eye
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 6, y - 2, 2, 2);
+
+  } else if (enemy.name === 'Corrupted Administrator') {
+    // Menacing final boss - bureaucratic corruption
+    // Dark aura
+    ctx.fillStyle = 'rgba(150, 0, 0, 0.3)';
+    ctx.beginPath();
+    ctx.arc(x, y + 2, 28, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 0, 0, 0.8)';
+    ctx.lineWidth = 3;
     ctx.stroke();
     
+    // Dark robed figure
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(x - 12, y - 2, 24, 18);
+    
+    // Head (shadowed)
+    ctx.fillStyle = '#2a2a2a';
+    ctx.fillRect(x - 10, y - 16, 20, 14);
+    
+    // Glowing corrupted eyes
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x - 4, y - 10, 3, 4);
+    ctx.fillRect(x + 1, y - 10, 3, 4);
+    ctx.fillStyle = COLORS.yellow;
+    ctx.fillRect(x - 3, y - 9, 1, 2);
+    ctx.fillRect(x + 2, y - 9, 1, 2);
+    
+    // Corruption tendrils (purple)
+    ctx.strokeStyle = 'rgba(200, 0, 200, 0.8)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x - 10, y + 10);
+    ctx.quadraticCurveTo(x - 20, y+15, x-16, y + 20);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 10, y + 10);
+    ctx.quadraticCurveTo(x + 20, y + 15, x + 16, y + 20);
+    ctx.stroke();
+
   } else {
     // Default enemy sprite (fallback)
     ctx.fillStyle = enemy.color;

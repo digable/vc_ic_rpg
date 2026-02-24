@@ -273,7 +273,7 @@ export const enemies = [
     exp: 27, 
     gold: 55, 
     location: 'old_capitol',
-    specialAttack: { name: 'Ghostly Stare', damage: 15, mpCost: 0 }
+    specialAttack: { name: 'Ghostly Stare', damage: 15, mpCost: 0, description: 'Pierces your soul with an endless gaze' }
   },
   { 
     name: 'Historic Ghost', 
@@ -283,7 +283,7 @@ export const enemies = [
     exp: 35, 
     gold: 70, 
     location: 'old_capitol',
-    specialAttack: { name: 'Phantom Touch', damage: 18, mpCost: 0, effect: 'chill' }
+    specialAttack: { name: 'Phantom Touch', damage: 18, mpCost: 0, effect: 'chill', description: 'A cold touch from beyond the grave' }
   },
   // Lake Enemies
   { 

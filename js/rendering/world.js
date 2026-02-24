@@ -149,32 +149,32 @@ export function drawMap() {
         ctx.fillRect(bgX, bgY, textWidth + 4, 8);
         ctx.fillStyle = COLORS.yellow;
         ctx.fillText(destMap.name, bgX + 2, bgY + 6);
-        // Arrow
-        ctx.fillText('^', Math.max(0, Math.min(252, labelX - 3)), Math.max(8, Math.min(236, labelY + 2)));
+        // Arrow at exit location
+        ctx.fillText('^', exit.x - 3, exit.y + 2);
       } else if (exit.direction === 'down') {
         const bgX = Math.max(0, Math.min(256 - (textWidth + 4), labelX - textWidth / 2 - 2));
         const bgY = Math.max(0, Math.min(232, labelY + 8));
         ctx.fillRect(bgX, bgY, textWidth + 4, 8);
         ctx.fillStyle = COLORS.yellow;
         ctx.fillText(destMap.name, bgX + 2, bgY + 6);
-        // Arrow
-        ctx.fillText('v', Math.max(0, Math.min(252, labelX - 3)), Math.max(8, Math.min(236, labelY - 2)));
+        // Arrow at exit location
+        ctx.fillText('v', exit.x - 3, exit.y - 2);
       } else if (exit.direction === 'left') {
         const bgX = Math.max(0, Math.min(256 - (textWidth + 4), labelX - textWidth - 10));
         const bgY = Math.max(0, Math.min(232, labelY - 6));
         ctx.fillRect(bgX, bgY, textWidth + 4, 8);
         ctx.fillStyle = COLORS.yellow;
         ctx.fillText(destMap.name, bgX + 2, bgY + 6);
-        // Arrow
-        ctx.fillText('<', Math.max(0, Math.min(252, labelX + 2)), Math.max(8, Math.min(236, labelY)));
+        // Arrow at exit location
+        ctx.fillText('<', exit.x + 2, exit.y - 8);
       } else if (exit.direction === 'right') {
         const bgX = Math.max(0, Math.min(256 - (textWidth + 4), labelX + 6));
         const bgY = Math.max(0, Math.min(232, labelY - 6));
         ctx.fillRect(bgX, bgY, textWidth + 4, 8);
         ctx.fillStyle = COLORS.yellow;
         ctx.fillText(destMap.name, bgX + 2, bgY + 6);
-        // Arrow
-        ctx.fillText('>', Math.max(0, Math.min(252, labelX - 4)), Math.max(8, Math.min(236, labelY)));
+        // Arrow at exit location
+        ctx.fillText('>', exit.x - 4, exit.y);
       }
     }
   }
@@ -684,6 +684,223 @@ export function drawNPC(npc) {
     ctx.beginPath();
     ctx.arc(x, y - 2, 14 + pulse, 0, Math.PI * 2);
     ctx.stroke();
+  } else if (npc.name === 'Historian Dr. Whitmore') {
+    // Scholarly historian with glasses and research outfit
+    ctx.fillStyle = '#5c4033'; // Brown suit
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#d2b48c'; // Tan face
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#8b7355'; // Brown hair, receding
+    ctx.fillRect(x - 5, y - 13, 10, 3);
+    ctx.fillRect(x - 6, y - 11, 2, 2);
+    ctx.fillRect(x + 4, y - 11, 2, 2);
+    // Glasses
+    ctx.strokeStyle = COLORS.black;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x - 4, y - 10, 2, 2);
+    ctx.strokeRect(x + 2, y - 10, 2, 2);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 1, y - 9, 2, 1); // Nose bridge
+    // Eyes behind glasses
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y - 9, 1, 1);
+    ctx.fillRect(x + 3, y - 9, 1, 1);
+    // Book in hand
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x + 6, y, 3, 4);
+    ctx.fillStyle = COLORS.white;
+    ctx.fillRect(x + 6, y + 1, 3, 1);
+    // Legs
+    ctx.fillStyle = '#2c1810';
+    ctx.fillRect(x - 4, y + 6, 3, 6);  } else if (npc.name === 'Fisherman Hank') {
+    // Weathered fisherman with hat and fishing gear
+    ctx.fillStyle = '#8B6F47'; // Tan fishing jacket
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#D2B48C'; // Tan weathered face
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#4A3728'; // Dark brown hair
+    ctx.fillRect(x - 5, y - 13, 10, 3);
+    // Fishing hat visors
+    ctx.fillStyle = COLORS.gray;
+    ctx.fillRect(x - 7, y - 14, 2, 2); // left side
+    ctx.fillRect(x + 5, y - 14, 2, 2); // right side
+    ctx.fillStyle = '#5C4033';
+    ctx.fillRect(x - 8, y - 13, 16, 1); // hat brim
+    // Eyes weathered
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y - 9, 2, 1);
+    ctx.fillRect(x + 1, y - 9, 2, 1);
+    // Beard
+    ctx.fillStyle = '#4A3728';
+    ctx.fillRect(x - 2, y - 4, 4, 2);
+    // Fishing rod
+    ctx.strokeStyle = COLORS.brown;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x + 8, y - 6);
+    ctx.lineTo(x + 12, y - 14);
+    ctx.stroke();
+    // Fishing line
+    ctx.strokeStyle = COLORS.gray;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x + 12, y - 14);
+    ctx.lineTo(x + 14, y - 2);
+    ctx.stroke();
+    // Legs
+    ctx.fillStyle = '#654321';
+    ctx.fillRect(x - 4, y + 6, 3, 6);
+  } else if (npc.name === 'Camper Jenny') {
+    // Happy outdoor camper with backpack
+    ctx.fillStyle = '#ff69b4'; // Pink/bright outdoor outfit
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#ffdbac'; // Peachy face
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#8B4513'; // Brown hair in ponytail
+    ctx.fillRect(x - 5, y - 13, 10, 4);
+    ctx.fillRect(x + 5, y - 10, 2, 5); // ponytail
+    // Hat visor
+    ctx.fillStyle = COLORS.red;
+    ctx.fillRect(x - 6, y - 14, 12, 1);
+    // Happy face
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y - 9, 2, 1);
+    ctx.fillRect(x + 1, y - 9, 2, 1);
+    ctx.beginPath();
+    ctx.arc(x, y - 3, 2, 0, Math.PI);
+    ctx.stroke();
+    // Backpack
+    ctx.fillStyle = '#228B22'; // Forest green
+    ctx.fillRect(x - 8, y - 2, 3, 8);
+    ctx.fillStyle = COLORS.white;
+    ctx.fillRect(x - 7, y, 1, 2); // straps
+    ctx.fillRect(x - 6, y, 1, 2);
+    // Legs
+    ctx.fillStyle = '#4169E1';
+    ctx.fillRect(x - 4, y + 6, 3, 6);
+  } else if (npc.name === 'Park Ranger Steve') {
+    // Official park ranger in uniform
+    ctx.fillStyle = '#2d5016'; // Forest green ranger uniform
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#c68642'; // Tan face
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#4A3728'; // Dark brown hair
+    ctx.fillRect(x - 5, y - 13, 10, 3);
+    // Ranger hat
+    ctx.fillStyle = '#2d5016';
+    ctx.beginPath();
+    ctx.moveTo(x - 6, y - 13);
+    ctx.lineTo(x + 6, y - 13);
+    ctx.lineTo(x + 5, y - 16);
+    ctx.lineTo(x - 5, y - 16);
+    ctx.closePath();
+    ctx.fill();
+    // Badge
+    ctx.fillStyle = COLORS.yellow;
+    ctx.fillRect(x - 2, y - 1, 4, 4);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 1, y, 2, 2);
+    // Eyes
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y - 9, 2, 1);
+    ctx.fillRect(x + 1, y - 9, 2, 1);
+    // Legs with boots
+    ctx.fillStyle = '#1a1a4e';
+    ctx.fillRect(x - 4, y + 6, 3, 6);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 4, y + 12, 3, 1); // boot line
+  } else if (npc.name === 'Beach Vendor Rosa') {
+    // Cheerful beach vendor
+    ctx.fillStyle = '#FFD700'; // Golden vendor dress
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#ffdbac'; // Beige face
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#FF6347'; // Red/tomato hair
+    ctx.fillRect(x - 5, y - 13, 10, 4);
+    // Hair accessory
+    ctx.fillStyle = COLORS.white;
+    ctx.fillRect(x - 6, y - 10, 2, 1);
+    ctx.fillRect(x + 4, y - 10, 2, 1);
+    // Happy face
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y - 9, 2, 1);
+    ctx.fillRect(x + 1, y - 9, 2, 1);
+    ctx.beginPath();
+    ctx.arc(x, y - 3, 2, 0, Math.PI);
+    ctx.stroke();
+    // Apron pocket
+    ctx.fillStyle = COLORS.white;
+    ctx.fillRect(x - 4, y + 2, 8, 2);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 2, y + 3, 1, 1); // button
+    ctx.fillRect(x + 1, y + 3, 1, 1);
+    // Legs
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x - 4, y + 6, 3, 6);    ctx.fillRect(x + 1, y + 6, 3, 6);
+  } else if (npc.name === 'Tour Guide Margaret') {
+    // Friendly tour guide with camera and bright outfit
+    ctx.fillStyle = '#ff69b4'; // Pink/bright outfit
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#ffdbac'; // Peachy face
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = '#ff8c00'; // Orange hair
+    ctx.fillRect(x - 5, y - 13, 10, 4);
+    ctx.fillRect(x - 6, y - 10, 2, 2);
+    ctx.fillRect(x + 4, y - 11, 2, 2);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y - 9, 2, 1);
+    ctx.fillRect(x + 1, y - 9, 2, 1);
+    // Smile
+    ctx.strokeStyle = COLORS.black;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(x, y - 3, 2, 0, Math.PI);
+    ctx.stroke();
+    // Camera
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x + 5, y - 2, 3, 3);
+    ctx.fillStyle = COLORS.gray;
+    ctx.fillRect(x + 5, y - 2, 1, 3);
+    ctx.fillStyle = COLORS.yellow;
+    ctx.fillRect(x + 6, y - 1, 1, 1);
+    // Legs
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x - 4, y + 6, 3, 6);
+    ctx.fillRect(x + 1, y + 6, 3, 6);
+  } else if (npc.name === 'Curator Soren') {
+    // Mystical curator with magical aura
+    ctx.fillStyle = '#1a1a4e'; // Dark blue/purple robes
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillStyle = '#c68642'; // Medium skin tone
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 5, y - 13, 10, 3); // Black hair
+    ctx.fillRect(x - 6, y - 11, 2, 2);
+    ctx.fillRect(x + 4, y - 11, 2, 2);
+    // Eyes glowing with magic
+    ctx.fillStyle = COLORS.purple;
+    ctx.fillRect(x - 3, y - 9, 2, 2);
+    ctx.fillRect(x + 1, y - 9, 2, 2);
+    ctx.fillStyle = COLORS.yellow;
+    ctx.fillRect(x - 2, y - 8, 1, 1);
+    ctx.fillRect(x + 2, y - 8, 1, 1);
+    // Mystical aura
+    ctx.strokeStyle = 'rgba(128, 0, 255, 0.6)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y + 2, 14, 0, Math.PI * 2);
+    ctx.stroke();
+    // Staff
+    ctx.fillStyle = COLORS.gray;
+    ctx.fillRect(x + 8, y - 8, 1, 14);
+    ctx.fillStyle = COLORS.yellow;
+    ctx.beginPath();
+    ctx.arc(x + 8, y - 9, 2, 0, Math.PI * 2);
+    ctx.fill();
+    // Legs under robes
+    ctx.fillStyle = '#5c4033';
+    ctx.fillRect(x - 4, y + 6, 3, 6);
+    ctx.fillRect(x + 1, y + 6, 3, 6);
   } else {
     // Default NPC if none of the above
     ctx.fillStyle = COLORS.green;

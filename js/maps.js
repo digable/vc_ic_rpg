@@ -437,7 +437,7 @@ export const maps = {
     name: 'Kinnick Stadium',
     grassWalkable: true,
     exits: [
-      { x: 240, y: 112, toMap: 'ped_mall', toX: 32, toY: 112, direction: 'right' },
+      { x: 240, y: 112, toMap: 'ped_mall', toX: 16, toY: 112, direction: 'right' },
       { x: 128, y: 224, toMap: 'pentacrest', toX: 128, toY: 32, direction: 'down' }
     ]
   },
@@ -450,10 +450,10 @@ export const maps = {
       [2,1,0,0,0,0,0,0,0,0,0,0,0,0,1,2],
       [2,1,0,3,3,0,3,3,0,3,3,0,3,3,1,2],
       [2,1,0,3,3,0,3,3,0,3,3,0,3,3,1,2],
-      [2,1,0,0,0,0,0,0,0,0,0,0,0,0,1,2],
-      [2,1,1,1,1,0,0,0,0,0,0,1,1,1,1,2],
-      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2],
-      [2,1,0,0,0,0,0,0,0,0,0,0,0,0,1,2],
+      [2,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+      [2,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+      [2,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+      [2,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
       [2,1,0,3,3,0,3,3,0,3,3,0,3,3,1,2],
       [2,1,0,3,3,0,3,3,0,3,3,0,3,3,1,2],
       [2,1,0,0,0,0,0,0,0,0,0,0,0,0,1,2],
@@ -472,40 +472,40 @@ export const maps = {
     name: 'Pedestrian Mall',
     grassWalkable: false,
     exits: [
-      { x: 16, y: 112, toMap: 'kinnick_stadium', toX: 224, toY: 112, direction: 'left' },
-      { x: 240, y: 112, toMap: 'old_capitol', toX: 32, toY: 112, direction: 'right' }
+      { x: 16, y: 112, toMap: 'kinnick_stadium', toX: 240, toY: 112, direction: 'left' },
+      { x: 240, y: 112, toMap: 'old_capitol', toX: 64, toY: 48, direction: 'right' }
     ]
   },
   old_capitol: {
     width: 16,
     height: 15,
     tiles: [
-      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
-      [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
-      [2,2,2,3,3,3,3,3,3,3,3,3,3,2,2,2],
-      [2,2,2,3,1,1,1,1,1,1,1,1,3,2,2,2],
-      [2,2,2,3,1,1,1,1,1,1,1,1,3,2,2,2],
-      [2,2,2,3,1,1,4,4,4,4,1,1,3,2,2,2],
-      [2,2,2,3,1,1,4,4,4,4,1,1,3,2,2,2],
-      [0,0,0,3,1,1,1,1,1,1,1,1,3,2,2,2],
-      [2,2,2,3,1,1,1,1,1,1,1,1,3,2,2,2],
-      [2,2,2,3,1,1,1,1,1,1,1,1,3,2,2,2],
-      [2,2,2,3,3,3,3,3,3,3,3,3,3,2,2,2],
-      [2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2],
-      [2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2],
-      [2,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2],
-      [2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2]
+      [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
+      [3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3],
+      [3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3],
+      [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3],
+      [3,1,1,4,4,4,4,4,4,4,4,1,1,1,1,3],
+      [3,1,1,4,4,4,4,4,4,4,4,1,1,1,1,3],
+      [3,1,1,4,4,4,4,4,4,4,4,1,1,1,1,3],
+      [3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3],
+      [3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3],
+      [3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3],
+      [3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3],
+      [3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3],
+      [3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3],
+      [3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3],
+      [3,3,3,3,3,3,3,0,0,0,3,3,3,3,3,3]
     ],
     npcs: [
-      { x: 128, y: 64, name: 'Historian', hasQuest: 'capitol_mystery', dialogue: ['Welcome to the Old Capitol!', 'This building served as Iowa\'s first capitol.', 'A golden dome crowns this historic site.'] },
-      { x: 96, y: 96, name: 'Tour Guide', dialogue: ['Did you know the dome is covered in gold leaf?', 'The Old Capitol was built in 1842!'] },
-      { x: 160, y: 96, name: 'Museum Curator', type: 'magic_trainer', dialogue: ['Ancient knowledge resides here.', 'I can teach you historical magic...'] },
+      { x: 128, y: 64, name: 'Historian Dr. Whitmore', hasQuest: 'capitol_mystery', dialogue: ['Greetings, young scholar!', 'This magnificent structure was built in 1842.', 'I study the spirits that linger here...', 'Some say they protect the building\'s secrets.'] },
+      { x: 96, y: 96, name: 'Tour Guide Margaret', dialogue: ['Welcome to our historic museum!', 'Did you know the dome is covered in 23-karat gold leaf?', 'Over 700,000 tourists have visited!', 'The spirits here are quite active at night...'] },
+      { x: 160, y: 96, name: 'Curator Soren', type: 'magic_trainer', dialogue: ['I sense great magical potential in you.', 'This building\'s history resonates with ancient power.', 'The ghosts here once served as governors!', 'Perhaps I can teach you their secrets...'] },
       { x: 48, y: 160, name: 'Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] }
     ],
     name: 'Old Capitol Museum',
     grassWalkable: false,
     exits: [
-      { x: 16, y: 112, toMap: 'ped_mall', toX: 224, toY: 112, direction: 'left' },
+      { x: 16, y: 48, toMap: 'ped_mall', toX: 240, toY: 112, direction: 'left' },
       { x: 128, y: 224, toMap: 'coralville_lake', toX: 128, toY: 32, direction: 'down' }
     ]
   },
@@ -530,10 +530,10 @@ export const maps = {
       [2,2,2,2,2,2,2,2,0,2,2,2,2,2,2,2]
     ],
     npcs: [
-      { x: 64, y: 64, name: 'Fisherman', hasQuest: 'lake_monster', dialogue: ['Great fishing here!', 'Coralville Lake is a local treasure.', 'Something big lurks in these waters...'] },
-      { x: 160, y: 80, name: 'Camper', hasQuest: 'camping_supplies', dialogue: ['Perfect spot for camping!', 'The trails around here are beautiful.'] },
-      { x: 128, y: 120, name: 'Park Ranger', type: 'healer', dialogue: ['Welcome to the lake!', 'Stay safe out there!', 'HP & MP restored!'] },
-      { x: 96, y: 64, name: 'Food Cart Vendor', type: 'food_cart', dialogue: ['Beach snacks!', 'Perfect for a day by the lake!'] },
+      { x: 64, y: 64, name: 'Fisherman Hank', hasQuest: 'lake_monster', dialogue: ['Been fishing these waters forty years!', 'Coralville Lake is a local treasure.', 'Something big lurks in these waters...', 'But the catfish are worth the risk!'] },
+      { x: 160, y: 80, name: 'Camper Jenny', hasQuest: 'camping_supplies', dialogue: ['Nothing beats a weekend in the outdoors!', 'The trails around here are beautiful.', 'The sunsets over the lake are unforgettable.'] },
+      { x: 128, y: 120, name: 'Park Ranger Steve', type: 'healer', dialogue: ['Welcome to Coralville Lake State Park!', 'Stay safe out there!', 'HP & MP restored!', 'Remember to protect nature!'] },
+      { x: 96, y: 64, name: 'Beach Vendor Rosa', type: 'food_cart', dialogue: ['Fresh beach snacks!', 'Cold drinks for hot days!', 'Perfect for a day by the lake!'] },
       { x: 48, y: 80, name: 'Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] }
     ],
     name: 'Coralville Lake',
