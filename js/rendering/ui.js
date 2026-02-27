@@ -495,9 +495,7 @@ export function drawMenu() {
 
     ctx.fillStyle = COLORS.gray;
     ctx.font = '5px "Press Start 2P"';
-    ctx.fillText('UP/DOWN: SCROLL QUESTS', 30, 183);
-    ctx.fillText('SPACE: SWITCH SECTION', 30, 191);
-
+        
     ctx.textBaseline = 'alphabetic';
   } else if (game.menuTab === 4) {
     const saveCount = getSaveCount();
