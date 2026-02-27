@@ -6,6 +6,35 @@ import { questDatabase } from '../quests.js';
 import { canCompleteQuest } from '../quests-logic.js';
 import { ctx } from './utils.js';
 
+function drawDirectionArrowInBox(boxX, boxY, direction, color = COLORS.lightGreen) {
+  const safeBoxX = Math.max(0, Math.min(248, boxX));
+  const safeBoxY = Math.max(0, Math.min(232, boxY));
+
+  ctx.fillStyle = color;
+
+  if (direction === 'up') {
+    ctx.fillRect(safeBoxX + 3, safeBoxY + 1, 2, 1);
+    ctx.fillRect(safeBoxX + 2, safeBoxY + 2, 4, 1);
+    ctx.fillRect(safeBoxX + 1, safeBoxY + 3, 6, 1);
+    ctx.fillRect(safeBoxX + 3, safeBoxY + 4, 2, 3);
+  } else if (direction === 'down') {
+    ctx.fillRect(safeBoxX + 3, safeBoxY + 1, 2, 3);
+    ctx.fillRect(safeBoxX + 1, safeBoxY + 4, 6, 1);
+    ctx.fillRect(safeBoxX + 2, safeBoxY + 5, 4, 1);
+    ctx.fillRect(safeBoxX + 3, safeBoxY + 6, 2, 1);
+  } else if (direction === 'left') {
+    ctx.fillRect(safeBoxX + 1, safeBoxY + 3, 1, 2);
+    ctx.fillRect(safeBoxX + 2, safeBoxY + 2, 1, 4);
+    ctx.fillRect(safeBoxX + 3, safeBoxY + 1, 1, 6);
+    ctx.fillRect(safeBoxX + 4, safeBoxY + 3, 3, 2);
+  } else if (direction === 'right') {
+    ctx.fillRect(safeBoxX + 6, safeBoxY + 3, 1, 2);
+    ctx.fillRect(safeBoxX + 5, safeBoxY + 2, 1, 4);
+    ctx.fillRect(safeBoxX + 4, safeBoxY + 1, 1, 6);
+    ctx.fillRect(safeBoxX + 1, safeBoxY + 3, 3, 2);
+  }
+}
+
 export function drawMap() {
   const map = maps[game.map];
   if (CAVE_MAPS.includes(game.map) && !game.flashlightOn) {
@@ -81,35 +110,47 @@ export function drawMap() {
   // Draw exit labels
   if (map.exits) {
     // Always-visible directional markers near transition points
-    ctx.font = '7px "Press Start 2P"';
+    const markerEntries = [];
     for (let exit of map.exits) {
       let markerX = exit.x;
       let markerY = exit.y;
-      let marker = '';
 
       if (exit.direction === 'up') {
-        marker = '^';
-        markerY = exit.y + 6;
+        markerY = exit.y + 12;
       } else if (exit.direction === 'down') {
-        marker = 'v';
         markerY = exit.y - 6;
       } else if (exit.direction === 'left') {
-        marker = '<';
         markerX = exit.x + 6;
       } else if (exit.direction === 'right') {
-        marker = '>';
         markerX = exit.x - 6;
       }
 
-      if (marker) {
-        const drawX = Math.max(2, Math.min(250, markerX - 2));
-        const drawY = Math.max(8, Math.min(236, markerY));
+      if (exit.direction) {
+        const mergeTarget = markerEntries.find(entry => {
+          if (entry.direction !== exit.direction) return false;
+          if (exit.direction === 'up' || exit.direction === 'down') {
+            return Math.abs(entry.y - markerY) <= 2 && Math.abs(entry.x - markerX) <= 12;
+          }
+          return Math.abs(entry.x - markerX) <= 2 && Math.abs(entry.y - markerY) <= 12;
+        });
 
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-        ctx.fillRect(drawX - 2, drawY - 7, 8, 8);
-        ctx.fillStyle = COLORS.lightGreen;
-        ctx.fillText(marker, drawX, drawY);
+        if (mergeTarget) {
+          mergeTarget.x = Math.round((mergeTarget.x * mergeTarget.count + markerX) / (mergeTarget.count + 1));
+          mergeTarget.y = Math.round((mergeTarget.y * mergeTarget.count + markerY) / (mergeTarget.count + 1));
+          mergeTarget.count += 1;
+        } else {
+          markerEntries.push({ x: markerX, y: markerY, direction: exit.direction, count: 1 });
+        }
       }
+    }
+
+    for (let marker of markerEntries) {
+      const boxX = Math.max(0, Math.min(248, marker.x - 4));
+      const boxY = Math.max(0, Math.min(232, marker.y - 4));
+
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillRect(boxX, boxY, 8, 8);
+      drawDirectionArrowInBox(boxX, boxY, marker.direction, COLORS.lightGreen);
     }
 
     ctx.font = '5px "Press Start 2P"';
@@ -150,7 +191,7 @@ export function drawMap() {
         ctx.fillStyle = COLORS.yellow;
         ctx.fillText(destMap.name, bgX + 2, bgY + 6);
         // Arrow at exit location
-        ctx.fillText('^', exit.x - 3, exit.y + 2);
+        drawDirectionArrowInBox(exit.x - 4, exit.y + 4, 'up', COLORS.yellow);
       } else if (exit.direction === 'down') {
         const bgX = Math.max(0, Math.min(256 - (textWidth + 4), labelX - textWidth / 2 - 2));
         const bgY = Math.max(0, Math.min(232, labelY + 8));
@@ -158,7 +199,7 @@ export function drawMap() {
         ctx.fillStyle = COLORS.yellow;
         ctx.fillText(destMap.name, bgX + 2, bgY + 6);
         // Arrow at exit location
-        ctx.fillText('v', exit.x - 3, exit.y - 2);
+        drawDirectionArrowInBox(exit.x - 4, exit.y - 4, 'down', COLORS.yellow);
       } else if (exit.direction === 'left') {
         const bgX = Math.max(0, Math.min(256 - (textWidth + 4), labelX - textWidth - 10));
         const bgY = Math.max(0, Math.min(232, labelY - 6));
@@ -166,7 +207,7 @@ export function drawMap() {
         ctx.fillStyle = COLORS.yellow;
         ctx.fillText(destMap.name, bgX + 2, bgY + 6);
         // Arrow at exit location
-        ctx.fillText('<', exit.x + 2, exit.y - 8);
+        drawDirectionArrowInBox(exit.x - 4, exit.y - 4, 'left', COLORS.yellow);
       } else if (exit.direction === 'right') {
         const bgX = Math.max(0, Math.min(256 - (textWidth + 4), labelX + 6));
         const bgY = Math.max(0, Math.min(232, labelY - 6));
@@ -174,7 +215,7 @@ export function drawMap() {
         ctx.fillStyle = COLORS.yellow;
         ctx.fillText(destMap.name, bgX + 2, bgY + 6);
         // Arrow at exit location
-        ctx.fillText('>', exit.x - 4, exit.y);
+        drawDirectionArrowInBox(exit.x - 4, exit.y - 4, 'right', COLORS.yellow);
       }
     }
   }

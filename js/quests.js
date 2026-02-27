@@ -74,13 +74,16 @@ const questDatabase = {
     name: 'Settling the Tab',
     giver: 'Regular',
     location: 'deadwood',
-    description: 'The Regular owes money. Collect 200 gold from battles and help him pay his tab.',
-    objectives: [{ type: 'collect_gold', amount: 0, needed: 200 }],
-    rewards: { gold: 50, exp: 35, item: 'Whiskey Shot' },
+    description: 'The Regular is behind on his tab. Save up 180 gold from battles and buy him a drink from the Bartender.',
+    objectives: [
+      { type: 'collect_gold', amount: 0, needed: 180 },
+      { type: 'buy_from_vendor', vendor: 'Bartender', bought: false }
+    ],
+    rewards: { gold: 70, exp: 45, item: 'Whiskey Shot' },
     dialogue: {
-      offer: ["I'm a bit short on cash...", 'If you can spare 200 gold,', "I'll give you something special!"],
-      progress: ['Working on getting that gold?'],
-      complete: ['You are a true friend!', 'Drinks on me... well, soon!']
+      offer: ["I'm way behind on my tab...", 'Save up 180 gold and grab me a drink from the Bartender.', "I'll make it worth your while!"],
+      progress: ['Any luck saving the gold and getting that drink?'],
+      complete: ['Now that is real friendship!', 'You saved my night at The Deadwood!']
     }
   },
   

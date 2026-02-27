@@ -1,0 +1,14 @@
+{
+  "name": "vc_ic_rpg",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "node tests.js",
+    "test:win": "node tests.js",
+    "serve": "http-server . -p 5500 -c-1",
+    "serve:win": "http-server . -p 5500 -c-1"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

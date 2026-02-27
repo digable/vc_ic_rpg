@@ -403,6 +403,10 @@ function runTests() {
 // ============================================================================
 
 function testCambusRoutesExist() {
+  if (typeof window === 'undefined') {
+    return { passed: 0, failed: 0, skipped: true, reason: 'Browser-only test (window unavailable in Node)' };
+  }
+
   var gameModules = window.gameModules || {};
   var mapsData = gameModules.maps;
   var cambusRoutes = gameModules.cambusRoutes;
@@ -431,6 +435,10 @@ function testCambusRoutesExist() {
 }
 
 function testCambusSpawnCoordinates() {
+  if (typeof window === 'undefined') {
+    return { passed: 0, failed: 0, skipped: true, reason: 'Browser-only test (window unavailable in Node)' };
+  }
+
   var gameModules = window.gameModules || {};
   var mapsData = gameModules.maps;
   var cambusRoutes = gameModules.cambusRoutes;
@@ -544,7 +552,8 @@ function testItemConsolidation() {
     failed++;
   }
 
-  // Test 3: Remove item multiple times
+  // Test 3: Remove item multiple times until depletion
+  removeConsumable(1);
   removeConsumable(1);
   removeConsumable(1);
   removeConsumable(1);
