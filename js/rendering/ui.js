@@ -353,8 +353,10 @@ export function drawMenu() {
     // Quests tab
     const inProgress = game.quests.filter(q => q.status === 'active');
     const completed = game.quests.filter(q => q.status === 'completed');
-    const maxInProgressShown = 2;
-    const maxCompletedShown = 5;
+    const mainMission = game.quests.find(q => q.id === 'corruption_source');
+    const mainMissionData = questDatabase.corruption_source;
+    const maxInProgressShown = 1;
+    const maxCompletedShown = 3;
 
     const inProgressPages = Math.max(1, Math.ceil(inProgress.length / maxInProgressShown));
     const completedPages = Math.max(1, Math.ceil(completed.length / maxCompletedShown));
@@ -365,20 +367,83 @@ export function drawMenu() {
     const inProgressStart = game.questInProgressPage * maxInProgressShown;
     const completedStart = game.questCompletedPage * maxCompletedShown;
 
+    ctx.textBaseline = 'top';
+
+    // Solid background panels for cleaner text readability
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(26, 52, 204, 40);
+    ctx.strokeStyle = COLORS.darkGray;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(26, 52, 204, 40);
+
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(26, 104, 204, 52);
+    ctx.strokeRect(26, 104, 204, 52);
+
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(26, 158, 204, 26);
+    ctx.strokeRect(26, 158, 204, 26);
+
+    let caveBossDone = game.caveSovereignDefeated;
+    let levelGateDone = game.player.level >= 10;
+    let finalBossDone = false;
+
+    if (mainMission && Array.isArray(mainMission.objectives)) {
+      const caveObj = mainMission.objectives.find(obj => obj.type === 'defeat_enemy' && obj.enemy === 'Cave Sovereign');
+      const levelObj = mainMission.objectives.find(obj => obj.type === 'reach_level');
+      const finalObj = mainMission.objectives.find(obj => obj.type === 'defeat_enemy' && obj.enemy === 'Corrupted Administrator');
+
+      if (caveObj) {
+        caveBossDone = caveObj.count >= caveObj.needed;
+      }
+      if (levelObj) {
+        levelGateDone = game.player.level >= levelObj.level;
+      }
+      if (finalObj) {
+        finalBossDone = finalObj.count >= finalObj.needed;
+      }
+      if (mainMission.status === 'completed') {
+        finalBossDone = true;
+      }
+    }
+
+    ctx.fillStyle = COLORS.white;
+    ctx.font = '6px "Press Start 2P"';
+    ctx.fillText('MAIN MISSION', 30, 60);
+
+    const mainMissionLines = [
+      { done: caveBossDone, text: 'Beat Cave Sovereign' },
+      { done: levelGateDone, text: 'Reach Level 10' },
+      { done: finalBossDone, text: 'Beat Corrupted Admin' }
+    ];
+
+    let mainY = 70;
+    mainMissionLines.forEach(line => {
+      ctx.fillStyle = line.done ? COLORS.green : COLORS.yellow;
+      ctx.font = '6px "Press Start 2P"';
+      ctx.fillText(line.done ? '[x]' : '[ ]', 30, mainY);
+      ctx.fillText(line.text, 48, mainY);
+      mainY += 9;
+    });
+
+    ctx.fillStyle = COLORS.gray;
+    ctx.font = '5px "Press Start 2P"';
+    ctx.fillText(caveBossDone && levelGateDone ? 'Final boss unlocked' : 'Need top 2 to unlock final boss', 30, mainY);
+
     ctx.fillStyle = COLORS.yellow;
     ctx.font = '6px "Press Start 2P"';
-    ctx.fillText('IN PROGRESS', 30, 62);
+    ctx.fillText('IN PROGRESS', 30, 112);
     if (game.questMenuSection === 0) {
-      ctx.fillText('>', 22, 62);
+      ctx.fillText('>', 22, 112);
     }
     ctx.fillStyle = COLORS.gray;
     ctx.font = '5px "Press Start 2P"';
-    ctx.fillText(`${game.questInProgressPage + 1}/${inProgressPages}`, 170, 62);
+    ctx.fillText(`${game.questInProgressPage + 1}/${inProgressPages}`, 170, 112);
 
-    let y = 74;
+    let y = 122;
     if (inProgress.length === 0) {
       ctx.fillStyle = COLORS.gray;
-      ctx.font = '5px "Press Start 2P"';
+      ctx.font = '6px "Press Start 2P"';
       ctx.fillText('No active quests', 30, y);
       y += 12;
     } else {
@@ -387,20 +452,20 @@ export function drawMenu() {
         if (!questData) return;
 
         ctx.fillStyle = COLORS.yellow;
-        ctx.font = '5px "Press Start 2P"';
+        ctx.font = '6px "Press Start 2P"';
         ctx.fillText(`- ${questData.name}`, 30, y);
         y += 8;
 
         ctx.fillStyle = COLORS.white;
-        ctx.font = '5px "Press Start 2P"';
-        wrapText(questData.description, 34, y, 176, 7);
-        y += 18;
+        ctx.font = '6px "Press Start 2P"';
+        wrapText(questData.description, 34, y, 168, 8);
+        y += 24;
       });
 
       y += 2;
     }
 
-    const completedHeaderY = Math.max(132, y + 2);
+    const completedHeaderY = Math.max(162, y + 2);
     ctx.fillStyle = COLORS.green;
     ctx.font = '6px "Press Start 2P"';
     ctx.fillText('COMPLETED', 30, completedHeaderY);
@@ -414,7 +479,7 @@ export function drawMenu() {
     let completedY = completedHeaderY + 10;
     if (completed.length === 0) {
       ctx.fillStyle = COLORS.gray;
-      ctx.font = '5px "Press Start 2P"';
+      ctx.font = '6px "Press Start 2P"';
       ctx.fillText('No completed quests', 30, completedY);
     } else {
       completed.slice(completedStart, completedStart + maxCompletedShown).forEach(doneQuest => {
@@ -422,7 +487,7 @@ export function drawMenu() {
         if (!questData) return;
 
         ctx.fillStyle = COLORS.green;
-        ctx.font = '5px "Press Start 2P"';
+        ctx.font = '6px "Press Start 2P"';
         ctx.fillText(`- ${questData.name}`, 30, completedY);
         completedY += 8;
       });
@@ -430,8 +495,10 @@ export function drawMenu() {
 
     ctx.fillStyle = COLORS.gray;
     ctx.font = '5px "Press Start 2P"';
-    ctx.fillText('SPACE: SWITCH SECTION', 30, 182);
-    ctx.fillText('UP/DOWN: CHANGE PAGE', 30, 190);
+    ctx.fillText('UP/DOWN: SCROLL QUESTS', 30, 183);
+    ctx.fillText('SPACE: SWITCH SECTION', 30, 191);
+
+    ctx.textBaseline = 'alphabetic';
   } else if (game.menuTab === 4) {
     const saveCount = getSaveCount();
     const saveExists = saveCount > 0;

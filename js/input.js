@@ -403,13 +403,20 @@ export function handleInput() {
       if (keys['ArrowUp'] && game.menuTab === 3) {
         const inProgressCount = game.quests.filter(q => q.status === 'active').length;
         const completedCount = game.quests.filter(q => q.status === 'completed').length;
-        const inProgressPages = Math.max(1, Math.ceil(inProgressCount / 2));
-        const completedPages = Math.max(1, Math.ceil(completedCount / 5));
+        const inProgressPages = Math.max(1, Math.ceil(inProgressCount / 1));
+        const completedPages = Math.max(1, Math.ceil(completedCount / 3));
 
         if (game.questMenuSection === 0) {
-          game.questInProgressPage = Math.max(0, game.questInProgressPage - 1);
+          if (game.questInProgressPage > 0) {
+            game.questInProgressPage--;
+          }
         } else {
-          game.questCompletedPage = Math.max(0, game.questCompletedPage - 1);
+          if (game.questCompletedPage > 0) {
+            game.questCompletedPage--;
+          } else {
+            game.questMenuSection = 0;
+            game.questInProgressPage = Math.max(0, inProgressPages - 1);
+          }
         }
 
         game.questInProgressPage = Math.min(game.questInProgressPage, inProgressPages - 1);
@@ -419,11 +426,16 @@ export function handleInput() {
       if (keys['ArrowDown'] && game.menuTab === 3) {
         const inProgressCount = game.quests.filter(q => q.status === 'active').length;
         const completedCount = game.quests.filter(q => q.status === 'completed').length;
-        const inProgressPages = Math.max(1, Math.ceil(inProgressCount / 2));
-        const completedPages = Math.max(1, Math.ceil(completedCount / 5));
+        const inProgressPages = Math.max(1, Math.ceil(inProgressCount / 1));
+        const completedPages = Math.max(1, Math.ceil(completedCount / 3));
 
         if (game.questMenuSection === 0) {
-          game.questInProgressPage = Math.min(inProgressPages - 1, game.questInProgressPage + 1);
+          if (game.questInProgressPage < inProgressPages - 1) {
+            game.questInProgressPage++;
+          } else {
+            game.questMenuSection = 1;
+            game.questCompletedPage = 0;
+          }
         } else {
           game.questCompletedPage = Math.min(completedPages - 1, game.questCompletedPage + 1);
         }
