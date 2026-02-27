@@ -231,73 +231,86 @@ export function drawMenu() {
       });
     }
   } else if (game.menuTab === 1) {
-    // Map tab - draw minimap
+    // Map tab - clean map (top-level locations only)
     ctx.fillStyle = COLORS.white;
     ctx.font = '6px "Press Start 2P"';
-    ctx.fillText('IOWA CITY MAP', 60, 60);
-    
-    // Draw simplified map layout
-    const mapStartX = 40;
-    const mapStartY = 70;
-    const tileSize = 4;
-    
-    // Draw each area as a colored rectangle with label
+    ctx.fillText('IOWA CITY MAP', 70, 56);
+
+    const currentMapKey = game.map.indexOf('beer_caves_depths_') === 0 ? 'beer_caves' : game.map;
+
     const areas = [
-      { name: 'Downtown', x: 4, y: 4, w: 4, h: 3, color: COLORS.gray, map: 'downtown' },
-      { name: 'Pentacrest', x: 4, y: 0, w: 4, h: 3, color: COLORS.green, map: 'pentacrest' },
-      { name: 'Library', x: 9, y: 0, w: 3, h: 3, color: COLORS.brown, map: 'library' },
-      { name: 'City Park', x: 0, y: 4, w: 3, h: 3, color: COLORS.lightBlue, map: 'city_park' },
-      { name: 'Deadwood', x: 9, y: 4, w: 3, h: 3, color: COLORS.orange, map: 'deadwood' },
-      { name: 'Northside', x: 4, y: 8, w: 4, h: 3, color: COLORS.red, map: 'northside' },
-      { name: 'Cemetery', x: 9, y: 8, w: 3, h: 3, color: COLORS.darkGray, map: 'oakland_cemetery' }
+      { map: 'kinnick_stadium', label: 'KIN', x: 82, y: 62, color: COLORS.yellow, textColor: COLORS.black },
+      { map: 'pentacrest', label: 'PEN', x: 82, y: 78, color: COLORS.green, textColor: COLORS.black },
+      { map: 'library', label: 'LIB', x: 124, y: 78, color: COLORS.brown, textColor: COLORS.white },
+      { map: 'city_park', label: 'PRK', x: 40, y: 94, color: COLORS.lightBlue, textColor: COLORS.black },
+      { map: 'downtown', label: 'DWT', x: 82, y: 94, color: COLORS.gray, textColor: COLORS.white },
+      { map: 'deadwood', label: 'DED', x: 124, y: 94, color: COLORS.orange, textColor: COLORS.black },
+      { map: 'ped_mall', label: 'PED', x: 166, y: 94, color: COLORS.lightGray, textColor: COLORS.black },
+      { map: 'northside', label: 'NOR', x: 82, y: 110, color: COLORS.red, textColor: COLORS.white },
+      { map: 'oakland_cemetery', label: 'CEM', x: 124, y: 110, color: COLORS.darkGray, textColor: COLORS.white },
+      { map: 'old_capitol', label: 'CAP', x: 166, y: 110, color: COLORS.white, textColor: COLORS.black },
+      { map: 'coralville_lake', label: 'LAK', x: 166, y: 126, color: COLORS.blue, textColor: COLORS.white },
+      { map: 'beer_caves', label: 'CVE', x: 82, y: 126, color: COLORS.purple, textColor: COLORS.white }
     ];
-    
+
+    const links = [
+      ['city_park', 'downtown'],
+      ['downtown', 'pentacrest'],
+      ['downtown', 'deadwood'],
+      ['downtown', 'northside'],
+      ['downtown', 'coralville_lake'],
+      ['pentacrest', 'library'],
+      ['pentacrest', 'kinnick_stadium'],
+      ['kinnick_stadium', 'ped_mall'],
+      ['ped_mall', 'old_capitol'],
+      ['old_capitol', 'coralville_lake'],
+      ['deadwood', 'oakland_cemetery'],
+      ['northside', 'beer_caves']
+    ];
+
+    function findArea(mapKey) {
+      for (let i = 0; i < areas.length; i++) {
+        if (areas[i].map === mapKey) return areas[i];
+      }
+      return null;
+    }
+
+    ctx.strokeStyle = COLORS.darkGray;
+    ctx.lineWidth = 1;
+    links.forEach(([fromMap, toMap]) => {
+      const from = findArea(fromMap);
+      const to = findArea(toMap);
+      if (!from || !to) return;
+      ctx.beginPath();
+      ctx.moveTo(from.x + 10, from.y + 6);
+      ctx.lineTo(to.x + 10, to.y + 6);
+      ctx.stroke();
+    });
+
     areas.forEach(area => {
-      // Draw area
       ctx.fillStyle = area.color;
-      ctx.fillRect(
-        mapStartX + area.x * (tileSize + 1),
-        mapStartY + area.y * (tileSize + 1),
-        area.w * (tileSize + 1),
-        area.h * (tileSize + 1)
-      );
-      
-      // Highlight current location
-      if (game.map === area.map) {
+      ctx.fillRect(area.x, area.y, 20, 12);
+      ctx.strokeStyle = COLORS.black;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(area.x, area.y, 20, 12);
+
+      if (currentMapKey === area.map) {
         ctx.strokeStyle = COLORS.yellow;
         ctx.lineWidth = 2;
-        ctx.strokeRect(
-          mapStartX + area.x * (tileSize + 1) - 1,
-          mapStartY + area.y * (tileSize + 1) - 1,
-          area.w * (tileSize + 1) + 2,
-          area.h * (tileSize + 1) + 2
-        );
+        ctx.strokeRect(area.x - 1, area.y - 1, 22, 14);
       }
+
+      ctx.fillStyle = area.textColor;
+      ctx.font = '5px "Press Start 2P"';
+      ctx.fillText(area.label, area.x + 3, area.y + 8);
     });
-    
-    // Draw location names
-    ctx.fillStyle = COLORS.white;
+
+    const currentLocationName = maps[currentMapKey] ? maps[currentMapKey].name : 'Unknown';
+    ctx.fillStyle = COLORS.yellow;
     ctx.font = '5px "Press Start 2P"';
-    ctx.fillText('City Park', 40, 95);
-    ctx.fillText('Downtown', 95, 95);
-    ctx.fillText('Deadwood', 133, 95);
-    ctx.fillText('Pentacrest', 90, 77);
-    ctx.fillText('Library', 145, 77);
-    ctx.fillText('Northside', 95, 115);
-    ctx.fillText('Cemetery', 133, 115);
-    
-    // Current location indicator
-    const currentArea = areas.find(a => a.map === game.map);
-    if (currentArea) {
-      ctx.fillStyle = COLORS.yellow;
-      ctx.font = '6px "Press Start 2P"';
-      ctx.fillText(`You are: ${currentArea.name}`, 40, 125);
-    }
-    
-    // Legend
-    ctx.fillStyle = COLORS.gray;
-    ctx.font = '5px "Press Start 2P"';
-    ctx.fillText('Use Cambus for fast travel', 40, 145);
+    ctx.fillText(`YOU ARE: ${currentLocationName}`, 24, 148);
+
+
   } else if (game.menuTab === 2) {
     // Items tab
     ctx.fillStyle = COLORS.white;

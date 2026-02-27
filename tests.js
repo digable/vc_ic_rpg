@@ -578,6 +578,81 @@ function testItemConsolidation() {
 }
 
 // ============================================================================
+// MINIMAP COVERAGE TESTS
+// ============================================================================
+
+function testMiniMapTopLevelLocations() {
+  if (typeof require === 'undefined') {
+    return { passed: 0, failed: 0, skipped: true, reason: 'Node-only test (file read unavailable)' };
+  }
+
+  var fs;
+  var path;
+  try {
+    fs = require('fs');
+    path = require('path');
+  } catch (e) {
+    return { passed: 0, failed: 0, skipped: true, reason: 'Node fs/path unavailable' };
+  }
+
+  logSection('MINIMAP: Top-Level Location Coverage');
+
+  var uiPath = path.join(__dirname, 'js', 'rendering', 'ui.js');
+  var uiSource = '';
+  try {
+    uiSource = fs.readFileSync(uiPath, 'utf8');
+  } catch (e) {
+    logError('Could not read js/rendering/ui.js');
+    return { passed: 0, failed: 1 };
+  }
+
+  var mapTabStart = uiSource.lastIndexOf('} else if (game.menuTab === 1) {');
+  var mapTabEnd = uiSource.indexOf('} else if (game.menuTab === 2) {', mapTabStart);
+  if (mapTabStart === -1 || mapTabEnd === -1) {
+    logError('Could not locate menu map tab block in ui.js');
+    return { passed: 0, failed: 1 };
+  }
+
+  var mapTabCode = uiSource.slice(mapTabStart, mapTabEnd);
+  var minimapMaps = [];
+  var minimapMapLookup = {};
+  var mapRegex = /map:\s*'([^']+)'/g;
+  var match;
+  while ((match = mapRegex.exec(mapTabCode)) !== null) {
+    var mapKey = match[1];
+    if (!minimapMapLookup[mapKey]) {
+      minimapMapLookup[mapKey] = true;
+      minimapMaps.push(mapKey);
+    }
+  }
+
+  var expectedTopLevel = [];
+  for (var mapKey in maps) {
+    if (!maps.hasOwnProperty(mapKey)) continue;
+    if (mapKey.indexOf('beer_caves_depths_') === 0) continue;
+    expectedTopLevel.push(mapKey);
+  }
+
+  var passed = 0;
+  var failed = 0;
+
+  for (var i = 0; i < expectedTopLevel.length; i++) {
+    var expectedKey = expectedTopLevel[i];
+    if (minimapMapLookup[expectedKey]) {
+      logSuccess('Top-level map included: ' + expectedKey);
+      passed++;
+    } else {
+      logError('Missing top-level map in minimap: ' + expectedKey);
+      failed++;
+    }
+  }
+
+  logInfo('Minimap entries detected: ' + minimapMaps.join(', '));
+  logInfo('Minimap coverage: ' + passed + ' passed, ' + failed + ' failed');
+  return { passed: passed, failed: failed };
+}
+
+// ============================================================================
 // UNIFIED TEST RUNNER
 // ============================================================================
 
@@ -603,7 +678,8 @@ function runTests() {
     vendorConsistency: testVendorNameConsistency(),
     cambusRoutesExist: testCambusRoutesExist(),
     cambusSpawnCoordinates: testCambusSpawnCoordinates(),
-    itemConsolidation: testItemConsolidation()
+    itemConsolidation: testItemConsolidation(),
+    miniMapTopLevelLocations: testMiniMapTopLevelLocations()
   };
 
   // Summary
