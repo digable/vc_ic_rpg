@@ -41,6 +41,12 @@ function resetSaveMenuState() {
   game.saveSlotSelection = 0;
 }
 
+function resetQuestMenuState() {
+  game.questMenuSection = 0;
+  game.questInProgressPage = 0;
+  game.questCompletedPage = 0;
+}
+
 function showSystemMessage(text) {
   game.systemMessage = {
     text,
@@ -267,8 +273,10 @@ export function handleInput() {
       if (game.menuOpen) {
         game.menuSelection = 0;
         game.menuTab = 0;
+        resetQuestMenuState();
         resetSaveMenuState();
       } else {
+        resetQuestMenuState();
         resetSaveMenuState();
       }
       lastKeyTime = now;
@@ -373,20 +381,55 @@ export function handleInput() {
       if (keys['ArrowLeft']) {
         game.menuTab = Math.max(0, game.menuTab - 1);
         if (game.menuTab !== 3) {
+          resetQuestMenuState();
+        }
+        if (game.menuTab !== 4) {
           game.menuSelection = 0;
           resetSaveMenuState();
         }
         lastKeyTime = now;
       }
       if (keys['ArrowRight']) {
-        game.menuTab = Math.min(3, game.menuTab + 1);
+        game.menuTab = Math.min(4, game.menuTab + 1);
         if (game.menuTab !== 3) {
+          resetQuestMenuState();
+        }
+        if (game.menuTab !== 4) {
           game.menuSelection = 0;
           resetSaveMenuState();
         }
         lastKeyTime = now;
       }
       if (keys['ArrowUp'] && game.menuTab === 3) {
+        const inProgressCount = game.quests.filter(q => q.status === 'active').length;
+        const completedCount = game.quests.filter(q => q.status === 'completed').length;
+        const inProgressPages = Math.max(1, Math.ceil(inProgressCount / 2));
+        const completedPages = Math.max(1, Math.ceil(completedCount / 5));
+
+        if (game.questMenuSection === 0) {
+          game.questInProgressPage = Math.max(0, game.questInProgressPage - 1);
+        } else {
+          game.questCompletedPage = Math.max(0, game.questCompletedPage - 1);
+        }
+
+        game.questInProgressPage = Math.min(game.questInProgressPage, inProgressPages - 1);
+        game.questCompletedPage = Math.min(game.questCompletedPage, completedPages - 1);
+        lastKeyTime = now;
+      }
+      if (keys['ArrowDown'] && game.menuTab === 3) {
+        const inProgressCount = game.quests.filter(q => q.status === 'active').length;
+        const completedCount = game.quests.filter(q => q.status === 'completed').length;
+        const inProgressPages = Math.max(1, Math.ceil(inProgressCount / 2));
+        const completedPages = Math.max(1, Math.ceil(completedCount / 5));
+
+        if (game.questMenuSection === 0) {
+          game.questInProgressPage = Math.min(inProgressPages - 1, game.questInProgressPage + 1);
+        } else {
+          game.questCompletedPage = Math.min(completedPages - 1, game.questCompletedPage + 1);
+        }
+        lastKeyTime = now;
+      }
+      if (keys['ArrowUp'] && game.menuTab === 4) {
         if (game.saveMenuMode === 'slots') {
           game.saveSlotSelection = Math.max(0, game.saveSlotSelection - 1);
         } else {
@@ -394,7 +437,7 @@ export function handleInput() {
         }
         lastKeyTime = now;
       }
-      if (keys['ArrowDown'] && game.menuTab === 3) {
+      if (keys['ArrowDown'] && game.menuTab === 4) {
         if (game.saveMenuMode === 'slots') {
           game.saveSlotSelection = Math.min(2, game.saveSlotSelection + 1);
         } else {
@@ -410,14 +453,14 @@ export function handleInput() {
         game.itemMenuSelection = Math.min(game.consumables.length - 1, game.itemMenuSelection + 1);
         lastKeyTime = now;
       }
-      if (keys['Escape'] && game.menuTab === 3 && game.saveMenuMode === 'slots') {
+      if (keys['Escape'] && game.menuTab === 4 && game.saveMenuMode === 'slots') {
         if (now - lastKeyTime > keyDelay) {
           resetSaveMenuState();
           lastKeyTime = now;
         }
       }
 
-      if (keys[' '] && game.menuTab === 3) {
+      if (keys[' '] && game.menuTab === 4) {
         if (now - lastKeyTime > keyDelay) {
           if (game.saveMenuMode === 'actions') {
             if (game.menuSelection === 0) {
@@ -464,6 +507,12 @@ export function handleInput() {
       if (keys[' '] && game.menuTab === 2 && game.consumables.length > 0) {
         if (now - lastKeyTime > keyDelay) {
           useItemFromMenu();
+          lastKeyTime = now;
+        }
+      }
+      if (keys[' '] && game.menuTab === 3) {
+        if (now - lastKeyTime > keyDelay) {
+          game.questMenuSection = game.questMenuSection === 0 ? 1 : 0;
           lastKeyTime = now;
         }
       }

@@ -29,7 +29,10 @@ export const game = {
   battleState: null,
   menuOpen: false,
   menuSelection: 0,
-  menuTab: 0, // 0=stats, 1=map, 2=items, 3=save
+  menuTab: 0, // 0=stats, 1=map, 2=items, 3=quests, 4=save
+  questMenuSection: 0, // 0=in progress, 1=completed
+  questInProgressPage: 0,
+  questCompletedPage: 0,
   saveMenuMode: 'actions', // actions, slots
   saveMenuAction: null, // save, load, delete
   saveSlotSelection: 0,
@@ -124,6 +127,9 @@ export function resetGameState() {
   game.menuOpen = false;
   game.menuSelection = 0;
   game.menuTab = 0;
+  game.questMenuSection = 0;
+  game.questInProgressPage = 0;
+  game.questCompletedPage = 0;
   game.saveMenuMode = 'actions';
   game.saveMenuAction = null;
   game.saveSlotSelection = 0;

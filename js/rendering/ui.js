@@ -2,6 +2,7 @@
 import { COLORS, isMobile } from '../constants.js';
 import { game } from '../game-state.js';
 import { maps } from '../maps.js';
+import { questDatabase } from '../quests.js';
 import { getSaveCount, getSaveSlots, MAX_LOCAL_SAVES } from '../save.js';
 import { getButtonLabel, getMenuLabel, wrapText, setCtx } from './utils.js';
 
@@ -173,26 +174,31 @@ export function drawMenu() {
   
   // Tab headers
   ctx.fillStyle = game.menuTab === 0 ? COLORS.yellow : COLORS.gray;
-  ctx.font = '7px "Press Start 2P"';
-  ctx.fillText('STATS', 35, 43);
+  ctx.font = '6px "Press Start 2P"';
+  ctx.fillText('STATS', 28, 43);
   
   ctx.fillStyle = game.menuTab === 1 ? COLORS.yellow : COLORS.gray;
-  ctx.fillText('MAP', 95, 43);
+  ctx.fillText('MAP', 72, 43);
   
   ctx.fillStyle = game.menuTab === 2 ? COLORS.yellow : COLORS.gray;
-  ctx.fillText('ITEMS', 145, 43);
+  ctx.fillText('ITEMS', 104, 43);
 
   ctx.fillStyle = game.menuTab === 3 ? COLORS.yellow : COLORS.gray;
-  ctx.fillText('SAVE', 190, 43);
+  ctx.fillText('QUESTS', 138, 43);
+
+  ctx.fillStyle = game.menuTab === 4 ? COLORS.yellow : COLORS.gray;
+  ctx.fillText('SAVE', 191, 43);
   
   // Tab indicator
   ctx.fillStyle = COLORS.yellow;
   if (game.menuTab === 0) {
     ctx.fillRect(30, 46, 40, 2);
   } else if (game.menuTab === 1) {
-    ctx.fillRect(90, 46, 25, 2);
+    ctx.fillRect(68, 46, 24, 2);
   } else if (game.menuTab === 2) {
-    ctx.fillRect(140, 46, 35, 2);
+    ctx.fillRect(100, 46, 32, 2);
+  } else if (game.menuTab === 3) {
+    ctx.fillRect(136, 46, 46, 2);
   } else {
     ctx.fillRect(186, 46, 30, 2);
   }
@@ -344,6 +350,89 @@ export function drawMenu() {
       ctx.fillText(getButtonLabel('Use item'), 60, 190);
     }
   } else if (game.menuTab === 3) {
+    // Quests tab
+    const inProgress = game.quests.filter(q => q.status === 'active');
+    const completed = game.quests.filter(q => q.status === 'completed');
+    const maxInProgressShown = 2;
+    const maxCompletedShown = 5;
+
+    const inProgressPages = Math.max(1, Math.ceil(inProgress.length / maxInProgressShown));
+    const completedPages = Math.max(1, Math.ceil(completed.length / maxCompletedShown));
+
+    game.questInProgressPage = Math.max(0, Math.min(game.questInProgressPage, inProgressPages - 1));
+    game.questCompletedPage = Math.max(0, Math.min(game.questCompletedPage, completedPages - 1));
+
+    const inProgressStart = game.questInProgressPage * maxInProgressShown;
+    const completedStart = game.questCompletedPage * maxCompletedShown;
+
+    ctx.fillStyle = COLORS.yellow;
+    ctx.font = '6px "Press Start 2P"';
+    ctx.fillText('IN PROGRESS', 30, 62);
+    if (game.questMenuSection === 0) {
+      ctx.fillText('>', 22, 62);
+    }
+    ctx.fillStyle = COLORS.gray;
+    ctx.font = '5px "Press Start 2P"';
+    ctx.fillText(`${game.questInProgressPage + 1}/${inProgressPages}`, 170, 62);
+
+    let y = 74;
+    if (inProgress.length === 0) {
+      ctx.fillStyle = COLORS.gray;
+      ctx.font = '5px "Press Start 2P"';
+      ctx.fillText('No active quests', 30, y);
+      y += 12;
+    } else {
+      inProgress.slice(inProgressStart, inProgressStart + maxInProgressShown).forEach(activeQuest => {
+        const questData = questDatabase[activeQuest.id];
+        if (!questData) return;
+
+        ctx.fillStyle = COLORS.yellow;
+        ctx.font = '5px "Press Start 2P"';
+        ctx.fillText(`- ${questData.name}`, 30, y);
+        y += 8;
+
+        ctx.fillStyle = COLORS.white;
+        ctx.font = '5px "Press Start 2P"';
+        wrapText(questData.description, 34, y, 176, 7);
+        y += 18;
+      });
+
+      y += 2;
+    }
+
+    const completedHeaderY = Math.max(132, y + 2);
+    ctx.fillStyle = COLORS.green;
+    ctx.font = '6px "Press Start 2P"';
+    ctx.fillText('COMPLETED', 30, completedHeaderY);
+    if (game.questMenuSection === 1) {
+      ctx.fillText('>', 22, completedHeaderY);
+    }
+    ctx.fillStyle = COLORS.gray;
+    ctx.font = '5px "Press Start 2P"';
+    ctx.fillText(`${game.questCompletedPage + 1}/${completedPages}`, 170, completedHeaderY);
+
+    let completedY = completedHeaderY + 10;
+    if (completed.length === 0) {
+      ctx.fillStyle = COLORS.gray;
+      ctx.font = '5px "Press Start 2P"';
+      ctx.fillText('No completed quests', 30, completedY);
+    } else {
+      completed.slice(completedStart, completedStart + maxCompletedShown).forEach(doneQuest => {
+        const questData = questDatabase[doneQuest.id];
+        if (!questData) return;
+
+        ctx.fillStyle = COLORS.green;
+        ctx.font = '5px "Press Start 2P"';
+        ctx.fillText(`- ${questData.name}`, 30, completedY);
+        completedY += 8;
+      });
+    }
+
+    ctx.fillStyle = COLORS.gray;
+    ctx.font = '5px "Press Start 2P"';
+    ctx.fillText('SPACE: SWITCH SECTION', 30, 182);
+    ctx.fillText('UP/DOWN: CHANGE PAGE', 30, 190);
+  } else if (game.menuTab === 4) {
     const saveCount = getSaveCount();
     const saveExists = saveCount > 0;
     const saveActions = [
