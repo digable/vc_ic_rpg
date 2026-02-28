@@ -328,7 +328,7 @@ export function drawMenu() {
     // Items tab
     ctx.fillStyle = COLORS.white;
     ctx.font = '6px "Press Start 2P"';
-    ctx.fillText('CONSUMABLES', 70, 60);
+    ctx.fillText('ITEMS:', 70, 60);
     
     if (game.consumables.length === 0) {
       ctx.fillStyle = COLORS.gray;
@@ -593,13 +593,29 @@ export function drawMenu() {
 
     ctx.fillStyle = COLORS.yellow;
     ctx.fillText('MUSIC', 54, 98);
-    ctx.fillStyle = game.musicEnabled ? COLORS.lightGreen : COLORS.gray;
-    ctx.fillText(game.musicEnabled ? 'ON' : 'OFF', 176, 98);
+
+    const sliderX = 166;
+    const sliderY = 88;
+    const sliderW = 36;
+    const sliderH = 14;
+    const knobSize = 10;
+    const knobY = sliderY + 2;
+    const knobX = game.musicEnabled ? (sliderX + sliderW - knobSize - 2) : (sliderX + 2);
+
+    ctx.fillStyle = game.musicEnabled ? COLORS.white : COLORS.gray;
+    ctx.fillRect(sliderX, sliderY, sliderW, sliderH);
+    ctx.strokeStyle = COLORS.black;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(sliderX, sliderY, sliderW, sliderH);
+
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(knobX, knobY, knobSize, knobSize);
+    ctx.strokeStyle = COLORS.white;
+    ctx.strokeRect(knobX, knobY, knobSize, knobSize);
 
     ctx.fillStyle = COLORS.gray;
     ctx.font = '5px "Press Start 2P"';
     ctx.fillText('SPACE TO TOGGLE', 82, 112);
-    ctx.fillText('DEFAULT: OFF', 94, 124);
   }
   
   ctx.fillStyle = COLORS.gray;
