@@ -63,6 +63,7 @@ export const game = {
   textBox: null,
   systemMessage: null,
   levelUpDialog: null, // Stores level up info when level up occurs
+  musicEnabled: false,
   animFrame: 0
 };
 
@@ -160,6 +161,7 @@ export function resetGameState() {
   game.textBox = null;
   game.systemMessage = null;
   game.levelUpDialog = null;
+  game.musicEnabled = false;
   game.animFrame = 0;
   
   // Show title screen by removing hidden class

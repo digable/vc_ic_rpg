@@ -175,32 +175,37 @@ export function drawMenu() {
   // Tab headers
   ctx.fillStyle = game.menuTab === 0 ? COLORS.yellow : COLORS.gray;
   ctx.font = '6px "Press Start 2P"';
-  ctx.fillText('STATS', 28, 43);
+  ctx.fillText('STA', 26, 43);
   
   ctx.fillStyle = game.menuTab === 1 ? COLORS.yellow : COLORS.gray;
-  ctx.fillText('MAP', 72, 43);
+  ctx.fillText('MAP', 54, 43);
   
   ctx.fillStyle = game.menuTab === 2 ? COLORS.yellow : COLORS.gray;
-  ctx.fillText('ITEMS', 104, 43);
+  ctx.fillText('ITM', 82, 43);
 
   ctx.fillStyle = game.menuTab === 3 ? COLORS.yellow : COLORS.gray;
-  ctx.fillText('QUESTS', 138, 43);
+  ctx.fillText('QST', 110, 43);
 
   ctx.fillStyle = game.menuTab === 4 ? COLORS.yellow : COLORS.gray;
-  ctx.fillText('SAVE', 191, 43);
+  ctx.fillText('SAV', 138, 43);
+
+  ctx.fillStyle = game.menuTab === 5 ? COLORS.yellow : COLORS.gray;
+  ctx.fillText('SET', 166, 43);
   
   // Tab indicator
   ctx.fillStyle = COLORS.yellow;
   if (game.menuTab === 0) {
-    ctx.fillRect(30, 46, 40, 2);
+    ctx.fillRect(24, 46, 24, 2);
   } else if (game.menuTab === 1) {
-    ctx.fillRect(68, 46, 24, 2);
+    ctx.fillRect(52, 46, 22, 2);
   } else if (game.menuTab === 2) {
-    ctx.fillRect(100, 46, 32, 2);
+    ctx.fillRect(80, 46, 24, 2);
   } else if (game.menuTab === 3) {
-    ctx.fillRect(136, 46, 46, 2);
-  } else {
-    ctx.fillRect(186, 46, 30, 2);
+    ctx.fillRect(108, 46, 24, 2);
+  } else if (game.menuTab === 4) {
+    ctx.fillRect(136, 46, 24, 2);
+  } else if (game.menuTab === 5) {
+    ctx.fillRect(164, 46, 24, 2);
   }
   
   if (game.menuTab === 0) {
@@ -575,6 +580,26 @@ export function drawMenu() {
       ctx.font = '5px "Press Start 2P"';
       ctx.fillText('UP/DOWN + SPACE', 86, 166);
     }
+  } else if (game.menuTab === 5) {
+    ctx.fillStyle = COLORS.white;
+    ctx.font = '6px "Press Start 2P"';
+    ctx.fillText('SETTINGS', 88, 62);
+
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(38, 78, 180, 44);
+    ctx.strokeStyle = COLORS.gray;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(38, 78, 180, 44);
+
+    ctx.fillStyle = COLORS.yellow;
+    ctx.fillText('MUSIC', 54, 98);
+    ctx.fillStyle = game.musicEnabled ? COLORS.lightGreen : COLORS.gray;
+    ctx.fillText(game.musicEnabled ? 'ON' : 'OFF', 176, 98);
+
+    ctx.fillStyle = COLORS.gray;
+    ctx.font = '5px "Press Start 2P"';
+    ctx.fillText('SPACE TO TOGGLE', 82, 112);
+    ctx.fillText('DEFAULT: OFF', 94, 124);
   }
   
   ctx.fillStyle = COLORS.gray;

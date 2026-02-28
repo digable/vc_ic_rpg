@@ -115,7 +115,31 @@ function buildSaveData() {
     caveSovereignIntroSeen: game.caveSovereignIntroSeen,
     quests: game.quests,
     currentVendor: game.currentVendor,
-    animFrame: game.animFrame
+    animFrame: game.animFrame,
+    settings: {
+      musicEnabled: !!game.musicEnabled
+    }
+  };
+}
+
+function getDefaultSettings() {
+  return {
+    musicEnabled: false
+  };
+}
+
+function normalizeLoadedSettings(data) {
+  const defaults = getDefaultSettings();
+  const rawSettings = data && typeof data.settings === 'object' && data.settings !== null
+    ? data.settings
+    : {};
+
+  return {
+    ...defaults,
+    ...rawSettings,
+    musicEnabled: typeof rawSettings.musicEnabled === 'boolean'
+      ? rawSettings.musicEnabled
+      : (typeof data?.musicEnabled === 'boolean' ? data.musicEnabled : defaults.musicEnabled)
   };
 }
 
@@ -213,6 +237,21 @@ export function loadGameFromLocal(index = null) {
     game.quests = Array.isArray(data.quests) ? [...data.quests] : [];
     game.currentVendor = data.currentVendor || 'Food Cart Vendor';
     game.animFrame = typeof data.animFrame === 'number' ? data.animFrame : 0;
+    const settings = normalizeLoadedSettings(data);
+    game.musicEnabled = settings.musicEnabled;
+
+    if (!data.settings || typeof data.settings !== 'object' || typeof data.settings.musicEnabled !== 'boolean') {
+      const updatedEntry = {
+        ...(selected || {}),
+        version: Math.max(2, selected?.version || 1),
+        data: {
+          ...data,
+          settings
+        }
+      };
+      saves[resolvedIndex] = updatedEntry;
+      writeRawSaves(saves);
+    }
 
     resetTransientState();
     hideTitleScreen();

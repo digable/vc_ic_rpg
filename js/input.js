@@ -20,6 +20,7 @@ import { executeBattleAction, startBattle, executeSpell, useItemFromMenu, useIte
 import { checkNPCInteraction, getNearbyNPC, updateQuestProgress } from './quests-logic.js';
 import { checkMapTransition, checkCollision, openFoodCart } from './world.js';
 import { clearLocalSave, loadGameFromLocal, MAX_LOCAL_SAVES, saveGameToLocal } from './save.js';
+import { startBackgroundMusic, stopBackgroundMusic } from './music.js';
 
 // Input state
 export const keys = {};
@@ -68,6 +69,9 @@ export function setupInputHandlers() {
   };
 
   const startIntroStory = () => {
+    if (game.musicEnabled) {
+      startBackgroundMusic();
+    }
     document.getElementById('title-screen').classList.add('hidden');
     game.state = 'dialogue';
     game.dialogue = {
@@ -189,6 +193,7 @@ export function setupInputHandlers() {
       // Check if click is on restart button (80-176 x, 160-190 y)
       if (x >= 80 && x <= 176 && y >= 160 && y <= 190) {
         resetGameState();
+        stopBackgroundMusic();
       }
     }
   });
@@ -390,7 +395,7 @@ export function handleInput() {
         lastKeyTime = now;
       }
       if (keys['ArrowRight']) {
-        game.menuTab = Math.min(4, game.menuTab + 1);
+        game.menuTab = Math.min(5, game.menuTab + 1);
         if (game.menuTab !== 3) {
           resetQuestMenuState();
         }
@@ -499,6 +504,11 @@ export function handleInput() {
             } else if (game.saveMenuAction === 'load') {
               const result = loadGameFromLocal(game.saveSlotSelection);
               if (result.success) {
+                if (game.musicEnabled) {
+                  startBackgroundMusic();
+                } else {
+                  stopBackgroundMusic();
+                }
                 showSystemMessage(`Loaded slot ${result.slot + 1}`);
               } else {
                 showSystemMessage('No save in that slot');
@@ -525,6 +535,19 @@ export function handleInput() {
       if (keys[' '] && game.menuTab === 3) {
         if (now - lastKeyTime > keyDelay) {
           game.questMenuSection = game.questMenuSection === 0 ? 1 : 0;
+          lastKeyTime = now;
+        }
+      }
+      if (keys[' '] && game.menuTab === 5) {
+        if (now - lastKeyTime > keyDelay) {
+          game.musicEnabled = !game.musicEnabled;
+          if (game.musicEnabled) {
+            startBackgroundMusic();
+            showSystemMessage('Music: ON');
+          } else {
+            stopBackgroundMusic();
+            showSystemMessage('Music: OFF');
+          }
           lastKeyTime = now;
         }
       }
@@ -785,6 +808,7 @@ export function handleInput() {
     if (keys[' '] || keys['Enter']) {
       if (now - lastKeyTime > keyDelay) {
         resetGameState();
+        stopBackgroundMusic();
         lastKeyTime = now;
       }
     }

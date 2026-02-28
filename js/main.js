@@ -7,6 +7,12 @@ import { setupInputHandlers, handleInput } from './input.js';
 import { maps } from './maps.js';
 import { cambusRoutes } from './data.js';
 import { loadGameFromLocal } from './save.js';
+import {
+  setBackgroundMusicMode,
+  triggerBattleMusicCue,
+  triggerExploreMusicCue,
+  triggerDeathMusicCue
+} from './music.js';
 import { 
   setupCanvas,
   drawMap, 
@@ -43,9 +49,30 @@ setupInputHandlers();
 // }
 
 // Game loop
+let previousState = game.state;
+
 function gameLoop() {
   // Handle input
   handleInput();
+
+  if (previousState !== 'battle' && game.state === 'battle') {
+    triggerBattleMusicCue();
+  }
+  if (previousState === 'battle' && game.state !== 'battle' && game.state !== 'gameOver') {
+    triggerExploreMusicCue();
+  }
+  if (previousState !== 'gameOver' && game.state === 'gameOver') {
+    triggerDeathMusicCue();
+  }
+
+  // Adaptive music mood
+  if (game.state === 'gameOver') {
+    setBackgroundMusicMode('death');
+  } else if (game.state === 'battle') {
+    setBackgroundMusicMode('adventure');
+  } else {
+    setBackgroundMusicMode('explore');
+  }
   
   // Check for level up
   const expNeeded = game.player.level * 50;
@@ -128,6 +155,7 @@ function gameLoop() {
   
   // Animation frame
   game.animFrame++;
+  previousState = game.state;
   
   requestAnimationFrame(gameLoop);
 }
