@@ -331,16 +331,16 @@ const questDatabase = {
     name: 'Late Night Delivery',
     giver: 'Diner',
     location: 'northside',
-    description: 'Talk to the Chef, travel to Coralville Lake, and bring back Beach Lemonade from Rosa for the hungry diner.',
+    description: 'Talk to Northside Chef Riko, travel to Coralville Lake, and bring back Beach Lemonade from Rosa for the hungry diner.',
     objectives: [
-      { type: 'talk_to_npc', npc: 'Chef', talked: false },
+      { type: 'talk_to_npc', npc: 'Northside Chef Riko', talked: false },
       { type: 'visit_location', location: 'coralville_lake', visited: false },
       { type: 'buy_from_vendor', vendor: 'Beach Vendor Rosa', bought: false },
       { type: 'bring_item', item: 'Beach Lemonade', amount: 1 }
     ],
     rewards: { gold: 85, exp: 45, item: 'Miso Soup' },
     dialogue: {
-      offer: ['Could you do me a favor?', 'Talk to the Chef, then head to Coralville Lake for Beach Lemonade from Rosa.', 'Bring it back and I will reward you.'],
+      offer: ['Could you do me a favor?', 'Talk to Northside Chef Riko, then head to Coralville Lake for Beach Lemonade from Rosa.', 'Bring it back and I will reward you.'],
       progress: ['Still waiting on that Coralville Lake delivery...', 'Did you get Beach Lemonade from Rosa?'],
       complete: ['Perfect timing!', 'Cold and fresh from the lake.', 'Thanks for making the long delivery!']
     }
@@ -384,6 +384,45 @@ const questDatabase = {
       offer: ['Museum days are busy.', 'Please coordinate with Dr. Whitmore and Curator Soren.', 'Then head to The Deadwood and bring me an IPA for the late shift.'],
       progress: ['Did you speak to both of them?', 'I still need that IPA from The Deadwood.'],
       complete: ['Wonderful! Everyone is coordinated now.', 'And this delivery saves my shift.', 'Thank you for the help!']
+    }
+  },
+
+  pool_safety_check: {
+    id: 'pool_safety_check',
+    name: 'Pool Safety Check',
+    giver: 'Lifeguard Maya',
+    location: 'city_park_pool',
+    description: 'Clear 2 Cannonball Chaos troublemakers at the City Park Pool and bring a Green Smoothie from City Park.',
+    objectives: [
+      { type: 'defeat_enemy', enemy: 'Cannonball Chaos', count: 0, needed: 2 },
+      { type: 'visit_location', location: 'city_park', visited: false },
+      { type: 'buy_from_vendor', vendor: 'Food Cart Vendor', bought: false },
+      { type: 'bring_item', item: 'Green Smoothie', amount: 1 }
+    ],
+    rewards: { gold: 125, exp: 70, item: 'Beach Lemonade' },
+    dialogue: {
+      offer: ['Can you help with safety patrol?', 'Take out 2 Cannonball Chaos troublemakers, then grab me a Green Smoothie from City Park.', 'Come back when both jobs are done.'],
+      progress: ['I still need both the pool cleared and that smoothie.', 'Keep at it!'],
+      complete: ['Excellent work.', 'The pool is calm and I have my refresher.', 'You earned this reward!']
+    }
+  },
+
+  relay_rations: {
+    id: 'relay_rations',
+    name: 'Relay Rations',
+    giver: 'Swim Coach Eli',
+    location: 'city_park_pool',
+    description: 'Talk to Lifeguard Maya, then bring a Protein Shake from Downtown for the relay team.',
+    objectives: [
+      { type: 'talk_to_npc', npc: 'Lifeguard Maya', talked: false },
+      { type: 'visit_location', location: 'downtown', visited: false },
+      { type: 'bring_item', item: 'Protein Shake', amount: 1 }
+    ],
+    rewards: { gold: 140, exp: 75, item: 'Watermelon Slice' },
+    dialogue: {
+      offer: ['The relay team needs fuel.', 'Check in with Lifeguard Maya, then run to Downtown for a Protein Shake.', 'Bring it back before the next heat starts.'],
+      progress: ['Did you talk with Maya and make the Downtown run?', 'The team is waiting.'],
+      complete: ['Perfect timing!', 'This will keep the team moving.', 'Take this for the quick delivery!']
     }
   },
 

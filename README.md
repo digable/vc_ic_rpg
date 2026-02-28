@@ -18,11 +18,12 @@ Along the way, you'll meet colorful locals, complete quests, battle academic mon
 
 ## ✨ Features
 
-### 🗺️ Explore 12 Iowa City Locations
+### 🗺️ Explore 13 Iowa City Locations
 - **Downtown** - Coffee shops, stores, and street vendors
 - **Pentacrest** - The heart of campus
 - **Main Library** - Study spaces and magic training
 - **Iowa River Park** - Peaceful riverside area with yoga
+- **City Park Pool** - Public pool area connected off the park walking path
 - **The Deadwood** - Local bar with food and drinks
 - **Oakland Cemetery** - Historic cemetery with the Black Angel statue
 - **Northside** - Restaurant district with diverse cuisine
@@ -41,7 +42,7 @@ Along the way, you'll meet colorful locals, complete quests, battle academic mon
 - Class-based stat growth (6 Iowa City-themed classes)
 - Epic boss battles including the Corrupted Administrator
 
-### 📋 22 Side Quests
+### 📋 24 Side Quests
 Complete Iowa City-themed quests:
 - The Coffee Run
 - Campus Tour Guide
@@ -57,6 +58,8 @@ Complete Iowa City-themed quests:
 - **Late Night Delivery** - Coordinate with the Chef and deliver ramen to a diner
 - **Pool Table Favor** - Talk to the Bartender and deliver an IPA at The Deadwood
 - **Archive Exchange** - Speak with museum staff and bring an Energy Bar to the tour guide
+- **Pool Safety Check** - Help Lifeguard Maya secure City Park Pool and bring supplies from City Park
+- **Relay Rations** - Run a cross-area delivery for Swim Coach Eli and the relay team
 - **Hawkeye Spirit** - Prove your Hawkeye pride at Kinnick Stadium
 - **Stadium Tour** - Visit all major Iowa City landmarks
 - **Lost Guitar** - Help the street musician on the Ped Mall

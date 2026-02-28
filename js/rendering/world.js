@@ -4,6 +4,7 @@ import { game } from '../game-state.js';
 import { maps } from '../maps.js';
 import { questDatabase } from '../quests.js';
 import { canCompleteQuest } from '../quests-logic.js';
+import { getNpcAppearance } from '../npc-appearance.js';
 import { ctx } from './utils.js';
 
 function drawDirectionArrowInBox(boxX, boxY, direction, color = COLORS.lightGreen) {
@@ -269,6 +270,7 @@ export function drawNPCs() {
       continue;
     }
     if (npc.isSign) {
+      const appearance = getNpcAppearance(npc);
       // Compact, high-contrast Cambus sign
       // Post
       ctx.fillStyle = COLORS.darkGray;
@@ -282,7 +284,7 @@ export function drawNPCs() {
       ctx.strokeRect(npc.x - 5, npc.y - 12, 10, 8);
 
       // Yellow route strip (top) for quick recognition
-      ctx.fillStyle = COLORS.yellow;
+      ctx.fillStyle = appearance.accentColor;
       ctx.fillRect(npc.x - 4, npc.y - 11, 8, 2);
 
       // Bus glyph (center)
@@ -296,7 +298,7 @@ export function drawNPCs() {
       ctx.fillRect(npc.x + 1, npc.y - 5, 1, 1);
 
       // Tiny C marker for Cambus
-      ctx.fillStyle = COLORS.black;
+      ctx.fillStyle = appearance.legColor;
       ctx.fillRect(npc.x - 4, npc.y - 8, 1, 3);
       ctx.fillRect(npc.x - 3, npc.y - 8, 1, 1);
       ctx.fillRect(npc.x - 3, npc.y - 6, 1, 1);
@@ -328,6 +330,65 @@ export function drawNPCs() {
 export function drawNPC(npc) {
   const x = npc.x;
   const y = npc.y;
+
+  if (npc.name !== 'Cave Sovereign' && npc.name !== 'Black Angel') {
+    const appearance = getNpcAppearance(npc);
+
+    ctx.fillStyle = appearance.outfitColor;
+    ctx.fillRect(x - 6, y - 4, 12, 10);
+
+    if (npc.type === 'food_cart') {
+      ctx.fillStyle = appearance.accentColor;
+      ctx.fillRect(x - 5, y - 2, 10, 2);
+      ctx.fillStyle = COLORS.white;
+      ctx.fillRect(x - 4, y, 8, 2);
+    } else if (npc.type === 'shop') {
+      ctx.fillStyle = appearance.accentColor;
+      ctx.fillRect(x + 3, y - 2, 2, 3);
+    } else if (npc.type === 'yoga') {
+      ctx.fillStyle = appearance.accentColor;
+      ctx.fillRect(x - 2, y - 1, 4, 6);
+    } else if (npc.hasQuest) {
+      ctx.fillStyle = appearance.accentColor;
+      ctx.fillRect(x - 6, y - 1, 2, 5);
+    }
+
+    ctx.fillStyle = appearance.skinColor;
+    ctx.fillRect(x - 5, y - 13, 10, 9);
+
+    ctx.fillStyle = appearance.hairColor;
+    ctx.fillRect(x - 5, y - 13, 10, 3);
+
+    if (appearance.accessoryType === 0) {
+      ctx.fillStyle = appearance.accentColor;
+      ctx.fillRect(x - 6, y - 14, 12, 1);
+    } else if (appearance.accessoryType === 1) {
+      ctx.fillStyle = appearance.accentColor;
+      ctx.fillRect(x + (appearance.accessorySide === 'left' ? -7 : 5), y - 11, 2, 5);
+    } else if (appearance.accessoryType === 2) {
+      ctx.fillStyle = appearance.accentColor;
+      ctx.fillRect(x - 2, y - 7, 4, 1);
+    } else if (appearance.accessoryType === 3) {
+      ctx.fillStyle = appearance.accentColor;
+      ctx.fillRect(x - 5, y - 5, 2, 2);
+      ctx.fillRect(x + 3, y - 5, 2, 2);
+    } else if (appearance.accessoryType === 4) {
+      ctx.fillStyle = appearance.accentColor;
+      ctx.fillRect(x - 7, y, 2, 4);
+    } else {
+      ctx.fillStyle = appearance.accentColor;
+      ctx.fillRect(x + 5, y, 2, 4);
+    }
+
+    ctx.fillStyle = appearance.eyeColor;
+    ctx.fillRect(x - 3, y - 9, 2, 1);
+    ctx.fillRect(x + 1, y - 9, 2, 1);
+
+    ctx.fillStyle = appearance.legColor;
+    ctx.fillRect(x - 5, y + 6, 4, 6);
+    ctx.fillRect(x + 1, y + 6, 4, 6);
+    return;
+  }
   
   if (npc.name === 'Barista') {
     // Green apron, dark skin, bun hairstyle

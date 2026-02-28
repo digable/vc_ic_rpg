@@ -2,6 +2,7 @@
 import { COLORS, CAVE_MAPS } from '../constants.js';
 import { game } from '../game-state.js';
 import { spellData } from '../data.js';
+import { getEnemyAppearance } from '../enemy-appearance.js';
 import { getButtonLabel, setCtx, wrapText } from './utils.js';
 
 export function drawBattle() {
@@ -125,6 +126,7 @@ export function drawBattle() {
 
 export function drawEnemySprite(enemy, x, y) {
   const ctx = setCtx();
+  const appearance = getEnemyAppearance(enemy);
   
   // Cave monsters - only visible if flashlight is on or in battle
   const caveMonsters = ['Bat Swarm', 'Cave Spider', 'Stone Golem', 'Glowing Mushroom', 'Crystal Elemental', 'Cave Drake'];
@@ -1127,5 +1129,90 @@ export function drawEnemySprite(enemy, x, y) {
     ctx.fillRect(x - 6, y - 6, 4, 4);
     ctx.fillRect(x + 2, y - 6, 4, 4);
     ctx.fillRect(x - 4, y + 4, 8, 2);
+  }
+
+  drawEnemyUniqueOverlay(ctx, enemy, x, y, appearance);
+}
+
+function drawEnemyUniqueOverlay(ctx, enemy, x, y, appearance) {
+  const auraAlpha = enemy.isBoss ? 0.45 : 0.28;
+  ctx.strokeStyle = appearance.auraColor;
+  ctx.globalAlpha = auraAlpha;
+  ctx.lineWidth = enemy.isBoss ? 3 : 2;
+  ctx.beginPath();
+  ctx.arc(x, y + 2, appearance.auraRadius, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  const badgeX = x + 15;
+  const badgeY = y - 18;
+
+  ctx.fillStyle = COLORS.black;
+  ctx.fillRect(badgeX - 4, badgeY - 4, 8, 8);
+  ctx.strokeStyle = appearance.sigilColor;
+  ctx.lineWidth = 1;
+  ctx.strokeRect(badgeX - 4, badgeY - 4, 8, 8);
+
+  ctx.fillStyle = appearance.eyeGlowColor;
+  if (appearance.crestType === 0) {
+    // Academic: open book mark
+    ctx.fillRect(badgeX - 3, badgeY - 2, 2, 4);
+    ctx.fillRect(badgeX + 1, badgeY - 2, 2, 4);
+    ctx.fillRect(badgeX - 1, badgeY - 1, 2, 1);
+  } else if (appearance.crestType === 1) {
+    // Sports: field stripe
+    ctx.fillRect(badgeX - 3, badgeY - 1, 6, 2);
+    ctx.fillRect(badgeX - 1, badgeY - 3, 2, 6);
+  } else if (appearance.crestType === 2) {
+    // Cave: crystal shard
+    ctx.fillRect(badgeX - 1, badgeY - 3, 2, 6);
+    ctx.fillRect(badgeX - 2, badgeY - 1, 4, 2);
+  } else if (appearance.crestType === 3) {
+    // Undead: skull-like eyes + jaw
+    ctx.fillRect(badgeX - 3, badgeY - 2, 2, 2);
+    ctx.fillRect(badgeX + 1, badgeY - 2, 2, 2);
+    ctx.fillRect(badgeX - 2, badgeY + 1, 4, 1);
+  } else if (appearance.crestType === 4) {
+    // Aquatic: wave crest
+    ctx.fillRect(badgeX - 3, badgeY + 1, 2, 1);
+    ctx.fillRect(badgeX - 1, badgeY, 2, 1);
+    ctx.fillRect(badgeX + 1, badgeY - 1, 2, 1);
+  } else if (appearance.crestType === 5) {
+    // Urban: signal bars
+    ctx.fillRect(badgeX - 3, badgeY + 1, 1, 2);
+    ctx.fillRect(badgeX - 1, badgeY, 1, 3);
+    ctx.fillRect(badgeX + 1, badgeY - 1, 1, 4);
+  } else if (appearance.crestType === 6) {
+    // Boss: crown
+    ctx.fillRect(badgeX - 3, badgeY + 1, 6, 1);
+    ctx.fillRect(badgeX - 2, badgeY, 1, 1);
+    ctx.fillRect(badgeX, badgeY - 1, 1, 2);
+    ctx.fillRect(badgeX + 2, badgeY, 1, 1);
+  } else {
+    ctx.fillRect(badgeX - 2, badgeY - 2, 4, 4);
+  }
+
+  // Small per-enemy identifier mark so enemies in the same archetype still look distinct.
+  const mark = appearance.markVariant || 0;
+  const markX = x - 12;
+  const markY = y + 16;
+  ctx.fillStyle = appearance.sigilColor;
+  if (mark === 0) {
+    ctx.fillRect(markX, markY, 3, 1);
+  } else if (mark === 1) {
+    ctx.fillRect(markX, markY - 1, 1, 3);
+  } else if (mark === 2) {
+    ctx.fillRect(markX, markY, 2, 2);
+  } else if (mark === 3) {
+    ctx.fillRect(markX, markY, 1, 1);
+    ctx.fillRect(markX + 2, markY, 1, 1);
+  } else if (mark === 4) {
+    ctx.fillRect(markX, markY, 1, 1);
+    ctx.fillRect(markX + 1, markY + 1, 1, 1);
+    ctx.fillRect(markX + 2, markY + 2, 1, 1);
+  } else if (mark === 5) {
+    ctx.fillRect(markX, markY + 2, 3, 1);
+  } else {
+    ctx.fillRect(markX + 1, markY, 1, 3);
   }
 }

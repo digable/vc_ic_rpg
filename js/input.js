@@ -353,7 +353,7 @@ export function handleInput() {
           } else if (npc.type === 'cambus') {
             openCambus();
           } else if (npc.type === 'food_cart') {
-            openFoodCart(npc.name);
+            openFoodCart(npc.vendorName || npc.name);
           } else if (npc.type === 'black_angel') {
             interactBlackAngel();
           } else if (npc.type === 'boss' && !game.caveSovereignDefeated) {

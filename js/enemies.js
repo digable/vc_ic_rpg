@@ -316,6 +316,37 @@ export const enemies = [
     location: 'coralville_lake',
     specialAttack: { name: 'Tail Slap', damage: 16, mpCost: 0 }
   },
+  // City Park Pool Enemies
+  {
+    name: 'Cannonball Chaos',
+    hp: 34,
+    maxHp: 34,
+    attack: 11,
+    exp: 32,
+    gold: 70,
+    location: 'city_park_pool',
+    specialAttack: { name: 'Splash Burst', damage: 16, mpCost: 0 }
+  },
+  {
+    name: 'Lane Blocker',
+    hp: 30,
+    maxHp: 30,
+    attack: 9,
+    exp: 28,
+    gold: 62,
+    location: 'city_park_pool',
+    specialAttack: { name: 'Kick Turn', damage: 13, mpCost: 0 }
+  },
+  {
+    name: 'Whistle Dodger',
+    hp: 38,
+    maxHp: 38,
+    attack: 12,
+    exp: 36,
+    gold: 78,
+    location: 'city_park_pool',
+    specialAttack: { name: 'False Start', damage: 18, mpCost: 0 }
+  },
   // Oakland Cemetery Enemies
   {
     name: 'Restless Zombie',

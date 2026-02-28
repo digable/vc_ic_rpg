@@ -249,6 +249,7 @@ export function drawMenu() {
       { map: 'pentacrest', label: 'PEN', x: 82, y: 78, color: COLORS.green, textColor: COLORS.black },
       { map: 'library', label: 'LIB', x: 124, y: 78, color: COLORS.brown, textColor: COLORS.white },
       { map: 'city_park', label: 'PRK', x: 40, y: 94, color: COLORS.lightBlue, textColor: COLORS.black },
+      { map: 'city_park_pool', label: 'POL', x: 40, y: 110, color: COLORS.blue, textColor: COLORS.white },
       { map: 'downtown', label: 'DWT', x: 82, y: 94, color: COLORS.gray, textColor: COLORS.white },
       { map: 'deadwood', label: 'DED', x: 124, y: 94, color: COLORS.orange, textColor: COLORS.black },
       { map: 'ped_mall', label: 'PED', x: 166, y: 94, color: COLORS.lightGray, textColor: COLORS.black },
@@ -261,6 +262,7 @@ export function drawMenu() {
 
     const links = [
       ['city_park', 'downtown'],
+      ['city_park', 'city_park_pool'],
       ['downtown', 'pentacrest'],
       ['downtown', 'deadwood'],
       ['downtown', 'northside'],

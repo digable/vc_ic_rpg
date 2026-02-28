@@ -2,7 +2,7 @@
 // Pure JavaScript - works in Node.js and browser without ES6 imports
 
 // Load game data
-let maps, shopItems, consumableItems, magicTraining, yogaTechniques;
+let maps, shopItems, consumableItems, magicTraining, yogaTechniques, cambusRoutes, getNpcAppearanceSignature, getEnemyAppearanceSignature, enemiesList;
 
 function loadGameData() {
   // Try to load from Node.js require first
@@ -10,11 +10,18 @@ function loadGameData() {
     try {
       const mapsModule = require('./js/maps.js');
       const dataModule = require('./js/data.js');
+      const appearanceModule = require('./js/npc-appearance.js');
+      const enemyAppearanceModule = require('./js/enemy-appearance.js');
+      const enemiesModule = require('./js/enemies.js');
       maps = mapsModule.maps;
       shopItems = dataModule.shopItems;
       consumableItems = dataModule.consumableItems;
       magicTraining = dataModule.magicTraining;
       yogaTechniques = dataModule.yogaTechniques;
+      cambusRoutes = dataModule.cambusRoutes;
+      getNpcAppearanceSignature = appearanceModule.getNpcAppearanceSignature;
+      getEnemyAppearanceSignature = enemyAppearanceModule.getEnemyAppearanceSignature;
+      enemiesList = enemiesModule.enemies;
       return true;
     } catch (e) {
       console.log('Could not load with require, trying from window globals...');
@@ -28,8 +35,12 @@ function loadGameData() {
     consumableItems = window.consumableItems;
     magicTraining = window.magicTraining;
     yogaTechniques = window.yogaTechniques;
+    cambusRoutes = window.cambusRoutes;
+    getNpcAppearanceSignature = window.getNpcAppearanceSignature || (window.gameModules && window.gameModules.getNpcAppearanceSignature);
+    getEnemyAppearanceSignature = window.getEnemyAppearanceSignature || (window.gameModules && window.gameModules.getEnemyAppearanceSignature);
+    enemiesList = window.enemies || (window.gameModules && window.gameModules.enemies);
     
-    if (maps && shopItems && consumableItems && magicTraining && yogaTechniques) {
+    if (maps && shopItems && consumableItems && magicTraining && yogaTechniques && cambusRoutes) {
       return true;
     }
   }
@@ -74,6 +85,10 @@ function logInfo(message) {
   log('ℹ ' + message, 'blue');
 }
 
+function getNpcVendorKey(npc) {
+  return (npc.vendorName || npc.name || '').toString();
+}
+
 // Test 1: Validate all food_cart vendors have items
 function testFoodCartVendors() {
   logSection('TEST 1: Food Cart Vendors');
@@ -88,7 +103,11 @@ function testFoodCartVendors() {
         for (var i = 0; i < mapData.npcs.length; i++) {
           var npc = mapData.npcs[i];
           if (npc.type === 'food_cart') {
-            foodCartNPCs.push({ name: npc.name, map: mapName });
+            foodCartNPCs.push({
+              name: npc.name,
+              vendorKey: getNpcVendorKey(npc),
+              map: mapName
+            });
           }
         }
       }
@@ -106,13 +125,13 @@ function testFoodCartVendors() {
     
     for (var j = 0; j < consumableItems.length; j++) {
       var item = consumableItems[j];
-      if (item.vendor && item.vendor.trim().toLowerCase() === npc.name.trim().toLowerCase()) {
+      if (item.vendor && item.vendor.trim().toLowerCase() === npc.vendorKey.trim().toLowerCase()) {
         items.push(item);
       }
     }
 
     if (items.length > 0) {
-      logSuccess(npc.name + ' (' + npc.map + '): ' + items.length + ' item(s)');
+      logSuccess(npc.name + ' [' + npc.vendorKey + '] (' + npc.map + '): ' + items.length + ' item(s)');
       for (var j = 0; j < items.length; j++) {
         logInfo('  - ' + items[j].name + ' ($' + items[j].price + ')');
       }
@@ -269,8 +288,9 @@ function testVendorNameConsistency() {
         for (var i = 0; i < mapData.npcs.length; i++) {
           var npc = mapData.npcs[i];
           if (npc.type === 'food_cart') {
-            if (vendorNamesInMaps.indexOf(npc.name) === -1) {
-              vendorNamesInMaps.push(npc.name);
+            var vendorKey = getNpcVendorKey(npc);
+            if (vendorNamesInMaps.indexOf(vendorKey) === -1) {
+              vendorNamesInMaps.push(vendorKey);
             }
           }
         }
@@ -327,6 +347,122 @@ function testVendorNameConsistency() {
   log('', 'reset');
   logInfo('Vendor Name Consistency: ' + passCount + ' matched, ' + failCount + ' unmatched');
   return { passed: passCount, failed: failCount };
+}
+
+function testUniqueNpcNames() {
+  logSection('NPC UNIQUENESS: Name Check');
+
+  var nameLocations = {};
+  var passed = 0;
+  var failed = 0;
+
+  for (var mapName in maps) {
+    if (!maps.hasOwnProperty(mapName)) continue;
+    var mapData = maps[mapName];
+    if (!mapData.npcs) continue;
+
+    for (var i = 0; i < mapData.npcs.length; i++) {
+      var npc = mapData.npcs[i];
+      if (!npc.name) continue;
+      if (!nameLocations[npc.name]) {
+        nameLocations[npc.name] = [];
+      }
+      nameLocations[npc.name].push(mapName);
+    }
+  }
+
+  for (var npcName in nameLocations) {
+    if (!nameLocations.hasOwnProperty(npcName)) continue;
+    var locations = nameLocations[npcName];
+    if (locations.length === 1) {
+      logSuccess(npcName + ' is unique (' + locations[0] + ')');
+      passed++;
+    } else {
+      logError(npcName + ' is duplicated in maps: ' + locations.join(', '));
+      failed++;
+    }
+  }
+
+  logInfo('NPC Uniqueness: ' + passed + ' unique, ' + failed + ' duplicated');
+  return { passed: passed, failed: failed };
+}
+
+function testUniqueNpcLooks() {
+  logSection('NPC LOOKS: Uniqueness Check');
+
+  if (!getNpcAppearanceSignature) {
+    return { passed: 0, failed: 0, skipped: true, reason: 'Appearance signature function unavailable' };
+  }
+
+  var signatureOwners = {};
+  var passed = 0;
+  var failed = 0;
+
+  for (var mapName in maps) {
+    if (!maps.hasOwnProperty(mapName)) continue;
+    var mapData = maps[mapName];
+    if (!mapData.npcs) continue;
+
+    for (var i = 0; i < mapData.npcs.length; i++) {
+      var npc = mapData.npcs[i];
+      var signature = getNpcAppearanceSignature(npc);
+      if (!signatureOwners[signature]) {
+        signatureOwners[signature] = [];
+      }
+      signatureOwners[signature].push(npc.name + ' (' + mapName + ')');
+    }
+  }
+
+  for (var signature in signatureOwners) {
+    if (!signatureOwners.hasOwnProperty(signature)) continue;
+    var owners = signatureOwners[signature];
+    if (owners.length === 1) {
+      logSuccess('Unique look: ' + owners[0]);
+      passed++;
+    } else {
+      logError('Shared look detected: ' + owners.join(', '));
+      failed++;
+    }
+  }
+
+  logInfo('NPC Look Uniqueness: ' + passed + ' unique, ' + failed + ' duplicated');
+  return { passed: passed, failed: failed };
+}
+
+function testUniqueEnemyLooks() {
+  logSection('ENEMY LOOKS: Uniqueness Check');
+
+  if (!getEnemyAppearanceSignature || !enemiesList) {
+    return { passed: 0, failed: 0, skipped: true, reason: 'Enemy appearance signature function unavailable' };
+  }
+
+  var signatureOwners = {};
+  var passed = 0;
+  var failed = 0;
+
+  for (var i = 0; i < enemiesList.length; i++) {
+    var enemy = enemiesList[i];
+    var signature = getEnemyAppearanceSignature(enemy);
+    if (!signatureOwners[signature]) {
+      signatureOwners[signature] = [];
+    }
+    signatureOwners[signature].push(enemy.name);
+  }
+
+  for (var signature in signatureOwners) {
+    if (!signatureOwners.hasOwnProperty(signature)) continue;
+    var owners = signatureOwners[signature];
+    if (owners.length === 1) {
+      logSuccess('Unique enemy look: ' + owners[0]);
+      passed++;
+    } else {
+      logError('Shared enemy look detected: ' + owners.join(', '));
+      failed++;
+    }
+  }
+
+  logInfo('Enemy Look Uniqueness: ' + passed + ' unique, ' + failed + ' duplicated');
+  return { passed: passed, failed: failed };
 }
 
 // Main test runner - works in Node.js and browser
@@ -578,6 +714,171 @@ function testItemConsolidation() {
 }
 
 // ============================================================================
+// CAMBUS INTEGRATION TESTS (Node-compatible)
+// ============================================================================
+
+function testCityParkPoolCambusIntegration() {
+  logSection('CAMBUS: City Park Pool Integration');
+
+  var passed = 0;
+  var failed = 0;
+
+  var poolMap = maps.city_park_pool;
+  if (!poolMap) {
+    logError('Map "city_park_pool" not found');
+    return { passed: 0, failed: 1 };
+  }
+
+  var busStopFound = false;
+  for (var i = 0; i < poolMap.npcs.length; i++) {
+    var npc = poolMap.npcs[i];
+    if (npc.type === 'cambus') {
+      busStopFound = true;
+      break;
+    }
+  }
+
+  if (busStopFound) {
+    logSuccess('City Park Pool has a Cambus stop NPC');
+    passed++;
+  } else {
+    logError('City Park Pool is missing a Cambus stop NPC');
+    failed++;
+  }
+
+  var route = null;
+  for (var j = 0; j < cambusRoutes.length; j++) {
+    if (cambusRoutes[j].map === 'city_park_pool') {
+      route = cambusRoutes[j];
+      break;
+    }
+  }
+
+  if (route) {
+    logSuccess('Cambus route exists for city_park_pool (' + route.name + ')');
+    passed++;
+  } else {
+    logError('Cambus route missing for city_park_pool');
+    failed++;
+  }
+
+  if (route) {
+    var mapWidth = poolMap.width * 16;
+    var mapHeight = poolMap.height * 16;
+    var inBounds = route.x >= 0 && route.x < mapWidth && route.y >= 0 && route.y < mapHeight;
+    if (inBounds) {
+      logSuccess('City Park Pool Cambus spawn is in bounds (' + route.x + ', ' + route.y + ')');
+      passed++;
+    } else {
+      logError('City Park Pool Cambus spawn is out of bounds (' + route.x + ', ' + route.y + ')');
+      failed++;
+    }
+  }
+
+  logInfo('City Park Pool Cambus: ' + passed + ' passed, ' + failed + ' failed');
+  return { passed: passed, failed: failed };
+}
+
+// ============================================================================
+// WALKING EXIT ACCESSIBILITY TESTS (Node-compatible)
+// ============================================================================
+
+function isWalkableTile(mapData, tileX, tileY) {
+  if (tileX < 0 || tileX >= mapData.width || tileY < 0 || tileY >= mapData.height) {
+    return false;
+  }
+
+  var tile = mapData.tiles[tileY][tileX];
+  if (tile === 0 || tile === 1) return true;
+  if (tile === 2 && mapData.grassWalkable) return true;
+  return false;
+}
+
+function isPointWalkAccessible(mapData, x, y) {
+  var tileX = Math.floor(x / 16);
+  var tileY = Math.floor(y / 16);
+
+  if (isWalkableTile(mapData, tileX, tileY)) {
+    return true;
+  }
+
+  var neighbors = [
+    [tileX + 1, tileY],
+    [tileX - 1, tileY],
+    [tileX, tileY + 1],
+    [tileX, tileY - 1]
+  ];
+
+  for (var i = 0; i < neighbors.length; i++) {
+    if (isWalkableTile(mapData, neighbors[i][0], neighbors[i][1])) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function testWalkingExitsAccessible() {
+  logSection('WALKING EXITS: Accessibility & Validity');
+
+  var passed = 0;
+  var failed = 0;
+
+  for (var mapName in maps) {
+    if (!maps.hasOwnProperty(mapName)) continue;
+    var mapData = maps[mapName];
+    var exits = mapData.exits || [];
+
+    for (var i = 0; i < exits.length; i++) {
+      var exit = exits[i];
+      var label = mapName + ' -> ' + exit.toMap + ' @(' + exit.x + ',' + exit.y + ')';
+
+      var targetMap = maps[exit.toMap];
+      if (!targetMap) {
+        logError(label + ': destination map does not exist');
+        failed++;
+        continue;
+      }
+
+      var sourceInBounds = exit.x >= 0 && exit.x < mapData.width * 16 && exit.y >= 0 && exit.y < mapData.height * 16;
+      if (!sourceInBounds) {
+        logError(label + ': source exit coordinates out of bounds');
+        failed++;
+        continue;
+      }
+
+      var targetInBounds = exit.toX >= 0 && exit.toX < targetMap.width * 16 && exit.toY >= 0 && exit.toY < targetMap.height * 16;
+      if (!targetInBounds) {
+        logError(label + ': destination spawn coordinates out of bounds');
+        failed++;
+        continue;
+      }
+
+      var sourceAccessible = isPointWalkAccessible(mapData, exit.x, exit.y);
+      var targetAccessible = isPointWalkAccessible(targetMap, exit.toX, exit.toY);
+
+      if (!sourceAccessible) {
+        logError(label + ': source exit trigger is not walk-accessible');
+        failed++;
+        continue;
+      }
+
+      if (!targetAccessible) {
+        logError(label + ': destination spawn is not walk-accessible');
+        failed++;
+        continue;
+      }
+
+      logSuccess(label + ': valid and accessible');
+      passed++;
+    }
+  }
+
+  logInfo('Walking exits: ' + passed + ' passed, ' + failed + ' failed');
+  return { passed: passed, failed: failed };
+}
+
+// ============================================================================
 // MINIMAP COVERAGE TESTS
 // ============================================================================
 
@@ -676,8 +977,13 @@ function runTests() {
     magicTrainers: testMagicTrainers(),
     yogaInstructors: testYogaInstructors(),
     vendorConsistency: testVendorNameConsistency(),
+    uniqueNpcNames: testUniqueNpcNames(),
+    uniqueNpcLooks: testUniqueNpcLooks(),
+    uniqueEnemyLooks: testUniqueEnemyLooks(),
     cambusRoutesExist: testCambusRoutesExist(),
     cambusSpawnCoordinates: testCambusSpawnCoordinates(),
+    cityParkPoolCambus: testCityParkPoolCambusIntegration(),
+    walkingExitsAccessible: testWalkingExitsAccessible(),
     itemConsolidation: testItemConsolidation(),
     miniMapTopLevelLocations: testMiniMapTopLevelLocations()
   };

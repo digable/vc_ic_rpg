@@ -155,6 +155,7 @@ export const cambusRoutes = [
   { name: 'Pentacrest', map: 'pentacrest', x: 120, y: 120 },
   { name: 'Main Library', map: 'library', x: 120, y: 120 },
   { name: 'City Park', map: 'city_park', x: 80, y: 120 },
+  { name: 'City Park Pool', map: 'city_park_pool', x: 32, y: 128 },
   { name: 'The Deadwood', map: 'deadwood', x: 96, y: 120 },
   { name: 'Northside', map: 'northside', x: 128, y: 96 },
   { name: 'Beer Caves', map: 'beer_caves', x: 128, y: 96 },
