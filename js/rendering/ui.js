@@ -321,7 +321,7 @@ export function drawMenu() {
     const currentLocationName = maps[currentMapKey] ? maps[currentMapKey].name : 'Unknown';
     ctx.fillStyle = COLORS.yellow;
     ctx.font = '5px "Press Start 2P"';
-    ctx.fillText(`YOU ARE: ${currentLocationName}`, 24, 148);
+    ctx.fillText(`Your Location: ${currentLocationName}`, 24, 148);
 
 
   } else if (game.menuTab === 2) {
