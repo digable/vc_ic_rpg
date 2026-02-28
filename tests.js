@@ -1083,6 +1083,67 @@ function testMiniMapTopLevelLocations() {
   return { passed: passed, failed: failed };
 }
 
+function testReadmeConsistency() {
+  if (typeof require === 'undefined') {
+    return { passed: 0, failed: 0, skipped: true, reason: 'Node-only test (file read unavailable)' };
+  }
+
+  var fs;
+  var path;
+  try {
+    fs = require('fs');
+    path = require('path');
+  } catch (e) {
+    return { passed: 0, failed: 0, skipped: true, reason: 'Node fs/path unavailable' };
+  }
+
+  logSection('README: Consistency Check');
+
+  var readmePath = path.join(__dirname, 'README.md');
+  var readme = '';
+  try {
+    readme = fs.readFileSync(readmePath, 'utf8');
+  } catch (e) {
+    logError('Could not read README.md');
+    return { passed: 0, failed: 1 };
+  }
+
+  var passed = 0;
+  var failed = 0;
+
+  var requiredMentions = [
+    'tests.js',
+    'TESTING.md',
+    'music.js',
+    'npc-appearance.js',
+    'enemy-appearance.js'
+  ];
+
+  for (var i = 0; i < requiredMentions.length; i++) {
+    var token = requiredMentions[i];
+    if (readme.indexOf(token) !== -1) {
+      logSuccess('README mentions ' + token);
+      passed++;
+    } else {
+      logError('README missing expected reference: ' + token);
+      failed++;
+    }
+  }
+
+  // Stale legacy test filename should not appear as a project structure entry.
+  var stalePattern = /(^|\n)\s*[├└│\-\s]*test\.js\b/m;
+  if (stalePattern.test(readme)) {
+    logError('README still references stale test.js entry');
+    failed++;
+  } else {
+    logSuccess('README has no stale test.js project entry');
+    passed++;
+  }
+
+  logInfo('README consistency: ' + passed + ' passed, ' + failed + ' failed');
+  return { passed: passed, failed: failed };
+}
+
 // ============================================================================
 // UNIFIED TEST RUNNER
 // ============================================================================
@@ -1116,7 +1177,8 @@ function runTests() {
     walkingExitsAccessible: testWalkingExitsAccessible(),
     walkingTransitionsRoundTrip: testWalkingTransitionsRoundTrip(),
     itemConsolidation: testItemConsolidation(),
-    miniMapTopLevelLocations: testMiniMapTopLevelLocations()
+    miniMapTopLevelLocations: testMiniMapTopLevelLocations(),
+    readmeConsistency: testReadmeConsistency()
   };
 
   // Summary

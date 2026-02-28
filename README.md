@@ -117,16 +117,21 @@ vc_ic_rpg/
 ├── LICENSE                 # MIT License
 ├── README.md               # This file
 ├── .gitignore              # Git ignore rules
-├── test.js                 # Browser console test helpers
+├── tests.js                # Unified test suite (Node + browser-aware checks)
+├── TESTING.md              # Test running notes (PowerShell/browser)
 └── js/                     # Modular JavaScript
     ├── main.js             # Game loop & rendering pipeline
     ├── game-state.js       # Global game state & initialization
     ├── constants.js        # Game configuration & colors
     ├── data.js             # Items, spells, shops, routes
+    ├── save.js             # Multi-slot local save/load + migration helpers
     ├── quests.js           # Quest database
     ├── quests-logic.js     # Quest system & NPC interactions
     ├── maps.js             # Map layouts & NPC positions
     ├── enemies.js          # Enemy definitions & encounters
+    ├── npc-appearance.js   # Deterministic NPC visual identity
+    ├── enemy-appearance.js # Deterministic enemy visual identity
+    ├── music.js            # Adaptive background/battle/death music engine
     ├── battle.js           # Combat system & spell execution
     ├── rendering/          # Modular rendering system
     │   ├── index.js         # Rendering exports & setup
