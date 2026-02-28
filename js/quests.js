@@ -326,6 +326,67 @@ const questDatabase = {
     }
   },
 
+  late_night_delivery: {
+    id: 'late_night_delivery',
+    name: 'Late Night Delivery',
+    giver: 'Diner',
+    location: 'northside',
+    description: 'Talk to the Chef, travel to Coralville Lake, and bring back Beach Lemonade from Rosa for the hungry diner.',
+    objectives: [
+      { type: 'talk_to_npc', npc: 'Chef', talked: false },
+      { type: 'visit_location', location: 'coralville_lake', visited: false },
+      { type: 'buy_from_vendor', vendor: 'Beach Vendor Rosa', bought: false },
+      { type: 'bring_item', item: 'Beach Lemonade', amount: 1 }
+    ],
+    rewards: { gold: 85, exp: 45, item: 'Miso Soup' },
+    dialogue: {
+      offer: ['Could you do me a favor?', 'Talk to the Chef, then head to Coralville Lake for Beach Lemonade from Rosa.', 'Bring it back and I will reward you.'],
+      progress: ['Still waiting on that Coralville Lake delivery...', 'Did you get Beach Lemonade from Rosa?'],
+      complete: ['Perfect timing!', 'Cold and fresh from the lake.', 'Thanks for making the long delivery!']
+    }
+  },
+
+  pool_table_favor: {
+    id: 'pool_table_favor',
+    name: 'Pool Table Favor',
+    giver: 'Pool Player',
+    location: 'deadwood',
+    description: 'Talk to the Bartender, travel to Northside, and bring back a Steak Dinner from the Restaurant Owner.',
+    objectives: [
+      { type: 'talk_to_npc', npc: 'Bartender', talked: false },
+      { type: 'visit_location', location: 'northside', visited: false },
+      { type: 'buy_from_vendor', vendor: 'Restaurant Owner', bought: false },
+      { type: 'bring_item', item: 'Steak Dinner', amount: 1 }
+    ],
+    rewards: { gold: 80, exp: 50, item: 'Craft Beer' },
+    dialogue: {
+      offer: ['Hey, can you help me out?', 'Talk to the Bartender, then make a food run to Northside.', 'Bring me a Steak Dinner from the Restaurant Owner.'],
+      progress: ['Still waiting on that Northside pickup.', 'I need that Steak Dinner before the next game.'],
+      complete: ['Now that is service!', 'Perfect plate from Northside.', 'Take this for the trouble.']
+    }
+  },
+
+  archive_exchange: {
+    id: 'archive_exchange',
+    name: 'Archive Exchange',
+    giver: 'Tour Guide Margaret',
+    location: 'old_capitol',
+    description: 'Talk to Dr. Whitmore and Curator Soren, then travel to The Deadwood and bring back an IPA for the late shift.',
+    objectives: [
+      { type: 'talk_to_npc', npc: 'Historian Dr. Whitmore', talked: false },
+      { type: 'talk_to_npc', npc: 'Curator Soren', talked: false },
+      { type: 'visit_location', location: 'deadwood', visited: false },
+      { type: 'buy_from_vendor', vendor: 'Bartender', bought: false },
+      { type: 'bring_item', item: 'IPA', amount: 1 }
+    ],
+    rewards: { gold: 110, exp: 60, item: 'Music Note' },
+    dialogue: {
+      offer: ['Museum days are busy.', 'Please coordinate with Dr. Whitmore and Curator Soren.', 'Then head to The Deadwood and bring me an IPA for the late shift.'],
+      progress: ['Did you speak to both of them?', 'I still need that IPA from The Deadwood.'],
+      complete: ['Wonderful! Everyone is coordinated now.', 'And this delivery saves my shift.', 'Thank you for the help!']
+    }
+  },
+
   cemetery_cleansing: {
     id: 'cemetery_cleansing',
     name: 'Cemetery Cleansing',

@@ -11,6 +11,7 @@ export function checkNPCInteraction() {
   for (let npc of map.npcs) {
     const dist = Math.sqrt((game.player.x - npc.x) ** 2 + (game.player.y - npc.y) ** 2);
     if (dist < 24) {
+      updateQuestProgress('talk_to_npc', npc.name);
       if (npc.type === 'boss') {
         if (game.caveSovereignDefeated) {
           return null;
@@ -71,6 +72,8 @@ export function canCompleteQuest(activeQuest) {
   return activeQuest.objectives.every(obj => {
     if (obj.type === 'bring_item') {
       return game.consumables.some(item => item.name === obj.item);
+    } else if (obj.type === 'talk_to_npc') {
+      return obj.talked;
     } else if (obj.type === 'visit_location') {
       return obj.visited;
     } else if (obj.type === 'defeat_enemy') {
@@ -165,6 +168,10 @@ export function updateQuestProgress(type, value) {
           // Compare vendor names case-insensitively and trimmed
           if (obj.vendor && value && obj.vendor.toString().trim().toLowerCase() === String(value).trim().toLowerCase()) {
             obj.bought = true;
+          }
+        } else if (type === 'talk_to_npc') {
+          if (obj.npc && value && obj.npc.toString().trim().toLowerCase() === String(value).trim().toLowerCase()) {
+            obj.talked = true;
           }
         }
       }

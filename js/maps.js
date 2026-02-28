@@ -197,7 +197,7 @@ export const maps = {
     npcs: [
       { x: 96, y: 64, name: 'Bartender', type: 'food_cart', dialogue: ['Welcome to The Deadwood!', 'What can I get you?'] },
       { x: 64, y: 112, name: 'Regular', hasQuest: 'bar_tab', dialogue: ['This place has been here forever.', 'Best bar in Iowa City!'] },
-      { x: 144, y: 96, name: 'Pool Player', dialogue: ['Wanna play a game?', 'I come here every weekend.'] },
+      { x: 144, y: 96, name: 'Pool Player', hasQuest: 'pool_table_favor', dialogue: ['Wanna play a game?', 'I come here every weekend.'] },
       { x: 32, y: 112, name: 'Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] }
     ],
     name: 'The Deadwood',
@@ -273,7 +273,7 @@ export const maps = {
       { x: 64, y: 48, name: 'Restaurant Owner', type: 'food_cart', dialogue: ['Best food in town!', 'Fresh ingredients daily!'] },
       { x: 128, y: 48, name: 'Chef', type: 'food_cart', dialogue: ['The kitchen is busy tonight!', 'Everything is made to order.'] },
       { x: 192, y: 48, name: 'Food Cart Vendor', type: 'food_cart', dialogue: ['Street tacos!', 'Authentic flavors!'] },
-      { x: 96, y: 112, name: 'Diner', dialogue: ['The ramen here is amazing!', 'You should try it.'] },
+      { x: 96, y: 112, name: 'Diner', hasQuest: 'late_night_delivery', dialogue: ['The ramen here is amazing!', 'You should try it.'] },
       { x: 160, y: 112, name: 'Food Critic', hasQuest: 'food_critic_challenge', dialogue: ['I review all the restaurants.', 'Northside has the best variety.'] },
       { x: 192, y: 112, name: 'Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] }
     ],
@@ -494,7 +494,7 @@ export const maps = {
     ],
     npcs: [
       { x: 128, y: 64, name: 'Historian Dr. Whitmore', hasQuest: 'capitol_mystery', dialogue: ['Greetings, young scholar!', 'This magnificent structure was built in 1842.', 'I study the spirits that linger here...', 'Some say they protect the building\'s secrets.'] },
-      { x: 96, y: 96, name: 'Tour Guide Margaret', dialogue: ['Welcome to our historic museum!', 'Did you know the dome is covered in 23-karat gold leaf?', 'Over 700,000 tourists have visited!', 'The spirits here are quite active at night...'] },
+      { x: 96, y: 96, name: 'Tour Guide Margaret', hasQuest: 'archive_exchange', dialogue: ['Welcome to our historic museum!', 'Did you know the dome is covered in 23-karat gold leaf?', 'Over 700,000 tourists have visited!', 'The spirits here are quite active at night...'] },
       { x: 160, y: 96, name: 'Curator Soren', type: 'magic_trainer', dialogue: ['I sense great magical potential in you.', 'This building\'s history resonates with ancient power.', 'The ghosts here once served as governors!', 'Perhaps I can teach you their secrets...'] },
       { x: 48, y: 160, name: 'Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] }
     ],
