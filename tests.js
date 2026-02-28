@@ -878,6 +878,136 @@ function testWalkingExitsAccessible() {
   return { passed: passed, failed: failed };
 }
 
+function canTriggerExitFromPosition(x, y, exit) {
+  var dx = x - exit.x;
+  var dy = y - exit.y;
+  var dist = Math.sqrt(dx * dx + dy * dy);
+  return dist < 16;
+}
+
+function getReachablePositions(mapData, startX, startY, maxNodes) {
+  var reachable = {};
+  var queue = [];
+
+  function key(x, y) {
+    return x + ',' + y;
+  }
+
+  function inBounds(x, y) {
+    return x >= 0 && x < mapData.width * 16 && y >= 0 && y < mapData.height * 16;
+  }
+
+  if (!inBounds(startX, startY) || !isPointWalkAccessible(mapData, startX, startY)) {
+    return reachable;
+  }
+
+  var startKey = key(startX, startY);
+  reachable[startKey] = true;
+  queue.push({ x: startX, y: startY });
+
+  var visitedCount = 0;
+  var limit = typeof maxNodes === 'number' ? maxNodes : 600;
+
+  while (queue.length > 0 && visitedCount < limit) {
+    var current = queue.shift();
+    visitedCount++;
+
+    var neighbors = [
+      { x: current.x + 16, y: current.y },
+      { x: current.x - 16, y: current.y },
+      { x: current.x, y: current.y + 16 },
+      { x: current.x, y: current.y - 16 }
+    ];
+
+    for (var i = 0; i < neighbors.length; i++) {
+      var n = neighbors[i];
+      var nKey = key(n.x, n.y);
+
+      if (!inBounds(n.x, n.y)) continue;
+      if (reachable[nKey]) continue;
+      if (!isPointWalkAccessible(mapData, n.x, n.y)) continue;
+
+      reachable[nKey] = true;
+      queue.push(n);
+    }
+  }
+
+  return reachable;
+}
+
+function canReachExitFromSpawn(mapData, spawnX, spawnY, targetExit) {
+  var reachable = getReachablePositions(mapData, spawnX, spawnY, 700);
+  for (var posKey in reachable) {
+    if (!reachable.hasOwnProperty(posKey)) continue;
+    var parts = posKey.split(',');
+    var x = parseInt(parts[0], 10);
+    var y = parseInt(parts[1], 10);
+    if (canTriggerExitFromPosition(x, y, targetExit)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function testWalkingTransitionsRoundTrip() {
+  logSection('WALKING TRANSITIONS: Round-Trip Reliability');
+
+  var passed = 0;
+  var failed = 0;
+
+  for (var fromMapName in maps) {
+    if (!maps.hasOwnProperty(fromMapName)) continue;
+
+    var fromMap = maps[fromMapName];
+    var fromExits = fromMap.exits || [];
+
+    for (var i = 0; i < fromExits.length; i++) {
+      var forwardExit = fromExits[i];
+      var toMapName = forwardExit.toMap;
+      var toMap = maps[toMapName];
+      if (!toMap) continue;
+
+      var reverseCandidates = [];
+      var toExits = toMap.exits || [];
+      for (var j = 0; j < toExits.length; j++) {
+        if (toExits[j].toMap === fromMapName) {
+          reverseCandidates.push(toExits[j]);
+        }
+      }
+
+      if (reverseCandidates.length === 0) {
+        logInfo(fromMapName + ' -> ' + toMapName + ': no reverse walking exit (skipped)');
+        continue;
+      }
+
+      var reverseExit = reverseCandidates[0];
+      var label = fromMapName + ' -> ' + toMapName + ' -> ' + fromMapName + ' -> ' + toMapName;
+
+      // Step 1: after A->B transition, can player reach B->A trigger?
+      var canReturn = canReachExitFromSpawn(toMap, forwardExit.toX, forwardExit.toY, reverseExit);
+      if (!canReturn) {
+        logError(label + ': cannot reliably reach reverse exit from destination spawn');
+        failed++;
+        continue;
+      }
+
+      // Step 2: after B->A transition, can player again reach original A->B trigger?
+      var canReenter = canReachExitFromSpawn(fromMap, reverseExit.toX, reverseExit.toY, forwardExit);
+      if (!canReenter) {
+        logError(label + ': cannot re-enter destination after returning');
+        failed++;
+        continue;
+      }
+
+      logSuccess(label + ': reliable');
+      passed++;
+    }
+  }
+
+  logInfo('Walking round-trip reliability: ' + passed + ' passed, ' + failed + ' failed');
+  return { passed: passed, failed: failed };
+}
+
 // ============================================================================
 // MINIMAP COVERAGE TESTS
 // ============================================================================
@@ -984,6 +1114,7 @@ function runTests() {
     cambusSpawnCoordinates: testCambusSpawnCoordinates(),
     cityParkPoolCambus: testCityParkPoolCambusIntegration(),
     walkingExitsAccessible: testWalkingExitsAccessible(),
+    walkingTransitionsRoundTrip: testWalkingTransitionsRoundTrip(),
     itemConsolidation: testItemConsolidation(),
     miniMapTopLevelLocations: testMiniMapTopLevelLocations()
   };

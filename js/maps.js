@@ -74,7 +74,7 @@ export const maps = {
       { x: 128, y: 16, toMap: 'coralville_lake', toX: 128, toY: 208, direction: 'up' },
       { x: 16, y: 120, toMap: 'city_park', toX: 224, toY: 120, direction: 'left' },
       { x: 224, y: 112, toMap: 'deadwood', toX: 32, toY: 112, direction: 'right' },
-      { x: 128, y: 224, toMap: 'northside', toX: 128, toY: 16, direction: 'down' }
+      { x: 128, y: 208, toMap: 'northside', toX: 128, toY: 16, direction: 'down' }
     ]
   },
   pentacrest: {
@@ -314,7 +314,7 @@ export const maps = {
     name: 'Northside',
     grassWalkable: false,
     exits: [
-      { x: 128, y: 16, toMap: 'downtown', toX: 128, toY: 224, direction: 'up' },
+      { x: 128, y: 16, toMap: 'downtown', toX: 128, toY: 192, direction: 'up' },
       { x: 128, y: 224, toMap: 'beer_caves', toX: 128, toY: 16, direction: 'down' }
     ]
   },
