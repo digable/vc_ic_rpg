@@ -117,8 +117,20 @@ vc_ic_rpg/
 ├── LICENSE                 # MIT License
 ├── README.md               # This file
 ├── .gitignore              # Git ignore rules
-├── tests.js                # Unified test suite (Node + browser-aware checks)
+├── tests.js                # Test entrypoint wrapper (keeps `node tests.js` stable)
 ├── TESTING.md              # Test running notes (PowerShell/browser)
+├── tests/                  # Test implementation modules
+│   ├── lib/                # Shared test helpers
+│   │   ├── logging.js      # Reusable test logger + section printers
+│   │   └── context.js      # Shared context builder for suites
+│   ├── runner.js           # Unified test suite orchestrator
+│   └── suites/             # Modular test suites by concern
+│       ├── vendors.js      # Vendor/shop/trainer coverage tests
+│       ├── uniqueness.js   # NPC/enemy uniqueness checks
+│       ├── cambus.js       # Cambus routes/spawn/integration validation
+│       ├── walking.js      # Walking exits + round-trip transition reliability
+│       ├── items.js        # Item consolidation behavior checks
+│       └── consistency.js  # Minimap and README consistency checks
 └── js/                     # Modular JavaScript
     ├── main.js             # Game loop & rendering pipeline
     ├── game-state.js       # Global game state & initialization

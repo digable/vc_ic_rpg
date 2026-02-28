@@ -527,9 +527,9 @@ export const maps = {
       [3,3,3,3,3,3,3,0,0,0,3,3,3,3,3,3]
     ],
     npcs: [
-      { x: 128, y: 64, name: 'Historian Dr. Whitmore', hasQuest: 'capitol_mystery', dialogue: ['Greetings, young scholar!', 'This magnificent structure was built in 1842.', 'I study the spirits that linger here...', 'Some say they protect the building\'s secrets.'] },
-      { x: 96, y: 96, name: 'Tour Guide Margaret', hasQuest: 'archive_exchange', dialogue: ['Welcome to our historic museum!', 'Did you know the dome is covered in 23-karat gold leaf?', 'Over 700,000 tourists have visited!', 'The spirits here are quite active at night...'] },
-      { x: 160, y: 96, name: 'Curator Soren', type: 'magic_trainer', dialogue: ['I sense great magical potential in you.', 'This building\'s history resonates with ancient power.', 'The ghosts here once served as governors!', 'Perhaps I can teach you their secrets...'] },
+      { x: 64, y: 48, name: 'Historian Dr. Whitmore', hasQuest: 'capitol_mystery', dialogue: ['Greetings, young scholar!', 'This magnificent structure was built in 1842.', 'I study the spirits that linger here...', 'Some say they protect the building\'s secrets.'] },
+      { x: 128, y: 128, name: 'Tour Guide Margaret', hasQuest: 'archive_exchange', dialogue: ['Welcome to our historic museum!', 'Did you know the dome is covered in 23-karat gold leaf?', 'Over 700,000 tourists have visited!', 'The spirits here are quite active at night...'] },
+      { x: 192, y: 160, name: 'Curator Soren', type: 'magic_trainer', dialogue: ['I sense great magical potential in you.', 'This building\'s history resonates with ancient power.', 'The ghosts here once served as governors!', 'Perhaps I can teach you their secrets...'] },
       { x: 48, y: 160, name: 'Old Capitol Bus Stop', type: 'cambus', isSign: true, dialogue: ['Cambus Stop'] }
     ],
     name: 'Old Capitol Museum',
