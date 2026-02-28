@@ -255,12 +255,24 @@ All equipment, training, and items affect 6 core statistics:
 
 ## 📝 Development
 
-### Code Organization
-The codebase is modularized for easy maintenance:
-- **Data modules** - Separated game content
-- **Game logic** - Main game engine
-- **Rendering** - All drawing functions
-- **Input** - Keyboard and touch handling
+### Architecture
+- **Runtime model** - Single shared `game` state drives explore, dialogue, menu, and battle flows.
+- **Data-first content** - Maps, quests, enemies, vendors, and routes are defined in data modules and interpreted by game logic.
+- **Frame pipeline** - `main.js` updates gameplay and delegates drawing to modular renderers under `js/rendering/`.
+- **Interaction loop** - Input updates player/menu intent, world + quest systems resolve outcomes, UI reflects current state.
+
+### Module Responsibilities
+- **Core orchestration** - `js/main.js`, `js/game-state.js`, `js/constants.js` manage loop timing, global state, and shared constants.
+- **World + navigation** - `js/maps.js`, `js/world.js`, `js/interactions.js`, `js/input.js` control movement, collisions, exits, and map-level interactions.
+- **Combat + progression** - `js/battle.js`, `js/leveling.js`, `js/enemies.js` handle turn flow, enemy behaviors, rewards, and stat growth.
+- **Quest + narrative systems** - `js/quests.js`, `js/quests-logic.js`, `js/dialogue.js` define quest data, objective updates, and dialogue progression.
+- **Player economy + persistence** - `js/data.js`, `js/save.js` define purchasables/training routes and save/load + migration behavior.
+- **Presentation layer** - `js/rendering/*`, `game.css`, `js/music.js` render visuals/HUD and drive adaptive audio states.
+- **Visual identity helpers** - `js/npc-appearance.js`, `js/enemy-appearance.js` generate deterministic appearance signatures for uniqueness.
+- **Testing stack** - `tests.js` is the stable CLI entrypoint; `tests/runner.js` orchestrates suite modules under `tests/suites/`.
+
+### Testing Entry Point
+Use `TESTING.md` as the testing entrypoint for commands, environment notes, and test suite guidance.
 
 ### Adding Content
 
