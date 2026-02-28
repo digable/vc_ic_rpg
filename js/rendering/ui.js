@@ -357,6 +357,8 @@ export function drawMenu() {
     const mainMissionData = questDatabase.corruption_source;
     const maxInProgressShown = 1;
     const maxCompletedShown = 3;
+    const inProgressCount = inProgress.length;
+    const completedCount = completed.length;
 
     const inProgressPages = Math.max(1, Math.ceil(inProgress.length / maxInProgressShown));
     const completedPages = Math.max(1, Math.ceil(completed.length / maxCompletedShown));
@@ -438,7 +440,9 @@ export function drawMenu() {
     }
     ctx.fillStyle = COLORS.gray;
     ctx.font = '5px "Press Start 2P"';
-    ctx.fillText(`${game.questInProgressPage + 1}/${inProgressPages}`, 170, 112);
+    const inProgressPageDisplay = inProgressCount === 0 ? '0/0' : `${game.questInProgressPage + 1}/${inProgressPages}`;
+    ctx.fillText(`${inProgressCount} total`, 122, 112);
+    ctx.fillText(inProgressPageDisplay, 190, 112);
 
     let y = 122;
     if (inProgress.length === 0) {
@@ -474,7 +478,9 @@ export function drawMenu() {
     }
     ctx.fillStyle = COLORS.gray;
     ctx.font = '5px "Press Start 2P"';
-    ctx.fillText(`${game.questCompletedPage + 1}/${completedPages}`, 170, completedHeaderY);
+    const completedPageDisplay = completedCount === 0 ? '0/0' : `${game.questCompletedPage + 1}/${completedPages}`;
+    ctx.fillText(`${completedCount} total`, 122, completedHeaderY);
+    ctx.fillText(completedPageDisplay, 190, completedHeaderY);
 
     let completedY = completedHeaderY + 10;
     if (completed.length === 0) {
