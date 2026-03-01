@@ -4,6 +4,7 @@ import { questDatabase } from './quests.js';
 import { consumableItems } from '../../data.js';
 import { maps } from '../../maps.js';
 import { startDialogue } from '../../dialogue.js';
+import { addExperience } from '../../leveling.js';
 import { CAVE_MAPS } from '../../constants.js';
 
 export function checkNPCInteraction() {
@@ -113,7 +114,6 @@ export function completeQuest(questId) {
     rewardMessages.push(`Received ${quest.rewards.gold} gold!`);
   }
   if (quest.rewards.exp) {
-    playerPatch.exp = (playerPatch.exp ?? game.player.exp) + quest.rewards.exp;
     rewardMessages.push(`Gained ${quest.rewards.exp} EXP!`);
   }
   if (quest.rewards.item) {
@@ -144,6 +144,10 @@ export function completeQuest(questId) {
 
   if (Object.keys(playerPatch).length > 0) {
     actions.playerPatched(playerPatch, 'questRewardsApplied');
+  }
+
+  if (quest.rewards.exp) {
+    addExperience(quest.rewards.exp);
   }
   
   // Add reward messages to dialogue

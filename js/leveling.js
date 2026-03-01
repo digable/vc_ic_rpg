@@ -95,7 +95,12 @@ export const hpGrowthPatterns = {
  */
 export function getExpForNextLevel(currentLevel) {
   if (currentLevel >= 50) return Infinity;
-  return expThresholds[currentLevel];
+  return 25 * currentLevel * (currentLevel + 1);
+}
+
+function getExpFloorForLevel(level) {
+  if (level <= 1) return 0;
+  return getExpForNextLevel(level - 1);
 }
 
 /**
@@ -197,9 +202,9 @@ export function handleLevelUp() {
     magic: game.player.magic + magicGain,
     defense: game.player.defense + defenseGain,
     maxHp: nextMaxHp,
-    hp: nextMaxHp,
+    hp: Math.min(nextMaxHp, game.player.hp + roundedHpGain),
     maxMp: nextMaxMp,
-    mp: nextMaxMp
+    mp: Math.min(nextMaxMp, game.player.mp + roundedMpGain)
   }, 'levelingLevelUpApplied');
   
   // Show level up message
@@ -209,22 +214,50 @@ export function handleLevelUp() {
     `MP +${Math.round(mpGain)}`,
     `ATK +${attackGain} | DEF +${defenseGain}`
   ];
-  
-  return messages;
+
+  return {
+    messages,
+    dialogData: {
+      level: nextLevel,
+      hpGain: Math.round(hpGain),
+      mpGain: Math.round(mpGain),
+      attackGain,
+      magicGain,
+      defenseGain
+    }
+  };
 }
 
 /**
  * Add experience to player and handle level ups
  */
 export function addExperience(amount) {
+  const expFloor = getExpFloorForLevel(game.player.level);
+  if (game.player.exp < expFloor) {
+    actions.playerPatched({ exp: expFloor }, 'experienceNormalizedToLifetimeFloor');
+  }
+
   actions.playerPatched({ exp: game.player.exp + amount }, 'experienceAdded');
   
   const levelUpMessages = [];
+  let latestLevelUpDialog = null;
   
   // Check for level ups
   while (game.player.level < 50 && game.player.exp >= getExpForNextLevel(game.player.level)) {
-    const messages = handleLevelUp();
-    if (messages) levelUpMessages.push(...messages);
+    const levelUpResult = handleLevelUp();
+    if (!levelUpResult) continue;
+
+    if (levelUpResult.messages) {
+      levelUpMessages.push(...levelUpResult.messages);
+    }
+
+    if (levelUpResult.dialogData) {
+      latestLevelUpDialog = levelUpResult.dialogData;
+    }
+  }
+
+  if (latestLevelUpDialog) {
+    actions.pendingLevelUpSet(latestLevelUpDialog);
   }
   
   return levelUpMessages;

@@ -1,5 +1,6 @@
 import { game, actions } from './game-state.js';
 import { travelToMapDestination } from './features/world/map-transition-service.js';
+import { getExpForNextLevel } from './leveling.js';
 
 const SAVE_KEY = 'vc_ic_rpg_saves_v2';
 const LEGACY_SAVE_KEY = 'vc_ic_rpg_save_v1';
@@ -37,7 +38,8 @@ function resetTransientState() {
     itemMenuOpen: false,
     itemMenuSelection: 0,
     textBox: null,
-    levelUpDialog: null
+    levelUpDialog: null,
+    pendingLevelUp: null
   }, 'transientStateReset');
 }
 
@@ -145,6 +147,19 @@ function normalizeLoadedSettings(data) {
   };
 }
 
+function normalizeLoadedPlayerExp(playerData) {
+  if (!playerData || typeof playerData.level !== 'number' || typeof playerData.exp !== 'number') {
+    return playerData;
+  }
+
+  const level = Math.max(1, Math.floor(playerData.level));
+  const expFloor = level <= 1 ? 0 : getExpForNextLevel(level - 1);
+  return {
+    ...playerData,
+    exp: Math.max(playerData.exp, expFloor)
+  };
+}
+
 export function hasSaveData() {
   return getSaveCount() > 0;
 }
@@ -224,7 +239,7 @@ export function loadGameFromLocal(index = null) {
       return { success: false, reason: 'invalid_data' };
     }
 
-    actions.gameStatePatched({ player: { ...game.player, ...data.player } }, 'playerHydratedFromSave');
+    actions.gameStatePatched({ player: { ...game.player, ...normalizeLoadedPlayerExp(data.player) } }, 'playerHydratedFromSave');
     travelToMapDestination({
       toMap: data.map,
       toX: game.player.x,

@@ -103,6 +103,7 @@ export const game = {
   textBox: null,
   systemMessage: null,
   levelUpDialog: null, // Stores level up info when level up occurs
+  pendingLevelUp: null, // Queued level-up dialog shown after other dialogue closes
   musicEnabled: false,
   animFrame: 0
 };
@@ -189,6 +190,12 @@ export const actions = {
     logAction('levelUpDialogSet', { hasDialog: !!levelUpDialog });
     game.levelUpDialog = levelUpDialog;
     return game.levelUpDialog;
+  },
+
+  pendingLevelUpSet(pendingLevelUp) {
+    logAction('pendingLevelUpSet', { hasPending: !!pendingLevelUp });
+    game.pendingLevelUp = pendingLevelUp;
+    return game.pendingLevelUp;
   },
 
   battleStarted(enemy) {
@@ -367,6 +374,7 @@ export function resetGameState() {
   game.textBox = null;
   game.systemMessage = null;
   game.levelUpDialog = null;
+  game.pendingLevelUp = null;
   game.musicEnabled = false;
   game.animFrame = 0;
   

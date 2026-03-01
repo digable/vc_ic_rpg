@@ -77,41 +77,20 @@ function gameLoop() {
   } else {
     setBackgroundMusicMode('explore');
   }
-  
-  // Check for level up
-  const expNeeded = game.player.level * 50;
-  if (game.player.exp >= expNeeded && !game.levelUpDialog) {
-    const oldMaxHp = game.player.maxHp;
-    const oldMaxMp = game.player.maxMp;
-    const oldAttack = game.player.attack;
-    const oldMagic = game.player.magic;
-    const oldDefense = game.player.defense;
-    
-    actions.playerPatched({
-      level: game.player.level + 1,
-      exp: game.player.exp - expNeeded,
-      maxHp: game.player.maxHp + 10,
-      hp: game.player.hp + 10,
-      maxMp: game.player.maxMp + 5,
-      mp: game.player.mp + 5,
-      attack: game.player.attack + 2,
-      magic: game.player.magic + 1,
-      defense: game.player.defense + 1
-    }, 'levelUpApplied');
-    
-    // Store level up info for dialogue
-    actions.levelUpDialogSet({
-      level: game.player.level,
-      hpGain: 10,
-      mpGain: 5,
-      attackGain: 2,
-      magicGain: 1,
-      defenseGain: 1
-    });
-    
-    // Show level up dialogue
+
+  // Show deferred level-up dialogue only after battle teardown is fully complete
+  if (
+    game.state === 'explore' &&
+    previousState !== 'battle' &&
+    !game.battleState &&
+    !game.dialogue &&
+    game.pendingLevelUp
+  ) {
+    const levelUpData = game.pendingLevelUp;
+    actions.pendingLevelUpSet(null);
+    actions.levelUpDialogSet(levelUpData);
     actions.dialogueStarted([
-      `LEVEL UP!\nYou have reached Level ${game.player.level}!\n\nHP: +10 | MP: +5\nATK: +2 | MAG: +1 | DEF: +1`
+      `LEVEL UP!\nYou have reached Level ${levelUpData.level}!\n\nHP: +${levelUpData.hpGain} | MP: +${levelUpData.mpGain}\nATK: +${levelUpData.attackGain} | MAG: +${levelUpData.magicGain} | DEF: +${levelUpData.defenseGain}`
     ], {
       type: 'levelUp'
     });

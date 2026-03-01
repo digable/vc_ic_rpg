@@ -2,6 +2,7 @@ import { game } from '../../game-state.js';
 import { maps } from '../../maps.js';
 import { questDatabase } from '../quests/ui.js';
 import { getSaveCount, getSaveSlots, MAX_LOCAL_SAVES } from '../../save.js';
+import { getExpForNextLevel } from '../../leveling.js';
 
 const MAX_IN_PROGRESS_SHOWN = 1;
 const MAX_COMPLETED_SHOWN = 3;
@@ -184,6 +185,12 @@ export function getMapTabModel() {
 }
 
 export function getStatsTabModel() {
+  const expFloor = game.player.level <= 1 ? 0 : getExpForNextLevel(game.player.level - 1);
+  const expAccumulatedTotal = Math.max(game.player.exp, expFloor);
+  const expNextLevelTotal = game.player.level >= 50
+    ? expAccumulatedTotal
+    : getExpForNextLevel(game.player.level);
+
   return {
     title: 'CHARACTER',
     lines: [
@@ -194,7 +201,7 @@ export function getStatsTabModel() {
       { text: `Attack: ${game.player.attack}`, x: 30, y: 112 },
       { text: `Magic: ${game.player.magic}`, x: 130, y: 112 },
       { text: `Defense: ${game.player.defense}`, x: 30, y: 122 },
-      { text: `EXP: ${game.player.exp}/${game.player.level * 30}`, x: 30, y: 132 },
+      { text: `EXP: ${expAccumulatedTotal}/${expNextLevelTotal}`, x: 30, y: 132 },
       { text: `Gold: $${game.player.gold}`, x: 30, y: 142 }
     ],
     skills: game.skills.slice(0, 2),

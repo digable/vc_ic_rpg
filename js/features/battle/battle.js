@@ -502,11 +502,8 @@ export function victoryBattle() {
     setBattleMessage(`Victory! Gained ${exp} EXP and $${gold}!`, 'battleVictoryMessage');
   }
   
-  // Add experience and handle level ups
-  const levelUpMessages = addExperience(exp);
-  if (levelUpMessages.length > 0) {
-    appendBattleMessage(` *** ${levelUpMessages.join(' | ')} ***`, 'battleLevelUpSummaryAppended');
-  }
+  // Add experience and queue any level-up popup for after battle ends
+  addExperience(exp);
   
   // Apply post-battle regeneration skills
   let regenMessage = '';
