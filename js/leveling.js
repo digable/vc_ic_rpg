@@ -3,11 +3,11 @@ import { game, actions } from './game-state.js';
 
 // Experience thresholds for each level (up to 50)
 export const expThresholds = [
-  0, 100, 200, 350, 500, 700, 950, 1250, 1600, 2000,        // Levels 1-10
-  2450, 2950, 3500, 4100, 4750, 5450, 6200, 7000, 7850, 8750, // Levels 11-20
-  9700, 10700, 11750, 12850, 14000, 15200, 16450, 17750, 19100, 20500, // Levels 21-30
-  22000, 23550, 25150, 26800, 28500, 30250, 32050, 33900, 35800, 37750, // Levels 31-40
-  39750, 41800, 43900, 46050, 48250, 50500, 52800, 55150, 57550, 60000  // Levels 41-50
+  0, 120, 260, 430, 650, 920, 1250, 1640, 2090, 2620,            // Levels 1-10
+  3240, 3960, 4790, 5740, 6820, 8040, 9410, 10940, 12640, 14520, // Levels 11-20
+  16590, 18860, 21340, 24040, 26970, 30140, 33560, 37240, 41190, 45420, // Levels 21-30
+  49940, 54760, 59890, 65340, 71120, 77240, 83710, 90540, 97740, 105320, // Levels 31-40
+  113290, 121660, 130440, 139640, 149270, 159340, 169860, 180840, 192290, 204220 // Levels 41-50
 ];
 
 // Stat growth tables by class (chance to gain stat on level up)
@@ -95,7 +95,7 @@ export const hpGrowthPatterns = {
  */
 export function getExpForNextLevel(currentLevel) {
   if (currentLevel >= 50) return Infinity;
-  return 25 * currentLevel * (currentLevel + 1);
+  return expThresholds[currentLevel];
 }
 
 function getExpFloorForLevel(level) {
