@@ -101,7 +101,7 @@ Complete Iowa City-themed quests:
 - **Arrow Keys** - Move character / Navigate menus
 - **Space** - Interact / Advance dialogue / Select items
 - **ESC** - Open menu / Close menu / Exit shops
-- **Left/Right Arrows** - Page through vendor menus when available
+- **Left/Right Arrows** - Page through paginated menus when available (vendors, battle item menu)
 
 ### Mobile
 - **D-Pad** - Move character

@@ -199,6 +199,7 @@ export const actions = {
       selectedAction: 0,
       selectedSpell: 0,
       selectedItem: 0,
+      itemMenuPage: 0,
       inSpellMenu: false,
       inItemMenu: false,
       message: `A wild ${enemy.name} appeared!`,

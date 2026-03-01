@@ -384,6 +384,8 @@ export function handleExploreState({ keys, now, lastKeyTime, keyDelay, setLastKe
 }
 
 export function handleBattleState({ keys, now, lastKeyTime, keyDelay, setLastKeyTime }) {
+  const battleItemsPerPage = 4;
+
   if (game.battleState.inSpellMenu) {
     if (keys['ArrowUp']) {
       actions.battleStatePatched({ selectedSpell: Math.max(0, game.battleState.selectedSpell - 1) }, 'battleSpellSelectionUp');
@@ -404,13 +406,30 @@ export function handleBattleState({ keys, now, lastKeyTime, keyDelay, setLastKey
       setLastKeyTime(now);
     }
   } else if (game.battleState.inItemMenu) {
+    const totalPages = Math.max(1, Math.ceil(game.consumables.length / battleItemsPerPage));
+    const currentPage = Math.min(game.battleState.itemMenuPage || 0, totalPages - 1);
+    const startIdx = currentPage * battleItemsPerPage;
+    const pageItems = game.consumables.slice(startIdx, startIdx + battleItemsPerPage);
+
     if (keys['ArrowUp']) {
       actions.battleStatePatched({ selectedItem: Math.max(0, game.battleState.selectedItem - 1) }, 'battleItemSelectionUp');
       setLastKeyTime(now);
     }
     if (keys['ArrowDown']) {
-      actions.battleStatePatched({ selectedItem: Math.min(game.consumables.length, game.battleState.selectedItem + 1) }, 'battleItemSelectionDown');
+      actions.battleStatePatched({ selectedItem: Math.min(pageItems.length, game.battleState.selectedItem + 1) }, 'battleItemSelectionDown');
       setLastKeyTime(now);
+    }
+    if (keys['ArrowLeft']) {
+      if (currentPage > 0) {
+        actions.battleStatePatched({ itemMenuPage: currentPage - 1, selectedItem: 0 }, 'battleItemPageMovedLeft');
+        setLastKeyTime(now);
+      }
+    }
+    if (keys['ArrowRight']) {
+      if (currentPage < totalPages - 1) {
+        actions.battleStatePatched({ itemMenuPage: currentPage + 1, selectedItem: 0 }, 'battleItemPageMovedRight');
+        setLastKeyTime(now);
+      }
     }
     if (keys[' ']) {
       if (now - lastKeyTime > keyDelay) {
@@ -419,7 +438,7 @@ export function handleBattleState({ keys, now, lastKeyTime, keyDelay, setLastKey
       }
     }
     if (keys['Escape']) {
-      actions.battleStatePatched({ inItemMenu: false, selectedItem: 0 }, 'battleItemMenuClosed');
+      actions.battleStatePatched({ inItemMenu: false, itemMenuPage: 0, selectedItem: 0 }, 'battleItemMenuClosed');
       setLastKeyTime(now);
     }
   } else {

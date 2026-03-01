@@ -5,6 +5,8 @@ import { spellData } from '../data.js';
 import { getEnemyAppearance } from '../enemy-appearance.js';
 import { getButtonLabel, setCtx, wrapText } from './utils.js';
 
+const BATTLE_ITEMS_PER_PAGE = 4;
+
 export function drawBattle() {
   const ctx = setCtx();
   
@@ -87,9 +89,22 @@ export function drawBattle() {
     ctx.fillStyle = COLORS.orange;
     ctx.font = '7px "Press Start 2P"';
     ctx.fillText('ITEMS', 20, 167);
+
+    const totalPages = Math.max(1, Math.ceil(game.consumables.length / BATTLE_ITEMS_PER_PAGE));
+    const currentPage = Math.min(game.battleState.itemMenuPage || 0, totalPages - 1);
+    const startIdx = currentPage * BATTLE_ITEMS_PER_PAGE;
+    const pageItems = game.consumables.slice(startIdx, startIdx + BATTLE_ITEMS_PER_PAGE);
+
+    ctx.fillStyle = COLORS.gray;
+    ctx.font = '5px "Press Start 2P"';
+    ctx.fillText(`${currentPage + 1}/${totalPages}`, 95, 167);
+    if (totalPages > 1) {
+      ctx.fillText('< >', 115, 167);
+      ctx.fillText('L/R PAGE', 135, 167);
+    }
     
     ctx.font = '6px "Press Start 2P"';
-    game.consumables.forEach((item, i) => {
+    pageItems.forEach((item, i) => {
       const y = 180 + i * 12;
       ctx.fillStyle = COLORS.white;
       if (i === game.battleState.selectedItem) {
@@ -100,9 +115,9 @@ export function drawBattle() {
     });
     
     // Back option
-    const backY = 180 + game.consumables.length * 12;
+    const backY = 180 + pageItems.length * 12;
     ctx.fillStyle = COLORS.white;
-    if (game.battleState.selectedItem === game.consumables.length) {
+    if (game.battleState.selectedItem === pageItems.length) {
       ctx.fillText('>', 20, backY);
     }
     ctx.fillText('Back', 35, backY);

@@ -8,6 +8,8 @@ import { startDialogue } from '../../dialogue.js';
 import { updateQuestProgress, completeCaveDefeatQuests } from '../quests/logic.js';
 import { addExperience } from '../../leveling.js';
 
+const BATTLE_ITEMS_PER_PAGE = 4;
+
 export function startBattle(enemyName) {
   // Determine which enemies can appear based on location
   const map = maps[game.map];
@@ -150,6 +152,7 @@ export function executeBattleAction() {
     } else {
       actions.battleStatePatched({
         inItemMenu: true,
+        itemMenuPage: 0,
         selectedItem: 0,
         message: 'Choose an item:'
       }, 'battleItemMenuOpened');
@@ -233,24 +236,41 @@ export function executeSpell() {
 }
 
 export function useItemInBattle() {
-  if (game.battleState.selectedItem === game.consumables.length) {
+  const totalPages = Math.max(1, Math.ceil(game.consumables.length / BATTLE_ITEMS_PER_PAGE));
+  const currentPage = Math.min(game.battleState.itemMenuPage || 0, totalPages - 1);
+  const startIdx = currentPage * BATTLE_ITEMS_PER_PAGE;
+  const pageItems = game.consumables.slice(startIdx, startIdx + BATTLE_ITEMS_PER_PAGE);
+
+  if (game.battleState.selectedItem === pageItems.length) {
     // Back option
     actions.battleStatePatched({
       inItemMenu: false,
+      itemMenuPage: 0,
       selectedItem: 0,
       message: 'What will you do?'
     }, 'battleItemMenuBack');
     return;
   }
-  
-  const item = game.consumables[game.battleState.selectedItem];
+
+  const itemIndex = startIdx + game.battleState.selectedItem;
+  const item = game.consumables[itemIndex];
+  if (!item) {
+    actions.battleStatePatched({
+      inItemMenu: false,
+      itemMenuPage: 0,
+      selectedItem: 0,
+      message: 'What will you do?'
+    }, 'battleItemMenuSelectionInvalid');
+    return;
+  }
+
   actions.battleStatePatched({ inItemMenu: false, animating: true }, 'battleItemUsing');
   
   applyItemEffect(item);
   
   // Remove item from inventory unless it's a permanent item
   if (item.effect !== 'flashlight' && item.effect !== 'angel_dodge') {
-    removeConsumable(game.battleState.selectedItem);
+    removeConsumable(itemIndex);
   }
   
   setTimeout(() => {

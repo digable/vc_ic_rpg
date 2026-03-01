@@ -34,6 +34,10 @@ export function drawShop() {
   ctx.fillStyle = COLORS.gray;
   ctx.font = '5px "Press Start 2P"';
   ctx.fillText(`Page ${game.shopPage + 1}/${totalPages}`, 150, 55);
+  if (totalPages > 1) {
+    ctx.fillText('< >', 150, 62);
+    ctx.fillText('L/R PAGE', 170, 62);
+  }
   
   // Items
   pageItems.forEach((item, i) => {
@@ -99,6 +103,10 @@ export function drawMagicTrainer() {
   ctx.fillStyle = COLORS.gray;
   ctx.font = '5px "Press Start 2P"';
   ctx.fillText(`Page ${game.magicTrainerPage + 1}/${totalPages}`, 150, 66);
+  if (totalPages > 1) {
+    ctx.fillText('< >', 150, 73);
+    ctx.fillText('L/R PAGE', 170, 73);
+  }
   
   // Training options
   pageItems.forEach((training, i) => {
@@ -180,6 +188,10 @@ export function drawYoga() {
   ctx.fillStyle = COLORS.gray;
   ctx.font = '5px "Press Start 2P"';
   ctx.fillText(`Page ${game.yogaPage + 1}/${totalPages}`, 150, 55);
+  if (totalPages > 1) {
+    ctx.fillText('< >', 150, 62);
+    ctx.fillText('L/R PAGE', 170, 62);
+  }
   
   // Yoga techniques
   pageItems.forEach((technique, i) => {
@@ -263,6 +275,8 @@ export function drawCambus() {
   ctx.font = '5px "Press Start 2P"';
   if (totalPages > 1) {
     ctx.fillText(`Page ${game.cambusPage + 1}/${totalPages}`, 150, 70);
+    ctx.fillText('< >', 150, 77);
+    ctx.fillText('L/R PAGE', 170, 77);
   }
   
   // Routes
@@ -338,6 +352,8 @@ export function drawFoodCart() {
   ctx.font = '5px "Press Start 2P"';
   if (totalPages > 1) {
     ctx.fillText(`Page ${game.foodCartPage + 1}/${totalPages}`, 150, 55);
+    ctx.fillText('< >', 150, 62);
+    ctx.fillText('L/R PAGE', 170, 62);
   }
   
   // Food items
