@@ -1,41 +1,42 @@
 // Interaction Handlers Module
-import { game, addConsumable } from './game-state.js';
+import { game, addConsumable, actions } from './game-state.js';
 import { shopItems, magicTraining, yogaTechniques, consumableItems, cambusRoutes } from './data.js';
-import { CAVE_MAPS } from './constants.js';
 import { startDialogue } from './dialogue.js';
-import { updateQuestProgress } from './quests-logic.js';
+import { updateQuestProgress } from './features/quests/input.js';
+import { travelToMapDestination } from './features/world/map-transition-service.js';
 
 export function openShop() {
-  game.state = 'shop';
-  game.shopOpen = true;
-  game.shopSelection = 0;
+  actions.vendorScreenOpened('shop', 'shopOpen', {
+    shopSelection: 0
+  });
 }
 
 export function openMagicTrainer() {
-  game.state = 'magic_trainer';
-  game.magicTrainerOpen = true;
-  game.magicTrainerSelection = 0;
-  game.magicTrainerPage = 0;
+  actions.vendorScreenOpened('magic_trainer', 'magicTrainerOpen', {
+    magicTrainerSelection: 0,
+    magicTrainerPage: 0
+  });
 }
 
 export function openYoga() {
-  game.state = 'yoga';
-  game.yogaOpen = true;
-  game.yogaSelection = 0;
+  actions.vendorScreenOpened('yoga', 'yogaOpen', {
+    yogaSelection: 0
+  });
 }
 
 export function openCambus() {
-  game.state = 'cambus';
-  game.cambusOpen = true;
-  game.cambusSelection = 0;
-  game.cambusPage = 0;
+  actions.vendorScreenOpened('cambus', 'cambusOpen', {
+    cambusSelection: 0,
+    cambusPage: 0
+  });
 }
 
 export function healPlayer() {
-  game.player.hp = game.player.maxHp;
-  game.player.mp = game.player.maxMp;
+  actions.playerPatched({
+    hp: game.player.maxHp,
+    mp: game.player.maxMp
+  }, 'playerHealedAtHealer');
   startDialogue(['Free refill!', 'Your HP and MP are fully restored!', 'Come back anytime!']);
-  game.state = 'dialogue';
 }
 
 export function handleShopPurchase() {
@@ -45,50 +46,53 @@ export function handleShopPurchase() {
   
   if (game.shopSelection === pageItems.length) {
     // Exit selected
-    game.state = 'explore';
-    game.shopOpen = false;
-    game.shopPage = 0;
-    game.shopSelection = 0;
+    actions.vendorScreenClosed('shopOpen', {
+      shopPage: 0,
+      shopSelection: 0
+    });
     return;
   }
   
   const actualIdx = startIdx + game.shopSelection;
   const item = shopItems[actualIdx];
   if (game.player.gold >= item.price) {
-    game.player.gold -= item.price;
+    const playerPatch = {
+      gold: game.player.gold - item.price
+    };
     
     // Apply item effect
     if (item.effect === 'heal') {
-      game.player.hp = Math.min(game.player.maxHp, game.player.hp + item.amount);
+      playerPatch.hp = Math.min(game.player.maxHp, game.player.hp + item.amount);
     } else if (item.effect === 'healMP') {
-      game.player.mp = Math.min(game.player.maxMp, game.player.mp + item.amount);
+      playerPatch.mp = Math.min(game.player.maxMp, game.player.mp + item.amount);
     } else if (item.effect === 'strengthUp') {
-      game.player.strength = (game.player.strength || 0) + item.amount;
+      playerPatch.strength = (game.player.strength || 0) + item.amount;
     } else if (item.effect === 'intellectUp') {
-      game.player.intellect = (game.player.intellect || 0) + item.amount;
+      playerPatch.intellect = (game.player.intellect || 0) + item.amount;
     } else if (item.effect === 'agilityUp') {
-      game.player.agility = (game.player.agility || 0) + item.amount;
+      playerPatch.agility = (game.player.agility || 0) + item.amount;
     } else if (item.effect === 'vitalityUp') {
-      game.player.vitality = (game.player.vitality || 0) + item.amount;
-      game.player.maxHp += 20;
-      game.player.hp += 20;
+      playerPatch.vitality = (game.player.vitality || 0) + item.amount;
+      playerPatch.maxHp = game.player.maxHp + 20;
+      playerPatch.hp = game.player.hp + 20;
     } else if (item.effect === 'luckUp') {
-      game.player.luck = (game.player.luck || 0) + item.amount;
+      playerPatch.luck = (game.player.luck || 0) + item.amount;
     } else if (item.effect === 'defenseUp') {
-      game.player.defense += item.amount;
+      playerPatch.defense = game.player.defense + item.amount;
     } else if (item.effect === 'attackUp') {
-      game.player.attack += item.amount;
+      playerPatch.attack = game.player.attack + item.amount;
     } else if (item.effect === 'maxHpUp') {
-      game.player.maxHp += item.amount;
-      game.player.hp += item.amount;
+      playerPatch.maxHp = game.player.maxHp + item.amount;
+      playerPatch.hp = game.player.hp + item.amount;
     }
+
+    actions.playerPatched(playerPatch, 'shopPurchaseApplied');
     
     game.inventory.push(item.name);
     
     // Show purchase confirmation
     startDialogue([`Purchased ${item.name}!`, item.description]);
-    game.state = 'dialogue';
-    game.shopOpen = false;
+    actions.vendorScreenClosed('shopOpen', {}, 'dialogue');
   }
 }
 
@@ -99,10 +103,10 @@ export function handleMagicTraining() {
 
   if (game.magicTrainerSelection === pageItems.length) {
     // Exit selected
-    game.state = 'explore';
-    game.magicTrainerOpen = false;
-    game.magicTrainerPage = 0;
-    game.magicTrainerSelection = 0;
+    actions.vendorScreenClosed('magicTrainerOpen', {
+      magicTrainerPage: 0,
+      magicTrainerSelection: 0
+    });
     return;
   }
 
@@ -111,28 +115,32 @@ export function handleMagicTraining() {
   
   // Check if already learned this spell
   if (training.spell && game.spells.includes(training.spell)) {
-    game.battleState = { message: 'Already learned this spell!' };
+    actions.gameStatePatched({ battleState: { message: 'Already learned this spell!' } }, 'magicTrainingAlreadyLearned');
     return;
   }
   
   if (game.player.gold >= training.price) {
-    game.player.gold -= training.price;
+    const playerPatch = {
+      gold: game.player.gold - training.price
+    };
     
     // Apply training effect
     if (training.effect === 'magicUp') {
-      game.player.intellect = (game.player.intellect || 0) + training.amount;
+      playerPatch.intellect = (game.player.intellect || 0) + training.amount;
     } else if (training.effect === 'intellectUp') {
-      game.player.intellect = (game.player.intellect || 0) + training.amount;
+      playerPatch.intellect = (game.player.intellect || 0) + training.amount;
     } else if (training.effect === 'magicMpUp') {
-      game.player.maxMp += training.amount;
-      game.player.mp += training.amount;
+      playerPatch.maxMp = game.player.maxMp + training.amount;
+      playerPatch.mp = game.player.mp + training.amount;
     } else if (training.effect === 'magicCombo') {
-      game.player.intellect = (game.player.intellect || 0) + 5;
-      game.player.maxMp += 15;
-      game.player.mp += 15;
+      playerPatch.intellect = (game.player.intellect || 0) + 5;
+      playerPatch.maxMp = game.player.maxMp + 15;
+      playerPatch.mp = game.player.mp + 15;
     } else if (training.effect === 'spiritUp') {
-      game.player.spirit = (game.player.spirit || 0) + training.amount;
+      playerPatch.spirit = (game.player.spirit || 0) + training.amount;
     }
+
+    actions.playerPatched(playerPatch, 'magicTrainingApplied');
     
     // Learn the spell
     if (training.spell && !game.spells.includes(training.spell)) {
@@ -155,8 +163,7 @@ export function handleMagicTraining() {
       messages.push(`Spirit increased by ${training.amount}!`);
     }
     startDialogue(messages);
-    game.state = 'dialogue';
-    game.magicTrainerOpen = false;
+    actions.vendorScreenClosed('magicTrainerOpen', {}, 'dialogue');
   }
 }
 
@@ -167,10 +174,10 @@ export function handleYogaTraining() {
   
   if (game.yogaSelection === pageItems.length) {
     // Exit selected
-    game.state = 'explore';
-    game.yogaOpen = false;
-    game.yogaPage = 0;
-    game.yogaSelection = 0;
+    actions.vendorScreenClosed('yogaOpen', {
+      yogaPage: 0,
+      yogaSelection: 0
+    });
     return;
   }
   
@@ -183,27 +190,31 @@ export function handleYogaTraining() {
   }
   
   if (game.player.gold >= technique.price) {
-    game.player.gold -= technique.price;
+    const playerPatch = {
+      gold: game.player.gold - technique.price
+    };
     
     // Apply technique effects
     if (technique.effect === 'strengthUp') {
-      game.player.strength = (game.player.strength || 0) + technique.amount;
+      playerPatch.strength = (game.player.strength || 0) + technique.amount;
     } else if (technique.effect === 'defenseUp') {
-      game.player.defense += technique.amount;
+      playerPatch.defense = game.player.defense + technique.amount;
     } else if (technique.effect === 'vitalityUp') {
-      game.player.vitality = (game.player.vitality || 0) + technique.amount;
+      playerPatch.vitality = (game.player.vitality || 0) + technique.amount;
     } else if (technique.effect === 'agilityUp') {
-      game.player.agility = (game.player.agility || 0) + technique.amount;
+      playerPatch.agility = (game.player.agility || 0) + technique.amount;
     } else if (technique.effect === 'spiritUp') {
-      game.player.spirit = (game.player.spirit || 0) + technique.amount;
+      playerPatch.spirit = (game.player.spirit || 0) + technique.amount;
     } else if (technique.effect === 'hpMpCombo') {
-      game.player.maxHp += 15;
-      game.player.hp += 15;
-      game.player.maxMp += 10;
-      game.player.mp += 10;
+      playerPatch.maxHp = game.player.maxHp + 15;
+      playerPatch.hp = game.player.hp + 15;
+      playerPatch.maxMp = game.player.maxMp + 10;
+      playerPatch.mp = game.player.mp + 10;
     } else if (technique.effect === 'defenseCombo') {
-      game.player.defense += technique.amount;
+      playerPatch.defense = game.player.defense + technique.amount;
     }
+
+    actions.playerPatched(playerPatch, 'yogaTrainingApplied');
     
     // Learn the skill
     if (technique.skill && !game.skills.includes(technique.skill)) {
@@ -232,8 +243,7 @@ export function handleYogaTraining() {
       messages.push(`Defense increased by ${technique.amount}!`);
     }
     startDialogue(messages);
-    game.state = 'dialogue';
-    game.yogaOpen = false;
+    actions.vendorScreenClosed('yogaOpen', {}, 'dialogue');
   }
 }
 
@@ -249,17 +259,17 @@ export function handleFoodCartPurchase() {
   
   if (game.foodCartSelection === pageItems.length) {
     // Exit selected
-    game.state = 'explore';
-    game.foodCartOpen = false;
-    game.foodCartPage = 0;
-    game.foodCartSelection = 0;
+    actions.vendorScreenClosed('foodCartOpen', {
+      foodCartPage: 0,
+      foodCartSelection: 0
+    });
     return;
   }
   
   const actualIdx = startIdx + game.foodCartSelection;
   const item = vendorItems[actualIdx];
   if (game.player.gold >= item.price) {
-    game.player.gold -= item.price;
+    actions.playerPatched({ gold: game.player.gold - item.price }, 'foodCartPurchaseApplied');
     addConsumable(item);
     
     // Update quest progress for vendor purchases
@@ -275,10 +285,10 @@ export function handleCambusTravel() {
 
   if (isExitSelected) {
     // Exit selected
-    game.state = 'explore';
-    game.cambusOpen = false;
-    game.cambusPage = 0;
-    game.cambusSelection = 0;
+    actions.vendorScreenClosed('cambusOpen', {
+      cambusPage: 0,
+      cambusSelection: 0
+    });
     return;
   }
   
@@ -287,25 +297,24 @@ export function handleCambusTravel() {
   
   // Don't travel if already at this location
   if (game.map === route.map) {
-    game.state = 'explore';
-    game.cambusOpen = false;
-    game.cambusPage = 0;
-    game.cambusSelection = 0;
+    actions.vendorScreenClosed('cambusOpen', {
+      cambusPage: 0,
+      cambusSelection: 0
+    });
     return;
   }
   
-  // Fast travel!
-  game.map = route.map;
-  game.player.x = route.x;
-  game.player.y = route.y;
-  game.state = 'explore';
-  game.cambusOpen = false;
-  game.cambusPage = 0;
-  game.cambusSelection = 0;
-  if (!CAVE_MAPS.includes(game.map)) {
-    game.flashlightOn = false;
-  }
-  game.enemyEncounterSteps = 0;
+  travelToMapDestination({
+    toMap: route.map,
+    toX: route.x,
+    toY: route.y,
+    resetEncounterSteps: true,
+    clearFlashlightMode: 'nonCaveDestination'
+  });
+  actions.vendorScreenClosed('cambusOpen', {
+    cambusPage: 0,
+    cambusSelection: 0
+  });
 }
 
 export function interactBlackAngel() {
@@ -316,14 +325,12 @@ export function interactBlackAngel() {
       'The Black Angel stands unmoving.',
       'Its blessing is already with you.'
     ]);
-    game.state = 'dialogue';
     return;
   }
 
   const angelWard = consumableItems.find(item => item.name === 'Angel Ward');
   if (!angelWard) {
     startDialogue(['A strange stillness lingers here.']);
-    game.state = 'dialogue';
     return;
   }
 
@@ -334,6 +341,5 @@ export function interactBlackAngel() {
     'Received Angel Ward!',
     'Use it in battle for a 50% dodge chance\non the next 3 enemy attacks.'
   ]);
-  game.state = 'dialogue';
 }
 

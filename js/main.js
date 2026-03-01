@@ -2,7 +2,7 @@
 // This file imports all modules and runs the game loop
 
 import { COLORS, CONFIG } from './constants.js';
-import { game } from './game-state.js';
+import { game, actions, setActionDebugEnabled, isActionDebugEnabled } from './game-state.js';
 import { setupInputHandlers, handleInput } from './input.js';
 import { maps } from './maps.js';
 import { cambusRoutes } from './data.js';
@@ -12,7 +12,7 @@ import {
   triggerBattleMusicCue,
   triggerExploreMusicCue,
   triggerDeathMusicCue
-} from './music.js';
+} from './features/music/index.js';
 import { 
   setupCanvas,
   drawMap, 
@@ -32,6 +32,10 @@ import {
 
 // Make game modules available to tests
 window.gameModules = { maps, cambusRoutes };
+window.debugActions = {
+  setActionDebugEnabled,
+  isActionDebugEnabled
+};
 
 console.log('Iowa City Quest - Modular version loading...');
 console.log('All modules imported successfully!');
@@ -83,35 +87,34 @@ function gameLoop() {
     const oldMagic = game.player.magic;
     const oldDefense = game.player.defense;
     
-    game.player.level++;
-    game.player.exp -= expNeeded;
-    game.player.maxHp += 10;
-    game.player.hp += 10;
-    game.player.maxMp += 5;
-    game.player.mp += 5;
-    game.player.attack += 2;
-    game.player.magic += 1;
-    game.player.defense += 1;
+    actions.playerPatched({
+      level: game.player.level + 1,
+      exp: game.player.exp - expNeeded,
+      maxHp: game.player.maxHp + 10,
+      hp: game.player.hp + 10,
+      maxMp: game.player.maxMp + 5,
+      mp: game.player.mp + 5,
+      attack: game.player.attack + 2,
+      magic: game.player.magic + 1,
+      defense: game.player.defense + 1
+    }, 'levelUpApplied');
     
     // Store level up info for dialogue
-    game.levelUpDialog = {
+    actions.levelUpDialogSet({
       level: game.player.level,
       hpGain: 10,
       mpGain: 5,
       attackGain: 2,
       magicGain: 1,
       defenseGain: 1
-    };
+    });
     
     // Show level up dialogue
-    game.state = 'dialogue';
-    game.dialogue = {
-      type: 'levelUp',
-      messages: [
-        `LEVEL UP!\nYou have reached Level ${game.player.level}!\n\nHP: +10 | MP: +5\nATK: +2 | MAG: +1 | DEF: +1`
-      ],
-      currentIndex: 0
-    };
+    actions.dialogueStarted([
+      `LEVEL UP!\nYou have reached Level ${game.player.level}!\n\nHP: +10 | MP: +5\nATK: +2 | MAG: +1 | DEF: +1`
+    ], {
+      type: 'levelUp'
+    });
   }
   
   // Clear screen

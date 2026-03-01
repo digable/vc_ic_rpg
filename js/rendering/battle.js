@@ -574,6 +574,7 @@ export function drawEnemySprite(enemy, x, y) {
     ctx.stroke();
 
   } else if (enemy.name === 'Fungal Stalker') {
+    // Fungal stalker - spore-soaked cave predator silhouette
     ctx.fillStyle = '#6a4b7a';
     ctx.beginPath();
     ctx.ellipse(x, y + 4, 12, 10, 0, 0, Math.PI * 2);
@@ -587,6 +588,7 @@ export function drawEnemySprite(enemy, x, y) {
     ctx.fillRect(x + 2, y - 2, 2, 2);
 
   } else if (enemy.name === 'Cave Leech') {
+    // Cave leech - low slithering siphon-bite parasite
     ctx.fillStyle = '#2f3f2f';
     ctx.beginPath();
     ctx.ellipse(x, y + 2, 12, 6, 0, 0, Math.PI * 2);
@@ -598,6 +600,7 @@ export function drawEnemySprite(enemy, x, y) {
     ctx.fillRect(x - 2, y - 1, 4, 2);
 
   } else if (enemy.name === 'Crystal Warden') {
+    // Crystal warden - shard-armored sentinel with glowing core
     ctx.fillStyle = '#44c8e0';
     ctx.beginPath();
     ctx.moveTo(x, y - 16);
@@ -612,6 +615,7 @@ export function drawEnemySprite(enemy, x, y) {
     ctx.strokeRect(x - 8, y - 8, 16, 16);
 
   } else if (enemy.name === 'Tunnel Brute') {
+    // Tunnel brute - heavy smash-focused subterranean enforcer
     ctx.fillStyle = '#6b5b4b';
     ctx.fillRect(x - 12, y - 6, 24, 24);
     ctx.fillStyle = COLORS.darkGray;
@@ -624,6 +628,7 @@ export function drawEnemySprite(enemy, x, y) {
     ctx.fillRect(x + 12, y + 4, 4, 12);
 
   } else if (enemy.name === 'Abyssal Drake') {
+    // Abyssal drake - void-touched dragon with broad wings
     ctx.fillStyle = '#3a2a3f';
     ctx.beginPath();
     ctx.ellipse(x, y + 2, 14, 10, 0, 0, Math.PI * 2);
@@ -648,6 +653,7 @@ export function drawEnemySprite(enemy, x, y) {
     ctx.fill();
 
   } else if (enemy.name === 'Void Mycelium') {
+    // Void mycelium - eerie fungal bloom radiating dark spores
     ctx.fillStyle = '#513a66';
     ctx.beginPath();
     ctx.ellipse(x, y - 6, 12, 8, 0, 0, Math.PI * 2);
@@ -681,7 +687,7 @@ export function drawEnemySprite(enemy, x, y) {
     ctx.fillRect(x + 2, y + 12, 6, 4);
 
   } else if (enemy.name === 'Cemetery Witch') {
-    // Witch with hat and violet aura
+    // Cemetery witch casting a graveyard hex with hat and violet aura
     ctx.fillStyle = '#2f1f3f';
     ctx.fillRect(x - 7, y - 1, 14, 17);
     ctx.fillStyle = '#c3b091';
@@ -1081,6 +1087,74 @@ export function drawEnemySprite(enemy, x, y) {
     // Eye
     ctx.fillStyle = COLORS.black;
     ctx.fillRect(x - 6, y - 2, 2, 2);
+
+  } else if (enemy.name === 'Cannonball Chaos') {
+    // Swimmer launching a cannonball
+    ctx.fillStyle = '#4aa3d8';
+    ctx.beginPath();
+    ctx.arc(x, y + 4, 10, 0, Math.PI * 2);
+    ctx.fill();
+    // Splash spikes
+    ctx.fillStyle = '#9fe4ff';
+    ctx.fillRect(x - 12, y - 4, 3, 6);
+    ctx.fillRect(x - 6, y - 8, 3, 6);
+    ctx.fillRect(x + 3, y - 8, 3, 6);
+    ctx.fillRect(x + 9, y - 4, 3, 6);
+    // Face bubble eyes
+    ctx.fillStyle = COLORS.white;
+    ctx.fillRect(x - 4, y + 1, 2, 2);
+    ctx.fillRect(x + 2, y + 1, 2, 2);
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 3, y + 2, 1, 1);
+    ctx.fillRect(x + 2, y + 2, 1, 1);
+
+  } else if (enemy.name === 'Lane Blocker') {
+    // Human wall with floating lane divider
+    ctx.fillStyle = '#2f75c9';
+    ctx.fillRect(x - 9, y - 8, 18, 20);
+    // Head
+    ctx.fillStyle = '#f2c8a0';
+    ctx.fillRect(x - 4, y - 12, 8, 5);
+    // Lane rope
+    ctx.fillStyle = '#ffd457';
+    ctx.fillRect(x - 14, y + 2, 28, 2);
+    // Floats
+    ctx.fillStyle = '#ff7a59';
+    ctx.fillRect(x - 12, y + 1, 2, 4);
+    ctx.fillRect(x - 6, y + 1, 2, 4);
+    ctx.fillRect(x, y + 1, 2, 4);
+    ctx.fillRect(x + 6, y + 1, 2, 4);
+    ctx.fillRect(x + 12, y + 1, 2, 4);
+    // Eyes
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 2, y - 10, 1, 1);
+    ctx.fillRect(x + 1, y - 10, 1, 1);
+
+  } else if (enemy.name === 'Whistle Dodger') {
+    // Lifeguard-like runner evading whistle
+    ctx.fillStyle = '#e84a5f';
+    ctx.fillRect(x - 7, y - 6, 14, 14);
+    // Head
+    ctx.fillStyle = '#f2c8a0';
+    ctx.fillRect(x - 3, y - 11, 6, 5);
+    // Running legs
+    ctx.fillStyle = '#1f3f6b';
+    ctx.fillRect(x - 6, y + 8, 3, 8);
+    ctx.fillRect(x + 3, y + 6, 3, 10);
+    // Whistle trail
+    ctx.strokeStyle = '#d6d6d6';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x - 10, y - 4);
+    ctx.quadraticCurveTo(x - 16, y - 6, x - 20, y - 2);
+    ctx.stroke();
+    // Whistle icon
+    ctx.fillStyle = '#c0c0c0';
+    ctx.fillRect(x - 11, y - 5, 3, 2);
+    // Eyes
+    ctx.fillStyle = COLORS.black;
+    ctx.fillRect(x - 2, y - 9, 1, 1);
+    ctx.fillRect(x + 1, y - 9, 1, 1);
 
   } else if (enemy.name === 'Corrupted Administrator') {
     // Menacing final boss - bureaucratic corruption

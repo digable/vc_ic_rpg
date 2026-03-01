@@ -1,4 +1,5 @@
-import { game } from './game-state.js';
+import { game, actions } from './game-state.js';
+import { travelToMapDestination } from './features/world/map-transition-service.js';
 
 const SAVE_KEY = 'vc_ic_rpg_saves_v2';
 const LEGACY_SAVE_KEY = 'vc_ic_rpg_save_v1';
@@ -12,31 +13,32 @@ function hideTitleScreen() {
 }
 
 function resetTransientState() {
-  game.state = 'explore';
-  game.dialogue = null;
-  game.battleState = null;
-  game.menuOpen = false;
-  game.menuSelection = 0;
-  game.menuTab = 0;
-  game.shopOpen = false;
-  game.shopSelection = 0;
-  game.shopPage = 0;
-  game.magicTrainerOpen = false;
-  game.magicTrainerSelection = 0;
-  game.magicTrainerPage = 0;
-  game.yogaOpen = false;
-  game.yogaSelection = 0;
-  game.yogaPage = 0;
-  game.cambusOpen = false;
-  game.cambusSelection = 0;
-  game.cambusPage = 0;
-  game.foodCartOpen = false;
-  game.foodCartSelection = 0;
-  game.foodCartPage = 0;
-  game.itemMenuOpen = false;
-  game.itemMenuSelection = 0;
-  game.textBox = null;
-  game.levelUpDialog = null;
+  actions.battleEnded('explore');
+  actions.dialogueCleared();
+  actions.menuToggled(false);
+  actions.gameStatePatched({
+    menuSelection: 0,
+    menuTab: 0,
+    shopOpen: false,
+    shopSelection: 0,
+    shopPage: 0,
+    magicTrainerOpen: false,
+    magicTrainerSelection: 0,
+    magicTrainerPage: 0,
+    yogaOpen: false,
+    yogaSelection: 0,
+    yogaPage: 0,
+    cambusOpen: false,
+    cambusSelection: 0,
+    cambusPage: 0,
+    foodCartOpen: false,
+    foodCartSelection: 0,
+    foodCartPage: 0,
+    itemMenuOpen: false,
+    itemMenuSelection: 0,
+    textBox: null,
+    levelUpDialog: null
+  }, 'transientStateReset');
 }
 
 function isValidSaveEntry(entry) {
@@ -222,23 +224,31 @@ export function loadGameFromLocal(index = null) {
       return { success: false, reason: 'invalid_data' };
     }
 
-    game.player = { ...game.player, ...data.player };
-    game.map = data.map;
-    game.inventory = Array.isArray(data.inventory) ? [...data.inventory] : [...game.inventory];
-    game.consumables = Array.isArray(data.consumables) ? [...data.consumables] : [...game.consumables];
-    game.skills = Array.isArray(data.skills) ? [...data.skills] : [...game.skills];
-    game.spells = Array.isArray(data.spells) ? [...data.spells] : [...game.spells];
-    game.enemyEncounterSteps = typeof data.enemyEncounterSteps === 'number' ? data.enemyEncounterSteps : 0;
-    game.activeBuff = data.activeBuff || null;
-    game.angelWardDodgeCharges = typeof data.angelWardDodgeCharges === 'number' ? data.angelWardDodgeCharges : 0;
-    game.flashlightOn = !!data.flashlightOn;
-    game.caveSovereignDefeated = !!data.caveSovereignDefeated;
-    game.caveSovereignIntroSeen = !!data.caveSovereignIntroSeen;
-    game.quests = Array.isArray(data.quests) ? [...data.quests] : [];
-    game.currentVendor = data.currentVendor || 'Food Cart Vendor';
-    game.animFrame = typeof data.animFrame === 'number' ? data.animFrame : 0;
+    actions.gameStatePatched({ player: { ...game.player, ...data.player } }, 'playerHydratedFromSave');
+    travelToMapDestination({
+      toMap: data.map,
+      toX: game.player.x,
+      toY: game.player.y,
+      resetEncounterSteps: false,
+      clearFlashlightMode: 'none'
+    });
+    actions.gameStatePatched({
+      inventory: Array.isArray(data.inventory) ? [...data.inventory] : [...game.inventory],
+      consumables: Array.isArray(data.consumables) ? [...data.consumables] : [...game.consumables],
+      skills: Array.isArray(data.skills) ? [...data.skills] : [...game.skills],
+      spells: Array.isArray(data.spells) ? [...data.spells] : [...game.spells],
+      enemyEncounterSteps: typeof data.enemyEncounterSteps === 'number' ? data.enemyEncounterSteps : 0,
+      activeBuff: data.activeBuff || null,
+      angelWardDodgeCharges: typeof data.angelWardDodgeCharges === 'number' ? data.angelWardDodgeCharges : 0,
+      flashlightOn: !!data.flashlightOn,
+      caveSovereignDefeated: !!data.caveSovereignDefeated,
+      caveSovereignIntroSeen: !!data.caveSovereignIntroSeen,
+      quests: Array.isArray(data.quests) ? [...data.quests] : [],
+      currentVendor: data.currentVendor || 'Food Cart Vendor',
+      animFrame: typeof data.animFrame === 'number' ? data.animFrame : 0
+    }, 'saveDataHydrated');
     const settings = normalizeLoadedSettings(data);
-    game.musicEnabled = settings.musicEnabled;
+    actions.musicToggled(settings.musicEnabled);
 
     if (!data.settings || typeof data.settings !== 'object' || typeof data.settings.musicEnabled !== 'boolean') {
       const updatedEntry = {

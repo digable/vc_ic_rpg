@@ -1,11 +1,8 @@
 // Dialogue System Module
-import { game } from './game-state.js';
+import { game, actions } from './game-state.js';
 
-export function startDialogue(dialogue) {
-  game.dialogue = {
-    messages: Array.isArray(dialogue) ? dialogue : [dialogue],
-    currentIndex: 0
-  };
+export function startDialogue(dialogue, options = {}) {
+  actions.dialogueStarted(dialogue, options);
 }
 
 export function advanceDialogue() {
@@ -15,7 +12,7 @@ export function advanceDialogue() {
   if (game.dialogue.currentIndex >= game.dialogue.messages.length) {
     // Check if there's an afterDialogue callback
     const callback = game.dialogue.afterDialogue;
-    game.dialogue = null;
+    actions.dialogueCleared();
     if (callback && typeof callback === 'function') {
       callback();
     }

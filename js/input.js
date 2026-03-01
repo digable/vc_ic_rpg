@@ -1,26 +1,20 @@
 // Input Handling Module
-import { game, resetGameState } from './game-state.js';
-import { CONFIG, isMobile, CAVE_MAPS } from './constants.js';
-import { cambusRoutes, consumableItems, shopItems, magicTraining, yogaTechniques } from './data.js';
-import { 
-  openShop, 
-  openMagicTrainer, 
-  openYoga, 
-  openCambus, 
-  handleShopPurchase,
-  handleMagicTraining,
-  handleYogaTraining,
-  handleFoodCartPurchase,
-  handleCambusTravel,
-  healPlayer,
-  interactBlackAngel
-} from './interactions.js';
-import { advanceDialogue, startDialogue } from './dialogue.js';
-import { executeBattleAction, startBattle, executeSpell, useItemFromMenu, useItemInBattle } from './battle.js';
-import { checkNPCInteraction, getNearbyNPC, updateQuestProgress } from './quests-logic.js';
-import { checkMapTransition, checkCollision, openFoodCart } from './world.js';
-import { clearLocalSave, loadGameFromLocal, MAX_LOCAL_SAVES, saveGameToLocal } from './save.js';
-import { startBackgroundMusic, stopBackgroundMusic } from './music.js';
+import { game, resetGameState, actions } from './game-state.js';
+import { CONFIG, isMobile } from './constants.js';
+import { startBackgroundMusic, stopBackgroundMusic } from './features/music/input.js';
+import { pruneSystemMessage } from './features/ui/logic.js';
+import {
+  handleCambusState,
+  handleDialogueState,
+  handleExploreEscapeToggle,
+  handleExploreState,
+  handleBattleState,
+  handleShopState,
+  handleMagicTrainerState,
+  handleYogaState,
+  handleFoodCartState,
+  handleGameOverState
+} from './features/input/state-handlers.js';
 
 // Input state
 export const keys = {};
@@ -34,25 +28,6 @@ export function setLastKeyTime(time) {
 
 export function setSpacePressed(value) {
   spacePressed = value;
-}
-
-function resetSaveMenuState() {
-  game.saveMenuMode = 'actions';
-  game.saveMenuAction = null;
-  game.saveSlotSelection = 0;
-}
-
-function resetQuestMenuState() {
-  game.questMenuSection = 0;
-  game.questInProgressPage = 0;
-  game.questCompletedPage = 0;
-}
-
-function showSystemMessage(text) {
-  game.systemMessage = {
-    text,
-    expiresAt: Date.now() + 1800
-  };
 }
 
 export function setupInputHandlers() {
@@ -73,23 +48,20 @@ export function setupInputHandlers() {
       startBackgroundMusic();
     }
     document.getElementById('title-screen').classList.add('hidden');
-    game.state = 'dialogue';
-    game.dialogue = {
-      type: 'story',
-      messages: [
+    actions.dialogueStarted([
         'Welcome to Iowa City!',
         'A dark corruption has spread across\nthe city, emanating from the historic\nOld Capitol building.',
         'As a student hero, you must explore\nIowa City, complete quests, and\ngrow stronger.',
         'Visit Kinnick Stadium, the Ped Mall,\nthe Old Capitol, Coralville Lake,\nthe mysterious Beer Caves, and more!',
         'Clear the Beer Caves, then reach\nLevel 10 to face the Corrupted\nAdministrator and save Iowa City!',
         'Good luck, hero!\nPress SPACE to begin your adventure!'
-      ],
-      currentIndex: 0,
+      ], {
+      type: 'story',
       afterDialogue: () => {
-        game.state = 'explore';
-        game.dialogue = null;
+        actions.stateChanged('explore');
+        actions.dialogueCleared();
       }
-    };
+    });
   };
 
   // Mobile touch control setup
@@ -201,617 +173,47 @@ export function setupInputHandlers() {
 
 export function handleInput() {
   const now = Date.now();
-  
-  // Special handling for cambus menu - arrow keys should work immediately
-  if (game.state === 'cambus') {
-    const itemsPerPage = 6;
-    const totalPages = Math.ceil(cambusRoutes.length / itemsPerPage);
-    const startIdx = game.cambusPage * itemsPerPage;
-    const pageItems = cambusRoutes.slice(startIdx, startIdx + itemsPerPage);
+  const ctx = {
+    keys,
+    now,
+    lastKeyTime,
+    keyDelay,
+    setLastKeyTime
+  };
 
-    if (keys['ArrowUp']) {
-      game.cambusSelection = Math.max(0, game.cambusSelection - 1);
-      keys['ArrowUp'] = false; // Prevent repeat
-    }
-    if (keys['ArrowDown']) {
-      game.cambusSelection = Math.min(pageItems.length, game.cambusSelection + 1);
-      keys['ArrowDown'] = false; // Prevent repeat
-    }
-    if (keys['ArrowLeft']) {
-      if (game.cambusPage > 0) {
-        game.cambusPage--;
-        game.cambusSelection = 0;
-        keys['ArrowLeft'] = false;
-      }
-    }
-    if (keys['ArrowRight']) {
-      if (game.cambusPage < totalPages - 1) {
-        game.cambusPage++;
-        game.cambusSelection = 0;
-        keys['ArrowRight'] = false;
-      }
-    }
-    if (keys[' '] && now - lastKeyTime > keyDelay) {
-      handleCambusTravel();
-      lastKeyTime = now;
-    }
-    if (keys['Escape'] && now - lastKeyTime > keyDelay) {
-      game.state = 'explore';
-      game.cambusOpen = false;
-      game.cambusPage = 0;
-      game.cambusSelection = 0;
-      lastKeyTime = now;
-    }
+  pruneSystemMessage(now);
+  
+  if (game.state === 'cambus') {
+    handleCambusState(ctx);
     return;
   }
   
-  // Handle dialogue (including level-up) regardless of current state
   if (game.dialogue) {
-    if (game.state !== 'dialogue') {
-      game.state = 'dialogue';
-    }
-    if (keys[' '] || keys['Enter']) {
-      if (now - lastKeyTime > keyDelay) {
-        advanceDialogue();
-        if (!game.dialogue) {
-          game.levelUpDialog = null; // Clear level up dialog when dialogue ends
-          game.state = 'explore';
-        }
-        lastKeyTime = now;
-      }
-    }
-    if (keys['Escape']) {
-      if (now - lastKeyTime > keyDelay) {
-        game.dialogue = null;
-        game.levelUpDialog = null;
-        game.state = 'explore';
-        lastKeyTime = now;
-      }
-    }
-    return; // Block all other input during dialogue
+    handleDialogueState(ctx);
+    return;
   }
 
-  // Escape key should always work to toggle menu or exit dialogs
   if (game.state === 'explore' && keys['Escape']) {
-    if (now - lastKeyTime > keyDelay) {
-      game.menuOpen = !game.menuOpen;
-      if (game.menuOpen) {
-        game.menuSelection = 0;
-        game.menuTab = 0;
-        resetQuestMenuState();
-        resetSaveMenuState();
-      } else {
-        resetQuestMenuState();
-        resetSaveMenuState();
-      }
-      lastKeyTime = now;
-    }
+    handleExploreEscapeToggle(ctx);
     return;
   }
   
   if (now - lastKeyTime < keyDelay) return;
 
   if (game.state === 'explore') {
-    const speed = 16;
-    let newX = game.player.x;
-    let newY = game.player.y;
-    let moved = false;
-
-    // Only allow movement if menu is closed
-    if (!game.menuOpen) {
-      if (keys['ArrowUp']) {
-        newY -= speed;
-        game.player.facing = 'up';
-        moved = true;
-      }
-      if (keys['ArrowDown']) {
-        newY += speed;
-        game.player.facing = 'down';
-        moved = true;
-      }
-      if (keys['ArrowLeft']) {
-        newX -= speed;
-        game.player.facing = 'left';
-        moved = true;
-      }
-      if (keys['ArrowRight']) {
-        newX += speed;
-        game.player.facing = 'right';
-        moved = true;
-      }
-    }
-
-    if (moved) {
-      if (!checkCollision(newX, newY)) {
-        game.player.x = newX;
-        game.player.y = newY;
-        lastKeyTime = now;
-        game.enemyEncounterSteps++;
-        
-        // Check for map transitions
-        checkMapTransition();
-        
-        // Update quest progress for location visits
-        updateQuestProgress('visit_location', game.map);
-        
-        // Random encounters
-        const caveEncountersDisabled = game.caveSovereignDefeated && CAVE_MAPS.includes(game.map);
-        if (!caveEncountersDisabled && game.enemyEncounterSteps > 10 && Math.random() < 0.15) {
-          startBattle();
-          game.enemyEncounterSteps = 0;
-        }
-      }
-    }
-
-    if (keys[' ']) {
-      if (now - lastKeyTime > keyDelay && !game.menuOpen) {
-        const npc = checkNPCInteraction();
-        if (npc) {
-          if (npc.type === 'shop') {
-            openShop();
-          } else if (npc.type === 'healer') {
-            healPlayer();
-          } else if (npc.type === 'magic_trainer') {
-            openMagicTrainer();
-          } else if (npc.type === 'yoga') {
-            openYoga();
-          } else if (npc.type === 'cambus') {
-            openCambus();
-          } else if (npc.type === 'food_cart') {
-            openFoodCart(npc.vendorName || npc.name);
-          } else if (npc.type === 'black_angel') {
-            interactBlackAngel();
-          } else if (npc.type === 'boss' && !game.caveSovereignDefeated) {
-            if (!game.caveSovereignIntroSeen) {
-              startDialogue([
-                'Sovereign: You dare step into my chamber?'
-              , 'You: Your reign ends here, Sovereign.'
-              ]);
-              game.dialogue.afterDialogue = () => {
-                game.caveSovereignIntroSeen = true;
-                game.state = 'explore';
-                startBattle('Cave Sovereign');
-              };
-              game.state = 'dialogue';
-            } else {
-              startBattle('Cave Sovereign');
-            }
-          }
-        }
-        lastKeyTime = now;
-      }
-    }
-
-    if (game.menuOpen) {
-      if (keys['ArrowLeft']) {
-        game.menuTab = Math.max(0, game.menuTab - 1);
-        if (game.menuTab !== 3) {
-          resetQuestMenuState();
-        }
-        if (game.menuTab !== 4) {
-          game.menuSelection = 0;
-          resetSaveMenuState();
-        }
-        lastKeyTime = now;
-      }
-      if (keys['ArrowRight']) {
-        game.menuTab = Math.min(5, game.menuTab + 1);
-        if (game.menuTab !== 3) {
-          resetQuestMenuState();
-        }
-        if (game.menuTab !== 4) {
-          game.menuSelection = 0;
-          resetSaveMenuState();
-        }
-        lastKeyTime = now;
-      }
-      if (keys['ArrowUp'] && game.menuTab === 3) {
-        const inProgressCount = game.quests.filter(q => q.status === 'active').length;
-        const completedCount = game.quests.filter(q => q.status === 'completed').length;
-        const inProgressPages = Math.max(1, Math.ceil(inProgressCount / 1));
-        const completedPages = Math.max(1, Math.ceil(completedCount / 3));
-
-        if (game.questMenuSection === 0) {
-          if (game.questInProgressPage > 0) {
-            game.questInProgressPage--;
-          }
-        } else {
-          if (game.questCompletedPage > 0) {
-            game.questCompletedPage--;
-          } else {
-            game.questMenuSection = 0;
-            game.questInProgressPage = Math.max(0, inProgressPages - 1);
-          }
-        }
-
-        game.questInProgressPage = Math.min(game.questInProgressPage, inProgressPages - 1);
-        game.questCompletedPage = Math.min(game.questCompletedPage, completedPages - 1);
-        lastKeyTime = now;
-      }
-      if (keys['ArrowDown'] && game.menuTab === 3) {
-        const inProgressCount = game.quests.filter(q => q.status === 'active').length;
-        const completedCount = game.quests.filter(q => q.status === 'completed').length;
-        const inProgressPages = Math.max(1, Math.ceil(inProgressCount / 1));
-        const completedPages = Math.max(1, Math.ceil(completedCount / 3));
-
-        if (game.questMenuSection === 0) {
-          if (game.questInProgressPage < inProgressPages - 1) {
-            game.questInProgressPage++;
-          } else {
-            game.questMenuSection = 1;
-            game.questCompletedPage = 0;
-          }
-        } else {
-          game.questCompletedPage = Math.min(completedPages - 1, game.questCompletedPage + 1);
-        }
-        lastKeyTime = now;
-      }
-      if (keys['ArrowUp'] && game.menuTab === 4) {
-        if (game.saveMenuMode === 'slots') {
-          game.saveSlotSelection = Math.max(0, game.saveSlotSelection - 1);
-        } else {
-          game.menuSelection = Math.max(0, game.menuSelection - 1);
-        }
-        lastKeyTime = now;
-      }
-      if (keys['ArrowDown'] && game.menuTab === 4) {
-        if (game.saveMenuMode === 'slots') {
-          game.saveSlotSelection = Math.min(2, game.saveSlotSelection + 1);
-        } else {
-          game.menuSelection = Math.min(2, game.menuSelection + 1);
-        }
-        lastKeyTime = now;
-      }
-      if (keys['ArrowUp'] && game.menuTab === 2) {
-        game.itemMenuSelection = Math.max(0, game.itemMenuSelection - 1);
-        lastKeyTime = now;
-      }
-      if (keys['ArrowDown'] && game.menuTab === 2) {
-        game.itemMenuSelection = Math.min(game.consumables.length - 1, game.itemMenuSelection + 1);
-        lastKeyTime = now;
-      }
-      if (keys['Escape'] && game.menuTab === 4 && game.saveMenuMode === 'slots') {
-        if (now - lastKeyTime > keyDelay) {
-          resetSaveMenuState();
-          lastKeyTime = now;
-        }
-      }
-
-      if (keys[' '] && game.menuTab === 4) {
-        if (now - lastKeyTime > keyDelay) {
-          if (game.saveMenuMode === 'actions') {
-            if (game.menuSelection === 0) {
-              game.saveMenuMode = 'slots';
-              game.saveMenuAction = 'save';
-              game.saveSlotSelection = 0;
-            } else if (game.menuSelection === 1) {
-              game.saveMenuMode = 'slots';
-              game.saveMenuAction = 'load';
-              game.saveSlotSelection = 0;
-            } else if (game.menuSelection === 2) {
-              game.saveMenuMode = 'slots';
-              game.saveMenuAction = 'delete';
-              game.saveSlotSelection = 0;
-            }
-          } else if (game.saveMenuMode === 'slots' && game.saveMenuAction) {
-            if (game.saveMenuAction === 'save') {
-              const result = saveGameToLocal(game.saveSlotSelection);
-              if (result.success) {
-                showSystemMessage(`Saved to slot ${result.slot + 1} (${result.count}/${MAX_LOCAL_SAVES})`);
-              } else {
-                showSystemMessage('Save failed');
-              }
-            } else if (game.saveMenuAction === 'load') {
-              const result = loadGameFromLocal(game.saveSlotSelection);
-              if (result.success) {
-                if (game.musicEnabled) {
-                  startBackgroundMusic();
-                } else {
-                  stopBackgroundMusic();
-                }
-                showSystemMessage(`Loaded slot ${result.slot + 1}`);
-              } else {
-                showSystemMessage('No save in that slot');
-              }
-            } else if (game.saveMenuAction === 'delete') {
-              const result = clearLocalSave(game.saveSlotSelection);
-              if (result.success) {
-                showSystemMessage(`Deleted slot ${result.slot + 1} (${result.count}/${MAX_LOCAL_SAVES})`);
-              } else {
-                showSystemMessage('No save in that slot');
-              }
-            }
-            resetSaveMenuState();
-          }
-          lastKeyTime = now;
-        }
-      }
-      if (keys[' '] && game.menuTab === 2 && game.consumables.length > 0) {
-        if (now - lastKeyTime > keyDelay) {
-          useItemFromMenu();
-          lastKeyTime = now;
-        }
-      }
-      if (keys[' '] && game.menuTab === 3) {
-        if (now - lastKeyTime > keyDelay) {
-          game.questMenuSection = game.questMenuSection === 0 ? 1 : 0;
-          lastKeyTime = now;
-        }
-      }
-      if (keys[' '] && game.menuTab === 5) {
-        if (now - lastKeyTime > keyDelay) {
-          game.musicEnabled = !game.musicEnabled;
-          if (game.musicEnabled) {
-            startBackgroundMusic();
-            showSystemMessage('Music: ON');
-          } else {
-            stopBackgroundMusic();
-            showSystemMessage('Music: OFF');
-          }
-          lastKeyTime = now;
-        }
-      }
-    }
+    handleExploreState(ctx);
   } else if (game.state === 'battle') {
-    if (game.battleState.inSpellMenu) {
-      // Spell menu navigation
-      if (keys['ArrowUp']) {
-        game.battleState.selectedSpell = Math.max(0, game.battleState.selectedSpell - 1);
-        lastKeyTime = now;
-      }
-      if (keys['ArrowDown']) {
-        game.battleState.selectedSpell = Math.min(game.spells.length, game.battleState.selectedSpell + 1);
-        lastKeyTime = now;
-      }
-      if (keys[' ']) {
-        if (now - lastKeyTime > keyDelay) {
-          executeSpell();
-          lastKeyTime = now;
-        }
-      }
-      if (keys['Escape']) {
-        game.battleState.inSpellMenu = false;
-        game.battleState.selectedSpell = 0;
-        lastKeyTime = now;
-      }
-    } else if (game.battleState.inItemMenu) {
-      // Item menu navigation
-      if (keys['ArrowUp']) {
-        game.battleState.selectedItem = Math.max(0, game.battleState.selectedItem - 1);
-        lastKeyTime = now;
-      }
-      if (keys['ArrowDown']) {
-        game.battleState.selectedItem = Math.min(game.consumables.length, game.battleState.selectedItem + 1);
-        lastKeyTime = now;
-      }
-      if (keys[' ']) {
-        if (now - lastKeyTime > keyDelay) {
-          useItemInBattle();
-          lastKeyTime = now;
-        }
-      }
-      if (keys['Escape']) {
-        game.battleState.inItemMenu = false;
-        game.battleState.selectedItem = 0;
-        lastKeyTime = now;
-      }
-    } else {
-      // Main battle menu
-      if (keys['ArrowUp']) {
-        game.battleState.selectedAction = Math.max(0, game.battleState.selectedAction - 1);
-        lastKeyTime = now;
-      }
-      if (keys['ArrowDown']) {
-        game.battleState.selectedAction = Math.min(3, game.battleState.selectedAction + 1);
-        lastKeyTime = now;
-      }
-      if (keys[' ']) {
-        if (now - lastKeyTime > keyDelay) {
-          executeBattleAction();
-          lastKeyTime = now;
-        }
-      }
-    }
+    handleBattleState(ctx);
   } else if (game.state === 'shop') {
-    const itemsPerPage = 5;
-    const totalPages = Math.ceil(shopItems.length / itemsPerPage);
-    const startIdx = game.shopPage * itemsPerPage;
-    const pageItems = shopItems.slice(startIdx, startIdx + itemsPerPage);
-    
-    if (keys['ArrowUp']) {
-      game.shopSelection = Math.max(0, game.shopSelection - 1);
-      lastKeyTime = now;
-    }
-    if (keys['ArrowDown']) {
-      game.shopSelection = Math.min(pageItems.length, game.shopSelection + 1);
-      lastKeyTime = now;
-    }
-    if (keys['ArrowLeft']) {
-      if (game.shopPage > 0) {
-        game.shopPage--;
-        game.shopSelection = 0;
-        lastKeyTime = now;
-      }
-    }
-    if (keys['ArrowRight']) {
-      if (game.shopPage < totalPages - 1) {
-        game.shopPage++;
-        game.shopSelection = 0;
-        lastKeyTime = now;
-      }
-    }
-    if (keys[' ']) {
-      if (now - lastKeyTime > keyDelay) {
-        // Adjust selection index for pagination
-        const actualSelection = game.shopSelection + (game.shopPage * itemsPerPage);
-        if (game.shopSelection === pageItems.length) {
-          // Exit selected
-          game.state = 'explore';
-          game.shopOpen = false;
-        } else if (actualSelection < shopItems.length) {
-          handleShopPurchase();
-        }
-        lastKeyTime = now;
-      }
-    }
-    if (keys['Escape']) {
-      game.state = 'explore';
-      game.shopOpen = false;
-      game.shopPage = 0;
-      game.shopSelection = 0;
-      lastKeyTime = now;
-    }
+    handleShopState(ctx);
   } else if (game.state === 'magic_trainer') {
-    const itemsPerPage = 5;
-    const totalPages = Math.ceil(magicTraining.length / itemsPerPage);
-    const startIdx = game.magicTrainerPage * itemsPerPage;
-    const pageItems = magicTraining.slice(startIdx, startIdx + itemsPerPage);
-
-    if (keys['ArrowUp']) {
-      game.magicTrainerSelection = Math.max(0, game.magicTrainerSelection - 1);
-      lastKeyTime = now;
-    }
-    if (keys['ArrowDown']) {
-      game.magicTrainerSelection = Math.min(pageItems.length, game.magicTrainerSelection + 1);
-      lastKeyTime = now;
-    }
-    if (keys['ArrowLeft']) {
-      if (game.magicTrainerPage > 0) {
-        game.magicTrainerPage--;
-        game.magicTrainerSelection = 0;
-        lastKeyTime = now;
-      }
-    }
-    if (keys['ArrowRight']) {
-      if (game.magicTrainerPage < totalPages - 1) {
-        game.magicTrainerPage++;
-        game.magicTrainerSelection = 0;
-        lastKeyTime = now;
-      }
-    }
-
-    if (keys[' ']) {
-      if (now - lastKeyTime > keyDelay) {
-        handleMagicTraining();
-        lastKeyTime = now;
-      }
-    }
-    if (keys['Escape']) {
-      game.state = 'explore';
-      game.magicTrainerOpen = false;
-        game.magicTrainerPage = 0;
-        game.magicTrainerSelection = 0;
-      lastKeyTime = now;
-    }
+    handleMagicTrainerState(ctx);
   } else if (game.state === 'yoga') {
-    const itemsPerPage = 5;
-    const totalPages = Math.ceil(yogaTechniques.length / itemsPerPage);
-    const startIdx = game.yogaPage * itemsPerPage;
-    const pageItems = yogaTechniques.slice(startIdx, startIdx + itemsPerPage);
-    
-    if (keys['ArrowUp']) {
-      game.yogaSelection = Math.max(0, game.yogaSelection - 1);
-      lastKeyTime = now;
-    }
-    if (keys['ArrowDown']) {
-      game.yogaSelection = Math.min(pageItems.length, game.yogaSelection + 1);
-      lastKeyTime = now;
-    }
-    if (keys['ArrowLeft']) {
-      if (game.yogaPage > 0) {
-        game.yogaPage--;
-        game.yogaSelection = 0;
-        lastKeyTime = now;
-      }
-    }
-    if (keys['ArrowRight']) {
-      if (game.yogaPage < totalPages - 1) {
-        game.yogaPage++;
-        game.yogaSelection = 0;
-        lastKeyTime = now;
-      }
-    }
-    if (keys[' ']) {
-      if (now - lastKeyTime > keyDelay) {
-        const actualSelection = game.yogaSelection + (game.yogaPage * itemsPerPage);
-        if (game.yogaSelection === pageItems.length) {
-          // Exit selected
-          game.state = 'explore';
-          game.yogaOpen = false;
-        } else if (actualSelection < yogaTechniques.length) {
-          handleYogaTraining();
-        }
-        lastKeyTime = now;
-      }
-    }
-    if (keys['Escape']) {
-      game.state = 'explore';
-      game.yogaOpen = false;
-      game.yogaPage = 0;
-      game.yogaSelection = 0;
-      lastKeyTime = now;
-    }
+    handleYogaState(ctx);
   } else if (game.state === 'food_cart') {
-    const vendorItems = consumableItems.filter(item => {
-      if (!item.vendor || !game.currentVendor) return false;
-      return item.vendor.toString().trim().toLowerCase() === String(game.currentVendor).trim().toLowerCase();
-    });
-    
-    const itemsPerPage = 5;
-    const totalPages = Math.ceil(vendorItems.length / itemsPerPage);
-    const startIdx = game.foodCartPage * itemsPerPage;
-    const pageItems = vendorItems.slice(startIdx, startIdx + itemsPerPage);
-    
-    if (keys['ArrowUp']) {
-      game.foodCartSelection = Math.max(0, game.foodCartSelection - 1);
-      lastKeyTime = now;
-    }
-    if (keys['ArrowDown']) {
-      game.foodCartSelection = Math.min(pageItems.length, game.foodCartSelection + 1);
-      lastKeyTime = now;
-    }
-    if (keys['ArrowLeft']) {
-      if (game.foodCartPage > 0) {
-        game.foodCartPage--;
-        game.foodCartSelection = 0;
-        lastKeyTime = now;
-      }
-    }
-    if (keys['ArrowRight']) {
-      if (game.foodCartPage < totalPages - 1) {
-        game.foodCartPage++;
-        game.foodCartSelection = 0;
-        lastKeyTime = now;
-      }
-    }
-    if (keys[' ']) {
-      if (now - lastKeyTime > keyDelay) {
-        const actualSelection = game.foodCartSelection + (game.foodCartPage * itemsPerPage);
-        if (game.foodCartSelection === pageItems.length) {
-          // Exit selected
-          game.state = 'explore';
-          game.foodCartOpen = false;
-        } else if (actualSelection < vendorItems.length) {
-          handleFoodCartPurchase();
-        }
-        lastKeyTime = now;
-      }
-    }
-    if (keys['Escape']) {
-      game.state = 'explore';
-      game.foodCartOpen = false;
-      game.foodCartPage = 0;
-      game.foodCartSelection = 0;
-      lastKeyTime = now;
-    }
+    handleFoodCartState(ctx);
   } else if (game.state === 'gameOver') {
-    if (keys[' '] || keys['Enter']) {
-      if (now - lastKeyTime > keyDelay) {
-        resetGameState();
-        stopBackgroundMusic();
-        lastKeyTime = now;
-      }
-    }
+    handleGameOverState(ctx);
   }
 }
 

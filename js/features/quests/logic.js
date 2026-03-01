@@ -1,10 +1,10 @@
 // Quest Management & NPC Module
-import { game, addConsumable } from './game-state.js';
+import { game, addConsumable, actions } from '../../game-state.js';
 import { questDatabase } from './quests.js';
-import { consumableItems } from './data.js';
-import { maps } from './maps.js';
-import { startDialogue } from './dialogue.js';
-import { CAVE_MAPS } from './constants.js';
+import { consumableItems } from '../../data.js';
+import { maps } from '../../maps.js';
+import { startDialogue } from '../../dialogue.js';
+import { CAVE_MAPS } from '../../constants.js';
 
 export function checkNPCInteraction() {
   const map = maps[game.map];
@@ -28,30 +28,25 @@ export function checkNPCInteraction() {
         if (!activeQuest) {
           // Offer new quest
           startDialogue(quest.dialogue.offer);
-          game.state = 'dialogue';
           offerQuest(quest.id);
           return npc;
         } else if (activeQuest.status === 'active') {
           // Check if quest can be completed
           if (canCompleteQuest(activeQuest)) {
             startDialogue(quest.dialogue.complete);
-            game.state = 'dialogue';
             completeQuest(quest.id);
             return npc;
           } else {
             startDialogue(quest.dialogue.progress);
-            game.state = 'dialogue';
             return npc;
           }
         } else if (activeQuest.status === 'completed') {
           // Quest already done
           startDialogue(npc.dialogue);
-          game.state = 'dialogue';
           return npc;
         }
       } else if (!npc.type || !specialTypes.includes(npc.type)) {
         startDialogue(npc.dialogue);
-        game.state = 'dialogue';
       }
       return npc;
     }
@@ -95,6 +90,7 @@ export function completeQuest(questId) {
   
   game.quests[questIndex].status = 'completed';
   const quest = questDatabase[questId];
+  const playerPatch = {};
   
   // Remove quest item if needed
   quest.objectives.forEach(obj => {
@@ -104,7 +100,7 @@ export function completeQuest(questId) {
         game.consumables.splice(itemIndex, 1);
       }
     } else if (obj.type === 'collect_gold') {
-      game.player.gold -= obj.needed;
+      playerPatch.gold = (playerPatch.gold ?? game.player.gold) - obj.needed;
     }
   });
   
@@ -113,11 +109,11 @@ export function completeQuest(questId) {
   
   // Give rewards
   if (quest.rewards.gold) {
-    game.player.gold += quest.rewards.gold;
+    playerPatch.gold = (playerPatch.gold ?? game.player.gold) + quest.rewards.gold;
     rewardMessages.push(`Received ${quest.rewards.gold} gold!`);
   }
   if (quest.rewards.exp) {
-    game.player.exp += quest.rewards.exp;
+    playerPatch.exp = (playerPatch.exp ?? game.player.exp) + quest.rewards.exp;
     rewardMessages.push(`Gained ${quest.rewards.exp} EXP!`);
   }
   if (quest.rewards.item) {
@@ -128,13 +124,13 @@ export function completeQuest(questId) {
     }
   }
   if (quest.rewards.maxHp) {
-    game.player.maxHp += quest.rewards.maxHp;
-    game.player.hp += quest.rewards.maxHp;
+    playerPatch.maxHp = (playerPatch.maxHp ?? game.player.maxHp) + quest.rewards.maxHp;
+    playerPatch.hp = (playerPatch.hp ?? game.player.hp) + quest.rewards.maxHp;
     rewardMessages.push(`Max HP increased by ${quest.rewards.maxHp}!`);
   }
   if (quest.rewards.maxMp) {
-    game.player.maxMp += quest.rewards.maxMp;
-    game.player.mp += quest.rewards.maxMp;
+    playerPatch.maxMp = (playerPatch.maxMp ?? game.player.maxMp) + quest.rewards.maxMp;
+    playerPatch.mp = (playerPatch.mp ?? game.player.mp) + quest.rewards.maxMp;
     rewardMessages.push(`Max MP increased by ${quest.rewards.maxMp}!`);
   }
   if (quest.rewards.spell && !game.spells.includes(quest.rewards.spell)) {
@@ -144,6 +140,10 @@ export function completeQuest(questId) {
   if (quest.rewards.skill && !game.skills.includes(quest.rewards.skill)) {
     game.skills.push(quest.rewards.skill);
     rewardMessages.push(`Learned ${quest.rewards.skill}!`);
+  }
+
+  if (Object.keys(playerPatch).length > 0) {
+    actions.playerPatched(playerPatch, 'questRewardsApplied');
   }
   
   // Add reward messages to dialogue

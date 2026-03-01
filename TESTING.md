@@ -47,3 +47,18 @@ The Node test suite includes a README guard:
 - `readmeConsistency`
 
 This checks key expected README references (for core files/modules) and fails if stale `test.js` structure entries reappear.
+
+## Enemy sprite integrity check
+
+The Node test suite includes an enemy sprite guard:
+- `enemySpriteDistinctness`
+
+This validates that every enemy in `js/enemies.js` has an explicit sprite branch in `js/rendering/battle.js`, that branch bodies remain distinct, and branch content stays name-themed.
+In the final `OVERALL TEST SUMMARY` (from `tests/runner.js`), this check is reported as `enemySpriteDistinctness: PASS/FAIL`.
+
+Example summary output:
+
+```text
+enemySpriteDistinctness: PASS (40/40)
+enemySpriteDistinctness: FAIL (33/40)
+```

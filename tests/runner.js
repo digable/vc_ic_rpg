@@ -10,6 +10,7 @@ let cambusRoutes;
 let getNpcAppearanceSignature;
 let getEnemyAppearanceSignature;
 let enemiesList;
+let questDatabase;
 
 let vendorSuite;
 let uniquenessSuite;
@@ -17,6 +18,7 @@ let cambusSuite;
 let walkingSuite;
 let itemsSuite;
 let consistencySuite;
+let schemaSuite;
 let testLogging;
 let testContext;
 
@@ -30,7 +32,8 @@ function loadSuites() {
     walkingSuite = require('./suites/walking.js');
     itemsSuite = require('./suites/items.js');
     consistencySuite = require('./suites/consistency.js');
-    return !!(testLogging && testContext && vendorSuite && uniquenessSuite && cambusSuite && walkingSuite && itemsSuite && consistencySuite);
+    schemaSuite = require('./suites/schema.js');
+    return !!(testLogging && testContext && vendorSuite && uniquenessSuite && cambusSuite && walkingSuite && itemsSuite && consistencySuite && schemaSuite);
   }
 
   if (typeof window !== 'undefined' && window.vcTestSuites && window.vcTestLib) {
@@ -42,7 +45,8 @@ function loadSuites() {
     walkingSuite = window.vcTestSuites.walking;
     itemsSuite = window.vcTestSuites.items;
     consistencySuite = window.vcTestSuites.consistency;
-    return !!(testLogging && testContext && vendorSuite && uniquenessSuite && cambusSuite && walkingSuite && itemsSuite && consistencySuite);
+    schemaSuite = window.vcTestSuites.schema;
+    return !!(testLogging && testContext && vendorSuite && uniquenessSuite && cambusSuite && walkingSuite && itemsSuite && consistencySuite && schemaSuite);
   }
 
   return false;
@@ -56,6 +60,7 @@ function loadGameData() {
       const appearanceModule = require('../js/npc-appearance.js');
       const enemyAppearanceModule = require('../js/enemy-appearance.js');
       const enemiesModule = require('../js/enemies.js');
+      const questsModule = require('../js/features/quests/quests.js');
       maps = mapsModule.maps;
       shopItems = dataModule.shopItems;
       consumableItems = dataModule.consumableItems;
@@ -65,6 +70,7 @@ function loadGameData() {
       getNpcAppearanceSignature = appearanceModule.getNpcAppearanceSignature;
       getEnemyAppearanceSignature = enemyAppearanceModule.getEnemyAppearanceSignature;
       enemiesList = enemiesModule.enemies;
+      questDatabase = questsModule.questDatabase;
       return true;
     } catch (e) {
       console.log('Could not load with require, trying from window globals...');
@@ -81,8 +87,9 @@ function loadGameData() {
     getNpcAppearanceSignature = window.getNpcAppearanceSignature || (window.gameModules && window.gameModules.getNpcAppearanceSignature);
     getEnemyAppearanceSignature = window.getEnemyAppearanceSignature || (window.gameModules && window.gameModules.getEnemyAppearanceSignature);
     enemiesList = window.enemies || (window.gameModules && window.gameModules.enemies);
+    questDatabase = window.questDatabase || (window.gameModules && window.gameModules.questDatabase);
 
-    if (maps && shopItems && consumableItems && magicTraining && yogaTechniques && cambusRoutes) {
+    if (maps && shopItems && consumableItems && magicTraining && yogaTechniques && cambusRoutes && questDatabase) {
       return true;
     }
   }
@@ -117,7 +124,8 @@ function runTests() {
     cambusRoutes: cambusRoutes,
     getNpcAppearanceSignature: getNpcAppearanceSignature,
     getEnemyAppearanceSignature: getEnemyAppearanceSignature,
-    enemiesList: enemiesList
+    enemiesList: enemiesList,
+    questDatabase: questDatabase
   }, logger);
 
   var log = logger.log;
@@ -140,6 +148,7 @@ function runTests() {
     uniqueNpcNames: uniquenessSuite.testUniqueNpcNames(ctx),
     uniqueNpcLooks: uniquenessSuite.testUniqueNpcLooks(ctx),
     uniqueEnemyLooks: uniquenessSuite.testUniqueEnemyLooks(ctx),
+    enemySpriteDistinctness: uniquenessSuite.testEnemySpriteDistinctnessAndTheme(ctx),
     cambusRoutesExist: cambusSuite.testCambusRoutesExist(ctx),
     cambusSpawnCoordinates: cambusSuite.testCambusSpawnCoordinates(ctx),
     cityParkPoolCambus: cambusSuite.testCityParkPoolCambusIntegration(ctx),
@@ -147,8 +156,10 @@ function runTests() {
     walkingTransitionsRoundTrip: walkingSuite.testWalkingTransitionsRoundTrip(ctx),
     npcReachabilityAllMaps: walkingSuite.testNpcReachabilityAllMaps(ctx),
     itemConsolidation: itemsSuite.testItemConsolidation(ctx),
+    coreDataSchemas: schemaSuite.testCoreDataSchemas(ctx),
     miniMapTopLevelLocations: consistencySuite.testMiniMapTopLevelLocations(ctx),
-    readmeConsistency: consistencySuite.testReadmeConsistency(ctx)
+    readmeConsistency: consistencySuite.testReadmeConsistency(ctx),
+    stateMutationPolicy: consistencySuite.testStateMutationPolicy(ctx)
   };
 
   logSection('OVERALL TEST SUMMARY');

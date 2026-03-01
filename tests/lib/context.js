@@ -17,6 +17,7 @@
       getNpcAppearanceSignature: data.getNpcAppearanceSignature,
       getEnemyAppearanceSignature: data.getEnemyAppearanceSignature,
       enemiesList: data.enemiesList,
+      questDatabase: data.questDatabase,
       log: logger.log,
       logSection: logger.logSection,
       logSuccess: logger.logSuccess,

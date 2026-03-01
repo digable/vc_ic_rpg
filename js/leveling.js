@@ -1,5 +1,5 @@
 // NES Final Fantasy-style Leveling System
-import { game } from './game-state.js';
+import { game, actions } from './game-state.js';
 
 // Experience thresholds for each level (up to 50)
 export const expThresholds = [
@@ -124,7 +124,7 @@ export function handleLevelUp() {
   const growthTable = statGrowthTables[playerClass] || statGrowthTables['Student'];
   const hpPattern = hpGrowthPatterns[playerClass] || hpGrowthPatterns['Student'];
   
-  game.player.level++;
+  const nextLevel = game.player.level + 1;
   
   // Calculate stat gains
   const statGains = {
@@ -174,30 +174,40 @@ export function handleLevelUp() {
   }
   
   // Apply stat gains
-  game.player.attack += Math.round(statGains.attack);
-  game.player.magic += Math.round(statGains.magic);
-  game.player.defense += Math.round(statGains.defense);
+  const attackGain = Math.round(statGains.attack);
+  const magicGain = Math.round(statGains.magic);
+  const defenseGain = Math.round(statGains.defense);
   
   // HP Growth: base amount + vitality bonus + potential strong level bonus
   let hpGain = hpPattern.base + (statGains.vitality * 2);
-  if (hpPattern.strongLevels.includes(game.player.level)) {
+  if (hpPattern.strongLevels.includes(nextLevel)) {
     hpGain += 10;
   }
-  
-  game.player.maxHp += Math.round(hpGain);
-  game.player.hp = game.player.maxHp; // Restore full HP on level up
+  const roundedHpGain = Math.round(hpGain);
+  const nextMaxHp = game.player.maxHp + roundedHpGain;
   
   // MP growth (intellect-based)
   const mpGain = 2 + (statGains.magic * 0.5);
-  game.player.maxMp += Math.round(mpGain);
-  game.player.mp = game.player.maxMp;
+  const roundedMpGain = Math.round(mpGain);
+  const nextMaxMp = game.player.maxMp + roundedMpGain;
+
+  actions.playerPatched({
+    level: nextLevel,
+    attack: game.player.attack + attackGain,
+    magic: game.player.magic + magicGain,
+    defense: game.player.defense + defenseGain,
+    maxHp: nextMaxHp,
+    hp: nextMaxHp,
+    maxMp: nextMaxMp,
+    mp: nextMaxMp
+  }, 'levelingLevelUpApplied');
   
   // Show level up message
   const messages = [
-    `Level ${game.player.level}!`,
+    `Level ${nextLevel}!`,
     `HP +${Math.round(hpGain)} (${game.player.maxHp})`,
     `MP +${Math.round(mpGain)}`,
-    `ATK +${Math.round(statGains.attack)} | DEF +${Math.round(statGains.defense)}`
+    `ATK +${attackGain} | DEF +${defenseGain}`
   ];
   
   return messages;
@@ -207,7 +217,7 @@ export function handleLevelUp() {
  * Add experience to player and handle level ups
  */
 export function addExperience(amount) {
-  game.player.exp += amount;
+  actions.playerPatched({ exp: game.player.exp + amount }, 'experienceAdded');
   
   const levelUpMessages = [];
   

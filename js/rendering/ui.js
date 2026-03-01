@@ -1,9 +1,15 @@
 // UI Module - HUD, Dialogue, Menu rendering
 import { COLORS, isMobile } from '../constants.js';
 import { game } from '../game-state.js';
-import { maps } from '../maps.js';
-import { questDatabase } from '../quests.js';
-import { getSaveCount, getSaveSlots, MAX_LOCAL_SAVES } from '../save.js';
+import { getHudPromptModel } from '../features/ui/logic.js';
+import {
+  getQuestTabModel,
+  getMapTabModel,
+  getStatsTabModel,
+  getItemsTabModel,
+  getSaveTabModel,
+  getSettingsTabModel
+} from '../features/ui/menu-decisions.js';
 import { getButtonLabel, getMenuLabel, wrapText, setCtx } from './utils.js';
 
 export function drawHUD() {
@@ -35,70 +41,25 @@ export function drawHUD() {
   ctx.strokeRect(180, 14, 60, 6);
 
   if (game.systemMessage && game.systemMessage.text) {
-    if (Date.now() <= game.systemMessage.expiresAt) {
-      const messageText = game.systemMessage.text;
-      ctx.font = '6px "Press Start 2P"';
-      const width = Math.min(236, Math.max(70, ctx.measureText(messageText).width + 10));
-      const x = Math.floor((256 - width) / 2);
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-      ctx.fillRect(x, 26, width, 12);
-      ctx.strokeStyle = COLORS.yellow;
-      ctx.strokeRect(x, 26, width, 12);
-      ctx.fillStyle = COLORS.yellow;
-      ctx.fillText(messageText, x + 5, 34);
-    } else {
-      game.systemMessage = null;
-    }
+    const messageText = game.systemMessage.text;
+    ctx.font = '6px "Press Start 2P"';
+    const width = Math.min(236, Math.max(70, ctx.measureText(messageText).width + 10));
+    const x = Math.floor((256 - width) / 2);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+    ctx.fillRect(x, 26, width, 12);
+    ctx.strokeStyle = COLORS.yellow;
+    ctx.strokeRect(x, 26, width, 12);
+    ctx.fillStyle = COLORS.yellow;
+    ctx.fillText(messageText, x + 5, 34);
   }
   
-  // Contextual controls at bottom
-  const nearbyNPC = getNearbyNPC();
-  const canInteractNow = game.state === 'explore' && !game.menuOpen && !game.dialogue;
-  const cambusPromptActive = nearbyNPC && nearbyNPC.type === 'cambus' && canInteractNow;
-  if (nearbyNPC) {
-    if (nearbyNPC.type === 'cambus' && !canInteractNow) {
-      // Hide Cambus prompt unless action can be used immediately
-    } else {
+  const hudPrompt = getHudPromptModel(getButtonLabel);
+  if (hudPrompt) {
     ctx.fillStyle = COLORS.black;
     ctx.fillRect(0, 226, 256, 14);
-    ctx.fillStyle = COLORS.yellow;
+    ctx.fillStyle = COLORS[hudPrompt.color] || COLORS.yellow;
     ctx.font = '6px "Press Start 2P"';
-    
-    if (nearbyNPC.type === 'shop') {
-      ctx.fillText(getButtonLabel('Enter Shop'), 8, 235);
-    } else if (nearbyNPC.type === 'healer') {
-      ctx.fillText(getButtonLabel('Get Free Refill'), 8, 235);
-    } else if (nearbyNPC.type === 'magic_trainer') {
-      ctx.fillText(getButtonLabel('Learn Magic'), 8, 235);
-    } else if (nearbyNPC.type === 'yoga') {
-      ctx.fillText(getButtonLabel('Yoga Training'), 8, 235);
-    } else if (nearbyNPC.type === 'cambus') {
-      ctx.fillText(getButtonLabel('Use Cambus'), 8, 235);
-    } else if (nearbyNPC.type === 'food_cart') {
-      ctx.fillText(getButtonLabel('Buy Food'), 8, 235);
-    } else {
-      ctx.fillText(getButtonLabel(`Talk to ${nearbyNPC.name}`), 8, 235);
-    }
-    }
-  }
-  
-  // Check for nearby exits
-  if (!cambusPromptActive) {
-    const map = maps[game.map];
-    if (map.exits) {
-      for (let exit of map.exits) {
-        const dist = Math.sqrt((game.player.x - exit.x) ** 2 + (game.player.y - exit.y) ** 2);
-        if (dist < 30) {
-          ctx.fillStyle = COLORS.black;
-          ctx.fillRect(0, 226, 256, 14);
-          ctx.fillStyle = COLORS.lightGreen;
-          ctx.font = '6px "Press Start 2P"';
-          const destName = maps[exit.toMap].name;
-          ctx.fillText(`Entering: ${destName}`, 8, 235);
-          break;
-        }
-      }
-    }
+    ctx.fillText(hudPrompt.text, 8, 235);
   }
 }
 
@@ -210,141 +171,95 @@ export function drawMenu() {
   
   if (game.menuTab === 0) {
     // Stats tab
+    const statsTab = getStatsTabModel();
+
     ctx.fillStyle = COLORS.white;
     ctx.font = '6px "Press Start 2P"';
-    ctx.fillText('CHARACTER', 30, 60);
-    ctx.fillText(`Name: ${game.player.name}`, 30, 72);
-    ctx.fillText(`Level: ${game.player.level}`, 30, 82);
-    ctx.fillText(`HP: ${game.player.hp}/${game.player.maxHp}`, 30, 92);
-    ctx.fillText(`MP: ${game.player.mp}/${game.player.maxMp}`, 30, 102);
-    ctx.fillText(`Attack: ${game.player.attack}`, 30, 112);
-    ctx.fillText(`Magic: ${game.player.magic}`, 130, 112);
-    ctx.fillText(`Defense: ${game.player.defense}`, 30, 122);
-    ctx.fillText(`EXP: ${game.player.exp}/${game.player.level * 30}`, 30, 132);
-    ctx.fillText(`Gold: $${game.player.gold}`, 30, 142);
+    ctx.fillText(statsTab.title, 30, 60);
+    statsTab.lines.forEach((line) => {
+      ctx.fillText(line.text, line.x, line.y);
+    });
     
     // Skills
-    if (game.skills.length > 0) {
+    if (statsTab.skills.length > 0) {
       ctx.fillStyle = COLORS.white;
       ctx.fillText('SKILLS', 30, 158);
-      game.skills.slice(0, 2).forEach((skill, i) => {
+      statsTab.skills.forEach((skill, i) => {
         ctx.fillText(`- ${skill}`, 30, 170 + i * 10);
       });
     }
     
     // Spells
-    if (game.spells.length > 0) {
-      const spellY = game.skills.length > 0 ? 158 : 158;
+    if (statsTab.spells.length > 0) {
+      const spellY = 158;
       ctx.fillStyle = COLORS.white;
       ctx.fillText('SPELLS', 130, spellY);
-      game.spells.slice(0, 2).forEach((spell, i) => {
+      statsTab.spells.forEach((spell, i) => {
         ctx.fillText(`- ${spell}`, 130, spellY + 12 + i * 10);
       });
     }
   } else if (game.menuTab === 1) {
     // Map tab - clean map (top-level locations only)
+    const mapTab = getMapTabModel();
+
     ctx.fillStyle = COLORS.white;
     ctx.font = '6px "Press Start 2P"';
-    ctx.fillText('IOWA CITY MAP', 70, 56);
-
-    const currentMapKey = game.map.indexOf('beer_caves_depths_') === 0 ? 'beer_caves' : game.map;
-
-    const areas = [
-      { map: 'kinnick_stadium', label: 'KIN', x: 82, y: 62, color: COLORS.yellow, textColor: COLORS.black },
-      { map: 'pentacrest', label: 'PEN', x: 82, y: 78, color: COLORS.green, textColor: COLORS.black },
-      { map: 'library', label: 'LIB', x: 124, y: 78, color: COLORS.brown, textColor: COLORS.white },
-      { map: 'city_park', label: 'PRK', x: 40, y: 94, color: COLORS.lightBlue, textColor: COLORS.black },
-      { map: 'city_park_pool', label: 'POL', x: 40, y: 110, color: COLORS.blue, textColor: COLORS.white },
-      { map: 'downtown', label: 'DWT', x: 82, y: 94, color: COLORS.gray, textColor: COLORS.white },
-      { map: 'deadwood', label: 'DED', x: 124, y: 94, color: COLORS.orange, textColor: COLORS.black },
-      { map: 'ped_mall', label: 'PED', x: 166, y: 94, color: COLORS.lightGray, textColor: COLORS.black },
-      { map: 'northside', label: 'NOR', x: 82, y: 110, color: COLORS.red, textColor: COLORS.white },
-      { map: 'oakland_cemetery', label: 'CEM', x: 124, y: 110, color: COLORS.darkGray, textColor: COLORS.white },
-      { map: 'old_capitol', label: 'CAP', x: 166, y: 110, color: COLORS.white, textColor: COLORS.black },
-      { map: 'coralville_lake', label: 'LAK', x: 166, y: 126, color: COLORS.blue, textColor: COLORS.white },
-      { map: 'beer_caves', label: 'CVE', x: 82, y: 126, color: COLORS.purple, textColor: COLORS.white }
-    ];
-
-    const links = [
-      ['city_park', 'downtown'],
-      ['city_park', 'city_park_pool'],
-      ['downtown', 'pentacrest'],
-      ['downtown', 'deadwood'],
-      ['downtown', 'northside'],
-      ['downtown', 'coralville_lake'],
-      ['pentacrest', 'library'],
-      ['pentacrest', 'kinnick_stadium'],
-      ['kinnick_stadium', 'ped_mall'],
-      ['ped_mall', 'old_capitol'],
-      ['old_capitol', 'coralville_lake'],
-      ['deadwood', 'oakland_cemetery'],
-      ['northside', 'beer_caves']
-    ];
-
-    function findArea(mapKey) {
-      for (let i = 0; i < areas.length; i++) {
-        if (areas[i].map === mapKey) return areas[i];
-      }
-      return null;
-    }
+    ctx.fillText(mapTab.title, 70, 56);
 
     ctx.strokeStyle = COLORS.darkGray;
     ctx.lineWidth = 1;
-    links.forEach(([fromMap, toMap]) => {
-      const from = findArea(fromMap);
-      const to = findArea(toMap);
-      if (!from || !to) return;
+    mapTab.links.forEach((link) => {
       ctx.beginPath();
-      ctx.moveTo(from.x + 10, from.y + 6);
-      ctx.lineTo(to.x + 10, to.y + 6);
+      ctx.moveTo(link.fromX, link.fromY);
+      ctx.lineTo(link.toX, link.toY);
       ctx.stroke();
     });
 
-    areas.forEach(area => {
-      ctx.fillStyle = area.color;
+    mapTab.areas.forEach(area => {
+      ctx.fillStyle = COLORS[area.color] || COLORS.white;
       ctx.fillRect(area.x, area.y, 20, 12);
       ctx.strokeStyle = COLORS.black;
       ctx.lineWidth = 1;
       ctx.strokeRect(area.x, area.y, 20, 12);
 
-      if (currentMapKey === area.map) {
+      if (area.isCurrent) {
         ctx.strokeStyle = COLORS.yellow;
         ctx.lineWidth = 2;
         ctx.strokeRect(area.x - 1, area.y - 1, 22, 14);
       }
 
-      ctx.fillStyle = area.textColor;
+      ctx.fillStyle = COLORS[area.textColor] || COLORS.white;
       ctx.font = '5px "Press Start 2P"';
       ctx.fillText(area.label, area.x + 3, area.y + 8);
     });
 
-    const currentLocationName = maps[currentMapKey] ? maps[currentMapKey].name : 'Unknown';
     ctx.fillStyle = COLORS.yellow;
     ctx.font = '5px "Press Start 2P"';
-    ctx.fillText(`Your Location: ${currentLocationName}`, 24, 148);
+    ctx.fillText(mapTab.locationText, 24, 148);
 
 
   } else if (game.menuTab === 2) {
     // Items tab
+    const itemsTab = getItemsTabModel(getButtonLabel);
+
     ctx.fillStyle = COLORS.white;
     ctx.font = '6px "Press Start 2P"';
-    ctx.fillText('ITEMS:', 70, 60);
+    ctx.fillText(itemsTab.title, 70, 60);
     
-    if (game.consumables.length === 0) {
+    if (!itemsTab.hasItems) {
       ctx.fillStyle = COLORS.gray;
-      ctx.fillText('No items', 80, 80);
+      ctx.fillText(itemsTab.emptyText, 80, 80);
     } else {
-      game.consumables.forEach((item, i) => {
-        const y = 75 + i * 15;
+      itemsTab.items.forEach((item) => {
+        const y = item.y;
         
-        if (i === game.itemMenuSelection) {
+        if (item.selected) {
           ctx.fillStyle = COLORS.yellow;
           ctx.fillText('>', 30, y);
         }
         
         ctx.fillStyle = COLORS.white;
-        const countText = item.count && item.count > 1 ? ` (x${item.count})` : '';
-        ctx.fillText(item.name + countText, 45, y);
+        ctx.fillText(item.name + item.countText, 45, y);
         
         ctx.fillStyle = COLORS.gray;
         ctx.font = '5px "Press Start 2P"';
@@ -354,27 +269,11 @@ export function drawMenu() {
       
       ctx.fillStyle = COLORS.gray;
       ctx.font = '5px "Press Start 2P"';
-      ctx.fillText(getButtonLabel('Use item'), 60, 190);
+      ctx.fillText(itemsTab.useHint, 60, 190);
     }
   } else if (game.menuTab === 3) {
     // Quests tab
-    const inProgress = game.quests.filter(q => q.status === 'active');
-    const completed = game.quests.filter(q => q.status === 'completed');
-    const mainMission = game.quests.find(q => q.id === 'corruption_source');
-    const mainMissionData = questDatabase.corruption_source;
-    const maxInProgressShown = 1;
-    const maxCompletedShown = 3;
-    const inProgressCount = inProgress.length;
-    const completedCount = completed.length;
-
-    const inProgressPages = Math.max(1, Math.ceil(inProgress.length / maxInProgressShown));
-    const completedPages = Math.max(1, Math.ceil(completed.length / maxCompletedShown));
-
-    game.questInProgressPage = Math.max(0, Math.min(game.questInProgressPage, inProgressPages - 1));
-    game.questCompletedPage = Math.max(0, Math.min(game.questCompletedPage, completedPages - 1));
-
-    const inProgressStart = game.questInProgressPage * maxInProgressShown;
-    const completedStart = game.questCompletedPage * maxCompletedShown;
+    const questTab = getQuestTabModel();
 
     ctx.textBaseline = 'top';
 
@@ -393,41 +292,12 @@ export function drawMenu() {
     ctx.fillRect(26, 158, 204, 26);
     ctx.strokeRect(26, 158, 204, 26);
 
-    let caveBossDone = game.caveSovereignDefeated;
-    let levelGateDone = game.player.level >= 10;
-    let finalBossDone = false;
-
-    if (mainMission && Array.isArray(mainMission.objectives)) {
-      const caveObj = mainMission.objectives.find(obj => obj.type === 'defeat_enemy' && obj.enemy === 'Cave Sovereign');
-      const levelObj = mainMission.objectives.find(obj => obj.type === 'reach_level');
-      const finalObj = mainMission.objectives.find(obj => obj.type === 'defeat_enemy' && obj.enemy === 'Corrupted Administrator');
-
-      if (caveObj) {
-        caveBossDone = caveObj.count >= caveObj.needed;
-      }
-      if (levelObj) {
-        levelGateDone = game.player.level >= levelObj.level;
-      }
-      if (finalObj) {
-        finalBossDone = finalObj.count >= finalObj.needed;
-      }
-      if (mainMission.status === 'completed') {
-        finalBossDone = true;
-      }
-    }
-
     ctx.fillStyle = COLORS.white;
     ctx.font = '6px "Press Start 2P"';
     ctx.fillText('MAIN MISSION', 30, 60);
 
-    const mainMissionLines = [
-      { done: caveBossDone, text: 'Beat Cave Sovereign' },
-      { done: levelGateDone, text: 'Reach Level 10' },
-      { done: finalBossDone, text: 'Beat Corrupted Admin' }
-    ];
-
     let mainY = 70;
-    mainMissionLines.forEach(line => {
+    questTab.mainMission.lines.forEach(line => {
       ctx.fillStyle = line.done ? COLORS.green : COLORS.yellow;
       ctx.font = '6px "Press Start 2P"';
       ctx.fillText(line.done ? '[x]' : '[ ]', 30, mainY);
@@ -437,39 +307,35 @@ export function drawMenu() {
 
     ctx.fillStyle = COLORS.gray;
     ctx.font = '5px "Press Start 2P"';
-    ctx.fillText(caveBossDone && levelGateDone ? 'Final boss unlocked' : 'Need top 2 to unlock final boss', 30, mainY);
+    ctx.fillText(questTab.mainMission.hint, 30, mainY);
 
     ctx.fillStyle = COLORS.yellow;
     ctx.font = '6px "Press Start 2P"';
     ctx.fillText('IN PROGRESS', 30, 112);
-    if (game.questMenuSection === 0) {
+    if (questTab.inProgress.selected) {
       ctx.fillText('>', 22, 112);
     }
     ctx.fillStyle = COLORS.gray;
     ctx.font = '5px "Press Start 2P"';
-    const inProgressPageDisplay = inProgressCount === 0 ? '0/0' : `${game.questInProgressPage + 1}/${inProgressPages}`;
-    ctx.fillText(`${inProgressCount} total`, 122, 112);
-    ctx.fillText(inProgressPageDisplay, 190, 112);
+    ctx.fillText(`${questTab.inProgress.totalCount} total`, 122, 112);
+    ctx.fillText(questTab.inProgress.pageDisplay, 190, 112);
 
     let y = 122;
-    if (inProgress.length === 0) {
+    if (questTab.inProgress.totalCount === 0) {
       ctx.fillStyle = COLORS.gray;
       ctx.font = '6px "Press Start 2P"';
       ctx.fillText('No active quests', 30, y);
       y += 12;
     } else {
-      inProgress.slice(inProgressStart, inProgressStart + maxInProgressShown).forEach(activeQuest => {
-        const questData = questDatabase[activeQuest.id];
-        if (!questData) return;
-
+      questTab.inProgress.items.forEach((quest) => {
         ctx.fillStyle = COLORS.yellow;
         ctx.font = '6px "Press Start 2P"';
-        ctx.fillText(`- ${questData.name}`, 30, y);
+        ctx.fillText(`- ${quest.name}`, 30, y);
         y += 8;
 
         ctx.fillStyle = COLORS.white;
         ctx.font = '6px "Press Start 2P"';
-        wrapText(questData.description, 34, y, 168, 8);
+        wrapText(quest.description, 34, y, 168, 8);
         y += 24;
       });
 
@@ -480,28 +346,24 @@ export function drawMenu() {
     ctx.fillStyle = COLORS.green;
     ctx.font = '6px "Press Start 2P"';
     ctx.fillText('COMPLETED', 30, completedHeaderY);
-    if (game.questMenuSection === 1) {
+    if (questTab.completed.selected) {
       ctx.fillText('>', 22, completedHeaderY);
     }
     ctx.fillStyle = COLORS.gray;
     ctx.font = '5px "Press Start 2P"';
-    const completedPageDisplay = completedCount === 0 ? '0/0' : `${game.questCompletedPage + 1}/${completedPages}`;
-    ctx.fillText(`${completedCount} total`, 122, completedHeaderY);
-    ctx.fillText(completedPageDisplay, 190, completedHeaderY);
+    ctx.fillText(`${questTab.completed.totalCount} total`, 122, completedHeaderY);
+    ctx.fillText(questTab.completed.pageDisplay, 190, completedHeaderY);
 
     let completedY = completedHeaderY + 10;
-    if (completed.length === 0) {
+    if (questTab.completed.totalCount === 0) {
       ctx.fillStyle = COLORS.gray;
       ctx.font = '6px "Press Start 2P"';
       ctx.fillText('No completed quests', 30, completedY);
     } else {
-      completed.slice(completedStart, completedStart + maxCompletedShown).forEach(doneQuest => {
-        const questData = questDatabase[doneQuest.id];
-        if (!questData) return;
-
+      questTab.completed.items.forEach((quest) => {
         ctx.fillStyle = COLORS.green;
         ctx.font = '6px "Press Start 2P"';
-        ctx.fillText(`- ${questData.name}`, 30, completedY);
+        ctx.fillText(`- ${quest.name}`, 30, completedY);
         completedY += 8;
       });
     }
@@ -511,26 +373,18 @@ export function drawMenu() {
         
     ctx.textBaseline = 'alphabetic';
   } else if (game.menuTab === 4) {
-    const saveCount = getSaveCount();
-    const saveExists = saveCount > 0;
-    const saveActions = [
-      { label: 'Save Game', enabled: true },
-      { label: 'Load Game', enabled: saveExists },
-      { label: 'Delete Save', enabled: saveExists }
-    ];
-    const actionName = game.saveMenuAction ? game.saveMenuAction.toUpperCase() : 'SAVE';
-    const slots = getSaveSlots();
+    const saveTab = getSaveTabModel();
 
     ctx.fillStyle = COLORS.white;
     ctx.font = '6px "Press Start 2P"';
-    ctx.fillText('SAVE DATA', 86, 58);
+    ctx.fillText(saveTab.title, 86, 58);
     ctx.fillStyle = COLORS.gray;
-    ctx.fillText(`${saveCount}/${MAX_LOCAL_SAVES} saves`, 86, 68);
+    ctx.fillText(saveTab.countText, 86, 68);
 
-    if (game.saveMenuMode === 'slots') {
+    if (saveTab.mode === 'slots') {
       ctx.fillStyle = COLORS.yellow;
       ctx.font = '5px "Press Start 2P"';
-      ctx.fillText(`SELECT SLOT TO ${actionName}`, 40, 70);
+      ctx.fillText(`SELECT SLOT TO ${saveTab.actionName}`, 40, 70);
 
       ctx.fillStyle = COLORS.black;
       ctx.fillRect(30, 80, 196, 58);
@@ -539,14 +393,14 @@ export function drawMenu() {
       ctx.strokeRect(30, 80, 196, 58);
 
       ctx.font = '5px "Press Start 2P"';
-      slots.forEach((slot, i) => {
-        const rowTop = 82 + i * 18;
-        const y = rowTop + 11;
+      saveTab.slots.forEach((slot, i) => {
+        const rowTop = slot.rowTop;
+        const y = slot.y;
 
         ctx.fillStyle = COLORS.black;
         ctx.fillRect(32, rowTop, 192, 16);
 
-        if (game.saveSlotSelection === i) {
+        if (slot.selected) {
           ctx.fillStyle = COLORS.yellow;
           ctx.fillRect(32, rowTop, 192, 16);
           ctx.strokeStyle = COLORS.yellow;
@@ -566,9 +420,9 @@ export function drawMenu() {
       ctx.fillText('UP/DOWN + SPACE', 86, 166);
       ctx.fillText('ESC OR <-/-> TO CANCEL', 64, 176);
     } else {
-      saveActions.forEach((action, i) => {
+      saveTab.actions.forEach((action, i) => {
         const y = 98 + i * 16;
-        if (game.menuSelection === i) {
+        if (action.selected) {
           ctx.fillStyle = COLORS.yellow;
           ctx.fillText('>', 74, y);
         }
@@ -581,9 +435,11 @@ export function drawMenu() {
       ctx.fillText('UP/DOWN + SPACE', 86, 166);
     }
   } else if (game.menuTab === 5) {
+    const settingsTab = getSettingsTabModel();
+
     ctx.fillStyle = COLORS.white;
     ctx.font = '6px "Press Start 2P"';
-    ctx.fillText('SETTINGS', 88, 62);
+    ctx.fillText(settingsTab.title, 88, 62);
 
     ctx.fillStyle = COLORS.black;
     ctx.fillRect(38, 78, 180, 44);
@@ -592,30 +448,24 @@ export function drawMenu() {
     ctx.strokeRect(38, 78, 180, 44);
 
     ctx.fillStyle = COLORS.yellow;
-    ctx.fillText('MUSIC', 54, 98);
+    ctx.fillText(settingsTab.musicLabel, 54, 98);
 
-    const sliderX = 166;
-    const sliderY = 88;
-    const sliderW = 36;
-    const sliderH = 14;
-    const knobSize = 10;
-    const knobY = sliderY + 2;
-    const knobX = game.musicEnabled ? (sliderX + sliderW - knobSize - 2) : (sliderX + 2);
+    const slider = settingsTab.slider;
 
-    ctx.fillStyle = game.musicEnabled ? COLORS.white : COLORS.gray;
-    ctx.fillRect(sliderX, sliderY, sliderW, sliderH);
+    ctx.fillStyle = settingsTab.musicEnabled ? COLORS.white : COLORS.gray;
+    ctx.fillRect(slider.x, slider.y, slider.width, slider.height);
     ctx.strokeStyle = COLORS.black;
     ctx.lineWidth = 1;
-    ctx.strokeRect(sliderX, sliderY, sliderW, sliderH);
+    ctx.strokeRect(slider.x, slider.y, slider.width, slider.height);
 
     ctx.fillStyle = COLORS.black;
-    ctx.fillRect(knobX, knobY, knobSize, knobSize);
+    ctx.fillRect(slider.knobX, slider.knobY, slider.knobSize, slider.knobSize);
     ctx.strokeStyle = COLORS.white;
-    ctx.strokeRect(knobX, knobY, knobSize, knobSize);
+    ctx.strokeRect(slider.knobX, slider.knobY, slider.knobSize, slider.knobSize);
 
     ctx.fillStyle = COLORS.gray;
     ctx.font = '5px "Press Start 2P"';
-    ctx.fillText('SPACE TO TOGGLE', 82, 112);
+    ctx.fillText(settingsTab.hint, 82, 112);
   }
   
   ctx.fillStyle = COLORS.gray;
@@ -624,31 +474,4 @@ export function drawMenu() {
   ctx.fillText(getMenuLabel(), 90, 190);
 }
 
-// Helper function to get nearby NPC
-function getNearbyNPC() {
-  const map = maps[game.map];
-  let nearestCambus = null;
-  let nearestCambusDist = Infinity;
-  let nearestNpc = null;
-  let nearestNpcDist = Infinity;
 
-  for (let npc of map.npcs) {
-    const dist = Math.sqrt(
-      (game.player.x - npc.x) ** 2 + (game.player.y - npc.y) ** 2
-    );
-    
-    if (dist < 24) {
-      if (npc.type === 'cambus') {
-        if (dist < nearestCambusDist) {
-          nearestCambus = npc;
-          nearestCambusDist = dist;
-        }
-      } else if (dist < nearestNpcDist) {
-        nearestNpc = npc;
-        nearestNpcDist = dist;
-      }
-    }
-  }
-
-  return nearestCambus || nearestNpc;
-}

@@ -2,8 +2,7 @@
 import { COLORS, tileColors, CAVE_MAPS } from '../constants.js';
 import { game } from '../game-state.js';
 import { maps } from '../maps.js';
-import { questDatabase } from '../quests.js';
-import { canCompleteQuest } from '../quests-logic.js';
+import { getVisibleNpcsForCurrentMap, getQuestMarkerForNpc } from '../features/world/render-decisions.js';
 import { getNpcAppearance } from '../npc-appearance.js';
 import { ctx } from './utils.js';
 
@@ -264,11 +263,8 @@ export function drawPlayer() {
 }
 
 export function drawNPCs() {
-  const map = maps[game.map];
-  for (let npc of map.npcs) {
-    if (npc.type === 'boss' && game.caveSovereignDefeated) {
-      continue;
-    }
+  const visibleNpcs = getVisibleNpcsForCurrentMap();
+  for (let npc of visibleNpcs) {
     if (npc.isSign) {
       const appearance = getNpcAppearance(npc);
       // Compact, high-contrast Cambus sign
@@ -307,21 +303,11 @@ export function drawNPCs() {
       drawNPC(npc);
       
       // Draw quest marker
-      if (npc.hasQuest) {
-        const quest = questDatabase[npc.hasQuest];
-        const activeQuest = game.quests.find(q => q.id === quest.id);
-        
-        if (!activeQuest) {
-          // Yellow ! for new quest
-          ctx.fillStyle = COLORS.yellow;
-          ctx.font = '12px "Press Start 2P"';
-          ctx.fillText('!', npc.x - 2, npc.y - 18);
-        } else if (activeQuest.status === 'active' && canCompleteQuest(activeQuest)) {
-          // Green ? for completable quest
-          ctx.fillStyle = COLORS.lightGreen;
-          ctx.font = '12px "Press Start 2P"';
-          ctx.fillText('?', npc.x - 2, npc.y - 18);
-        }
+      const questMarker = getQuestMarkerForNpc(npc);
+      if (questMarker) {
+        ctx.fillStyle = COLORS[questMarker.color] || COLORS.yellow;
+        ctx.font = '12px "Press Start 2P"';
+        ctx.fillText(questMarker.symbol, npc.x - 2, npc.y - 18);
       }
     }
   }

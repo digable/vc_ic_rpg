@@ -28,23 +28,22 @@
 
     logSection('MINIMAP: Top-Level Location Coverage');
 
-    var uiPath = path.join(__dirname, '..', '..', 'js', 'rendering', 'ui.js');
-    var uiSource = '';
+    var decisionsPath = path.join(__dirname, '..', '..', 'js', 'features', 'ui', 'menu-decisions.js');
+    var decisionsSource = '';
     try {
-      uiSource = fs.readFileSync(uiPath, 'utf8');
+      decisionsSource = fs.readFileSync(decisionsPath, 'utf8');
     } catch (e) {
-      logError('Could not read js/rendering/ui.js');
+      logError('Could not read js/features/ui/menu-decisions.js');
       return { passed: 0, failed: 1 };
     }
 
-    var mapTabStart = uiSource.lastIndexOf('} else if (game.menuTab === 1) {');
-    var mapTabEnd = uiSource.indexOf('} else if (game.menuTab === 2) {', mapTabStart);
-    if (mapTabStart === -1 || mapTabEnd === -1) {
-      logError('Could not locate menu map tab block in ui.js');
+    var areasBlockMatch = decisionsSource.match(/const\s+MAP_AREAS\s*=\s*\[([\s\S]*?)\];/);
+    if (!areasBlockMatch) {
+      logError('Could not locate MAP_AREAS block in menu-decisions.js');
       return { passed: 0, failed: 1 };
     }
 
-    var mapTabCode = uiSource.slice(mapTabStart, mapTabEnd);
+    var mapTabCode = areasBlockMatch[1];
     var minimapMaps = [];
     var minimapMapLookup = {};
     var mapRegex = /map:\s*'([^']+)'/g;
@@ -148,8 +147,148 @@
     return { passed: passed, failed: failed };
   }
 
+  function collectJsFiles(fs, path, directory, out) {
+    var entries = fs.readdirSync(directory, { withFileTypes: true });
+    for (var i = 0; i < entries.length; i++) {
+      var entry = entries[i];
+      var entryPath = path.join(directory, entry.name);
+      if (entry.isDirectory()) {
+        collectJsFiles(fs, path, entryPath, out);
+      } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.js')) {
+        out.push(entryPath);
+      }
+    }
+  }
+
+  function testStateMutationPolicy(ctx) {
+    var logSection = ctx.logSection;
+    var logInfo = ctx.logInfo;
+    var logSuccess = ctx.logSuccess;
+    var logError = ctx.logError;
+
+    if (typeof require === 'undefined') {
+      return { passed: 0, failed: 0, skipped: true, reason: 'Node-only test (file read unavailable)' };
+    }
+
+    var fs;
+    var path;
+    try {
+      fs = require('fs');
+      path = require('path');
+    } catch (e) {
+      return { passed: 0, failed: 0, skipped: true, reason: 'Node fs/path unavailable' };
+    }
+
+    logSection('STATE: Mutation Policy');
+
+    var jsRoot = path.join(__dirname, '..', '..', 'js');
+    var actionFile = path.join(jsRoot, 'game-state.js');
+    var files = [];
+
+    try {
+      collectJsFiles(fs, path, jsRoot, files);
+    } catch (e) {
+      logError('Could not enumerate JS files for state policy check');
+      return { passed: 0, failed: 1 };
+    }
+
+    var topLevelViolations = [];
+    var nestedViolations = [];
+    var allowedNestedRoots = {
+      player: true,
+      battleState: true
+    };
+    var allowedNestedExact = {};
+
+    for (var fileIndex = 0; fileIndex < files.length; fileIndex++) {
+      var filePath = files[fileIndex];
+      var source = '';
+
+      try {
+        source = fs.readFileSync(filePath, 'utf8');
+      } catch (e) {
+        topLevelViolations.push({
+          file: filePath,
+          line: 0,
+          text: 'Could not read file'
+        });
+        continue;
+      }
+
+      var lines = source.split(/\r?\n/);
+
+      for (var lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+        var line = lines[lineIndex];
+
+        var topLevelMatch = line.match(/\bgame\.([A-Za-z0-9_]+)\s*=\s*(?!=)/);
+        if (topLevelMatch && filePath !== actionFile) {
+          topLevelViolations.push({
+            file: filePath,
+            line: lineIndex + 1,
+            text: line.trim()
+          });
+        }
+
+        var nestedRegex = /\bgame\.([A-Za-z0-9_]+)\.([A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)*)\s*=\s*(?!=)/g;
+        var nestedMatch;
+        while ((nestedMatch = nestedRegex.exec(line)) !== null) {
+          var root = nestedMatch[1];
+          var expr = 'game.' + root + '.' + nestedMatch[2];
+          var allowed = !!allowedNestedRoots[root] || !!allowedNestedExact[expr];
+          if (!allowed) {
+            nestedViolations.push({
+              file: filePath,
+              line: lineIndex + 1,
+              text: line.trim(),
+              expr: expr
+            });
+          }
+        }
+      }
+    }
+
+    var passed = 0;
+    var failed = 0;
+
+    if (topLevelViolations.length === 0) {
+      logSuccess('Top-level game.* assignments are confined to js/game-state.js');
+      passed++;
+    } else {
+      var topPreview = Math.min(8, topLevelViolations.length);
+      for (var t = 0; t < topPreview; t++) {
+        var topViolation = topLevelViolations[t];
+        var topRelPath = path.relative(path.join(__dirname, '..', '..'), topViolation.file).replace(/\\/g, '/');
+        logError('Top-level write outside action module: ' + topRelPath + ':' + topViolation.line + ' -> ' + topViolation.text);
+      }
+      if (topLevelViolations.length > topPreview) {
+        logError('... plus ' + (topLevelViolations.length - topPreview) + ' more top-level violation(s)');
+      }
+      failed += topLevelViolations.length;
+    }
+
+    if (nestedViolations.length === 0) {
+      logSuccess('Nested direct assignments are limited to allowed exceptions (player, battleState)');
+      passed++;
+    } else {
+      var nestedPreview = Math.min(8, nestedViolations.length);
+      for (var n = 0; n < nestedPreview; n++) {
+        var nestedViolation = nestedViolations[n];
+        var nestedRelPath = path.relative(path.join(__dirname, '..', '..'), nestedViolation.file).replace(/\\/g, '/');
+        logError('Disallowed nested write: ' + nestedRelPath + ':' + nestedViolation.line + ' (' + nestedViolation.expr + ')');
+      }
+      if (nestedViolations.length > nestedPreview) {
+        logError('... plus ' + (nestedViolations.length - nestedPreview) + ' more nested violation(s)');
+      }
+      failed += nestedViolations.length;
+    }
+
+    logInfo('State mutation policy: ' + passed + ' passed, ' + failed + ' failed');
+    return { passed: passed, failed: failed };
+  }
+
   return {
     testMiniMapTopLevelLocations: testMiniMapTopLevelLocations,
-    testReadmeConsistency: testReadmeConsistency
+    testReadmeConsistency: testReadmeConsistency,
+    testStateMutationPolicy: testStateMutationPolicy
   };
 }));

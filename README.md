@@ -130,6 +130,7 @@ vc_ic_rpg/
 │       ├── cambus.js       # Cambus routes/spawn/integration validation
 │       ├── walking.js      # Walking exits + round-trip transition reliability
 │       ├── items.js        # Item consolidation behavior checks
+│       ├── schema.js       # Lightweight schema validation for core data modules
 │       └── consistency.js  # Minimap and README consistency checks
 └── js/                     # Modular JavaScript
     ├── main.js             # Game loop & rendering pipeline
@@ -137,14 +138,34 @@ vc_ic_rpg/
     ├── constants.js        # Game configuration & colors
     ├── data.js             # Items, spells, shops, routes
     ├── save.js             # Multi-slot local save/load + migration helpers
-    ├── quests.js           # Quest database
-    ├── quests-logic.js     # Quest system & NPC interactions
     ├── maps.js             # Map layouts & NPC positions
     ├── enemies.js          # Enemy definitions & encounters
     ├── npc-appearance.js   # Deterministic NPC visual identity
     ├── enemy-appearance.js # Deterministic enemy visual identity
-    ├── music.js            # Adaptive background/battle/death music engine
-    ├── battle.js           # Combat system & spell execution
+    ├── features/           # Feature-oriented gameplay slices
+    │   ├── battle/
+    │   │   ├── battle.js   # Combat system & spell execution
+    │   │   ├── input.js    # Battle-local input handlers
+    │   ├── quests/
+    │   │   ├── quests.js   # Quest database
+    │   │   ├── logic.js    # Quest system & NPC interactions
+    │   │   ├── ui.js       # Quest-local UI facade
+    │   │   └── input.js    # Quest-local input handlers
+    │   ├── world/
+    │   │   ├── world.js    # World mechanics (collisions, transitions)
+    │   │   ├── map-transition-service.js # Centralized navigation/transition rules
+    │   │   ├── render-decisions.js # World/NPC render decision selectors
+    │   │   └── input.js    # World-local input handlers
+    │   ├── ui/
+    │   │   ├── logic.js    # UI-facing gameplay decisions (HUD prompts/messages)
+    │   │   └── menu-decisions.js # Menu tab selector models (stats/map/items/quest/save/settings)
+    │   ├── input/
+    │   │   └── state-handlers.js # Input handlers split by gameplay state
+    │   └── music/
+    │       ├── music.js    # Adaptive background/battle/death music engine
+    │       ├── ui.js       # Music-local UI facade
+    │       ├── input.js    # Music-local input handlers
+    │       └── index.js    # Music slice barrel exports
     ├── rendering/          # Modular rendering system
     │   ├── index.js         # Rendering exports & setup
     │   ├── utils.js         # Shared rendering helpers
@@ -156,7 +177,6 @@ vc_ic_rpg/
     ├── input.js            # Keyboard/touch input handling
     ├── interactions.js     # NPC & vendor interactions
     ├── dialogue.js         # Dialogue system with message flow
-    ├── world.js            # World mechanics (collisions, fast travel)
     └── leveling.js         # NES FF-style leveling (50 levels, class growth)
 ```
 ```
@@ -168,6 +188,13 @@ vc_ic_rpg/
 - **Canvas Rendering** - Pixel-perfect graphics
 - **Responsive Design** - Works on desktop and mobile
 - **Touch Support** - Native mobile controls
+
+### State Mutation Policy
+- Top-level game state writes (`game.someField = ...`) are action-owned and should be performed in `js/game-state.js` via `actions.*`.
+- Nested direct writes are explicit exceptions and currently limited to:
+    - `game.player.*`
+    - `game.battleState.*`
+- A consistency test (`stateMutationPolicy`) enforces this policy during `node tests.js`.
 
 ## 🎨 Features Breakdown
 
@@ -257,17 +284,19 @@ All equipment, training, and items affect 6 core statistics:
 
 ### Architecture
 - **Runtime model** - Single shared `game` state drives explore, dialogue, menu, and battle flows.
+- **State write model** - Named actions in `js/game-state.js` (for example `battleStarted`, `battleEnded`, `mapChanged`, `musicToggled`, `menuToggled`, `dialogueStarted`, `vendorScreenOpened`) handle key state transitions to reduce hidden side effects.
+- **Action debugging** - Optional action tracing is available via `setActionDebugEnabled(true)` (or persisted with `setActionDebugEnabled(true, true)`), and is off by default; browser DevTools can also use `window.debugActions.setActionDebugEnabled(true)`.
 - **Data-first content** - Maps, quests, enemies, vendors, and routes are defined in data modules and interpreted by game logic.
 - **Frame pipeline** - `main.js` updates gameplay and delegates drawing to modular renderers under `js/rendering/`.
-- **Interaction loop** - Input updates player/menu intent, world + quest systems resolve outcomes, UI reflects current state.
+- **Interaction loop** - Input updates player/menu intent, world + quest systems resolve outcomes, gameplay selectors compute view decisions, UI reflects current state.
 
 ### Module Responsibilities
-- **Core orchestration** - `js/main.js`, `js/game-state.js`, `js/constants.js` manage loop timing, global state, and shared constants.
-- **World + navigation** - `js/maps.js`, `js/world.js`, `js/interactions.js`, `js/input.js` control movement, collisions, exits, and map-level interactions.
-- **Combat + progression** - `js/battle.js`, `js/leveling.js`, `js/enemies.js` handle turn flow, enemy behaviors, rewards, and stat growth.
-- **Quest + narrative systems** - `js/quests.js`, `js/quests-logic.js`, `js/dialogue.js` define quest data, objective updates, and dialogue progression.
+- **Core orchestration** - `js/main.js`, `js/game-state.js`, `js/constants.js` manage loop timing, global state, and named state actions.
+- **World + navigation** - `js/maps.js`, `js/features/world/map-transition-service.js`, `js/features/world/world.js`, `js/interactions.js`, `js/input.js` control movement, collisions, exits, and map-level interactions.
+- **Combat + progression** - `js/features/battle/battle.js`, `js/leveling.js`, `js/enemies.js` handle turn flow, enemy behaviors, rewards, and stat growth.
+- **Quest + narrative systems** - `js/features/quests/quests.js`, `js/features/quests/logic.js`, `js/dialogue.js` define quest data, objective updates, and dialogue progression.
 - **Player economy + persistence** - `js/data.js`, `js/save.js` define purchasables/training routes and save/load + migration behavior.
-- **Presentation layer** - `js/rendering/*`, `game.css`, `js/music.js` render visuals/HUD and drive adaptive audio states.
+- **Presentation layer** - `js/rendering/*`, `game.css`, `js/features/music/music.js` render visuals/HUD and drive adaptive audio states.
 - **Visual identity helpers** - `js/npc-appearance.js`, `js/enemy-appearance.js` generate deterministic appearance signatures for uniqueness.
 - **Testing stack** - `tests.js` is the stable CLI entrypoint; `tests/runner.js` orchestrates suite modules under `tests/suites/`.
 
@@ -277,7 +306,7 @@ Use `TESTING.md` as the testing entrypoint for commands, environment notes, and 
 ### Adding Content
 
 **Add a new quest:**
-Edit `js/quests.js`
+Edit `js/features/quests/quests.js`
 
 **Add a new enemy:**
 Edit `js/enemies.js`
