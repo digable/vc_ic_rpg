@@ -12,17 +12,37 @@ import { setCtx, wrapText, getButtonLabel, getMenuLabel } from './utils.js';
 
 // Export canvas setup
 export let ctx;
+let canvasRef = null;
+
+function setSmoothingEnabled(enabled) {
+  ctx.imageSmoothingEnabled = enabled;
+  ctx.webkitImageSmoothingEnabled = enabled;
+  ctx.mozImageSmoothingEnabled = enabled;
+  ctx.msImageSmoothingEnabled = enabled;
+}
+
+export function applyGraphicsQuality(quality = 'low') {
+  if (!canvasRef || !ctx) return quality === 'high' ? 'high' : 'low';
+
+  const resolvedQuality = quality === 'high' ? 'high' : 'low';
+  const highQuality = resolvedQuality === 'high';
+  const renderScale = highQuality ? 2 : 1;
+
+  canvasRef.width = 256 * renderScale;
+  canvasRef.height = 240 * renderScale;
+
+  ctx.setTransform(renderScale, 0, 0, renderScale, 0, 0);
+  setSmoothingEnabled(highQuality);
+
+  return resolvedQuality;
+}
 
 export function setupCanvas() {
   const canvas = document.getElementById('game-canvas');
+  canvasRef = canvas;
   ctx = canvas.getContext('2d');
-  canvas.width = 256;
-  canvas.height = 240;
-  
-  ctx.imageSmoothingEnabled = false;
-  ctx.webkitImageSmoothingEnabled = false;
-  ctx.mozImageSmoothingEnabled = false;
-  ctx.msImageSmoothingEnabled = false;
+
+  applyGraphicsQuality(game.graphicsQuality);
   
   // Set context in utils module as well
   setCtx(ctx);

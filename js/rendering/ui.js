@@ -442,10 +442,15 @@ export function drawMenu() {
     ctx.fillText(settingsTab.title, 88, 62);
 
     ctx.fillStyle = COLORS.black;
-    ctx.fillRect(38, 78, 180, 44);
+    ctx.fillRect(38, 78, 180, 64);
     ctx.strokeStyle = COLORS.gray;
     ctx.lineWidth = 1;
-    ctx.strokeRect(38, 78, 180, 44);
+    ctx.strokeRect(38, 78, 180, 64);
+
+    if (settingsTab.selectedIndex === 0) {
+      ctx.fillStyle = COLORS.yellow;
+      ctx.fillText('>', 44, 98);
+    }
 
     ctx.fillStyle = COLORS.yellow;
     ctx.fillText(settingsTab.musicLabel, 54, 98);
@@ -463,9 +468,19 @@ export function drawMenu() {
     ctx.strokeStyle = COLORS.white;
     ctx.strokeRect(slider.knobX, slider.knobY, slider.knobSize, slider.knobSize);
 
+    if (settingsTab.selectedIndex === 1) {
+      ctx.fillStyle = COLORS.yellow;
+      ctx.fillText('>', 44, 118);
+    }
+
+    ctx.fillStyle = COLORS.yellow;
+    ctx.fillText(settingsTab.graphicsLabel, 54, 118);
+    ctx.fillStyle = settingsTab.graphicsValue === 'HIGH' ? COLORS.white : COLORS.gray;
+    ctx.fillText(settingsTab.graphicsValue, 166, 118);
+
     ctx.fillStyle = COLORS.gray;
     ctx.font = '5px "Press Start 2P"';
-    ctx.fillText(settingsTab.hint, 82, 112);
+    ctx.fillText(settingsTab.hint, 82, 132);
   }
   
   ctx.fillStyle = COLORS.gray;

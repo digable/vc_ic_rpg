@@ -268,8 +268,11 @@ export function getSettingsTabModel() {
 
   return {
     title: 'SETTINGS',
+    selectedIndex: game.settingsSelection,
     musicLabel: 'MUSIC',
     musicEnabled: !!game.musicEnabled,
+    graphicsLabel: 'GRAPHICS',
+    graphicsValue: game.graphicsQuality === 'high' ? 'HIGH' : 'LOW',
     slider: {
       x: sliderX,
       y: sliderY,
@@ -279,6 +282,6 @@ export function getSettingsTabModel() {
       knobY,
       knobSize
     },
-    hint: 'SPACE TO TOGGLE'
+    hint: 'UP/DOWN + SPACE'
   };
 }

@@ -15,6 +15,7 @@ import {
 } from './features/music/index.js';
 import { 
   setupCanvas,
+  applyGraphicsQuality,
   drawMap, 
   drawPlayer, 
   drawNPCs, 
@@ -54,10 +55,16 @@ setupInputHandlers();
 
 // Game loop
 let previousState = game.state;
+let previousGraphicsQuality = game.graphicsQuality;
 
 function gameLoop() {
   // Handle input
   handleInput();
+
+  if (previousGraphicsQuality !== game.graphicsQuality) {
+    applyGraphicsQuality(game.graphicsQuality);
+    previousGraphicsQuality = game.graphicsQuality;
+  }
 
   if (previousState !== 'battle' && game.state === 'battle') {
     triggerBattleMusicCue();

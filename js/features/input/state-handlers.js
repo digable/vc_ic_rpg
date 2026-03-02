@@ -117,7 +117,7 @@ export function handleExploreEscapeToggle({ keys, now, lastKeyTime, keyDelay, se
   if (now - lastKeyTime > keyDelay) {
     actions.menuToggled();
     if (game.menuOpen) {
-      actions.gameStatePatched({ menuSelection: 0, menuTab: 0 }, 'menuOpenedSelectionReset');
+      actions.gameStatePatched({ menuSelection: 0, menuTab: 0, settingsSelection: 0 }, 'menuOpenedSelectionReset');
       resetQuestMenuState();
       resetSaveMenuState();
     } else {
@@ -287,12 +287,20 @@ export function handleExploreState({ keys, now, lastKeyTime, keyDelay, setLastKe
       }
       setLastKeyTime(now);
     }
+    if (keys['ArrowUp'] && game.menuTab === 5) {
+      patchInputState({ settingsSelection: Math.max(0, game.settingsSelection - 1) }, 'settingsSelectionMovedUp');
+      setLastKeyTime(now);
+    }
     if (keys['ArrowDown'] && game.menuTab === 4) {
       if (game.saveMenuMode === 'slots') {
         patchInputState({ saveSlotSelection: Math.min(2, game.saveSlotSelection + 1) }, 'saveSlotSelectionMovedDown');
       } else {
         patchInputState({ menuSelection: Math.min(2, game.menuSelection + 1) }, 'saveMenuSelectionMovedDown');
       }
+      setLastKeyTime(now);
+    }
+    if (keys['ArrowDown'] && game.menuTab === 5) {
+      patchInputState({ settingsSelection: Math.min(1, game.settingsSelection + 1) }, 'settingsSelectionMovedDown');
       setLastKeyTime(now);
     }
     if (keys['ArrowUp'] && game.menuTab === 2) {
@@ -369,13 +377,19 @@ export function handleExploreState({ keys, now, lastKeyTime, keyDelay, setLastKe
     }
     if (keys[' '] && game.menuTab === 5) {
       if (now - lastKeyTime > keyDelay) {
-        actions.musicToggled();
-        if (game.musicEnabled) {
-          startBackgroundMusic();
-          showSystemMessage('Music: ON');
+        if (game.settingsSelection === 0) {
+          actions.musicToggled();
+          if (game.musicEnabled) {
+            startBackgroundMusic();
+            showSystemMessage('Music: ON');
+          } else {
+            stopBackgroundMusic();
+            showSystemMessage('Music: OFF');
+          }
         } else {
-          stopBackgroundMusic();
-          showSystemMessage('Music: OFF');
+          const nextQuality = game.graphicsQuality === 'low' ? 'high' : 'low';
+          actions.graphicsQualitySet(nextQuality);
+          showSystemMessage(`Graphics: ${nextQuality.toUpperCase()}`);
         }
         setLastKeyTime(now);
       }

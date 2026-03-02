@@ -76,6 +76,7 @@ export const game = {
   saveMenuMode: 'actions', // actions, slots
   saveMenuAction: null, // save, load, delete
   saveSlotSelection: 0,
+  settingsSelection: 0, // 0=music, 1=graphics
   shopOpen: false,
   shopSelection: 0,
   shopPage: 0, // For pagination
@@ -105,6 +106,7 @@ export const game = {
   levelUpDialog: null, // Stores level up info when level up occurs
   pendingLevelUp: null, // Queued level-up dialog shown after other dialogue closes
   musicEnabled: false,
+  graphicsQuality: 'high',
   animFrame: 0
 };
 
@@ -265,6 +267,13 @@ export const actions = {
     return game.musicEnabled;
   },
 
+  graphicsQualitySet(value) {
+    const nextQuality = value === 'high' ? 'high' : 'low';
+    logAction('graphicsQualitySet', { value: nextQuality });
+    game.graphicsQuality = nextQuality;
+    return game.graphicsQuality;
+  },
+
   menuToggled(value) {
     logAction('menuToggled', { value });
     if (typeof value === 'boolean') {
@@ -347,6 +356,7 @@ export function resetGameState() {
   game.saveMenuMode = 'actions';
   game.saveMenuAction = null;
   game.saveSlotSelection = 0;
+  game.settingsSelection = 0;
   game.shopOpen = false;
   game.shopSelection = 0;
   game.shopPage = 0;
@@ -376,6 +386,7 @@ export function resetGameState() {
   game.levelUpDialog = null;
   game.pendingLevelUp = null;
   game.musicEnabled = false;
+  game.graphicsQuality = 'high';
   game.animFrame = 0;
   
   // Show title screen by removing hidden class

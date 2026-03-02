@@ -95,6 +95,10 @@ Complete Iowa City-themed quests:
 - Responsive design
 - Fixed on-screen buttons (D-pad + Action/Menu)
 
+### ⚙️ Settings
+- In-menu toggles for Music and Graphics Quality
+- Graphics quality switch supports **Low** and **High** modes (**High** default)
+
 ## 🎮 Controls
 
 ### Desktop

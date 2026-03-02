@@ -121,14 +121,16 @@ function buildSaveData() {
     currentVendor: game.currentVendor,
     animFrame: game.animFrame,
     settings: {
-      musicEnabled: !!game.musicEnabled
+      musicEnabled: !!game.musicEnabled,
+      graphicsQuality: game.graphicsQuality === 'high' ? 'high' : 'low'
     }
   };
 }
 
 function getDefaultSettings() {
   return {
-    musicEnabled: false
+    musicEnabled: false,
+    graphicsQuality: 'high'
   };
 }
 
@@ -143,7 +145,8 @@ function normalizeLoadedSettings(data) {
     ...rawSettings,
     musicEnabled: typeof rawSettings.musicEnabled === 'boolean'
       ? rawSettings.musicEnabled
-      : (typeof data?.musicEnabled === 'boolean' ? data.musicEnabled : defaults.musicEnabled)
+      : (typeof data?.musicEnabled === 'boolean' ? data.musicEnabled : defaults.musicEnabled),
+    graphicsQuality: rawSettings.graphicsQuality === 'high' ? 'high' : defaults.graphicsQuality
   };
 }
 
@@ -264,8 +267,14 @@ export function loadGameFromLocal(index = null) {
     }, 'saveDataHydrated');
     const settings = normalizeLoadedSettings(data);
     actions.musicToggled(settings.musicEnabled);
+    actions.graphicsQualitySet(settings.graphicsQuality);
 
-    if (!data.settings || typeof data.settings !== 'object' || typeof data.settings.musicEnabled !== 'boolean') {
+    if (
+      !data.settings ||
+      typeof data.settings !== 'object' ||
+      typeof data.settings.musicEnabled !== 'boolean' ||
+      (data.settings.graphicsQuality !== 'low' && data.settings.graphicsQuality !== 'high')
+    ) {
       const updatedEntry = {
         ...(selected || {}),
         version: Math.max(2, selected?.version || 1),
