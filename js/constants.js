@@ -32,8 +32,29 @@ export const tileColors = [
 ];
 
 // Mobile detection
-export const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
-                        (window.innerWidth <= 768);
+export let isMobile = false;
+
+export function detectMobileDevice() {
+  if (typeof window === 'undefined') return false;
+
+  const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+  const mobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+  const narrowViewport = window.innerWidth <= 768;
+  const hasCoarsePointer = typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches;
+  const hasTouchPoints = typeof navigator !== 'undefined' && (navigator.maxTouchPoints || 0) > 0;
+  const hasTouchEvent = 'ontouchstart' in window;
+
+  return mobileUserAgent || (narrowViewport && (hasCoarsePointer || hasTouchPoints || hasTouchEvent));
+}
+
+export function refreshMobileDetection() {
+  isMobile = detectMobileDevice();
+  return isMobile;
+}
+
+if (typeof window !== 'undefined') {
+  refreshMobileDetection();
+}
 
 // Game configuration
 export const CONFIG = {

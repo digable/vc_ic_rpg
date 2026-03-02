@@ -112,6 +112,20 @@ canvas {
   z-index: 1001;
 }
 
+.dpad-arrow {
+  display: block;
+  line-height: 1;
+  transform-origin: center;
+}
+
+.dpad-left .dpad-arrow {
+  transform: rotate(-90deg);
+}
+
+.dpad-right .dpad-arrow {
+  transform: rotate(90deg);
+}
+
 .dpad-btn:active {
   background: rgba(255, 255, 255, 0.6);
 }

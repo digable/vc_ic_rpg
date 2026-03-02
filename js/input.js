@@ -1,6 +1,6 @@
 // Input Handling Module
 import { game, resetGameState, actions } from './game-state.js';
-import { CONFIG, isMobile } from './constants.js';
+import { CONFIG, isMobile, refreshMobileDetection } from './constants.js';
 import { startBackgroundMusic, stopBackgroundMusic } from './features/music/input.js';
 import { pruneSystemMessage } from './features/ui/logic.js';
 import {
@@ -31,8 +31,11 @@ export function setSpacePressed(value) {
 }
 
 export function setupInputHandlers() {
+  const mobileControls = document.getElementById('mobile-controls');
+  const startText = document.getElementById('start-text');
+  const controlsText = document.getElementById('controls-text');
+
   const updateTitleControlsText = () => {
-    const controlsText = document.getElementById('controls-text');
     if (!controlsText) return;
 
     if (isMobile) {
@@ -41,6 +44,20 @@ export function setupInputHandlers() {
     }
 
     controlsText.textContent = 'ARROW KEYS: Move | SPACE: Action/Advance Text | ESC: Menu';
+  };
+
+  const updateMobileMode = () => {
+    const mobileMode = refreshMobileDetection();
+
+    if (mobileControls) {
+      mobileControls.classList.toggle('active', mobileMode);
+    }
+
+    if (startText) {
+      startText.textContent = mobileMode ? 'PRESS A BUTTON TO START' : 'PRESS SPACE TO START';
+    }
+
+    updateTitleControlsText();
   };
 
   const startIntroStory = () => {
@@ -64,75 +81,77 @@ export function setupInputHandlers() {
     });
   };
 
-  // Mobile touch control setup
-  if (isMobile) {
-    document.getElementById('mobile-controls').classList.add('active');
-    
-    // Update title screen text for mobile
-    document.getElementById('start-text').textContent = 'PRESS A BUTTON TO START';
-    document.getElementById('controls-text').textContent = 'D-PAD: Move | A: Action | M: Menu';
-    
-    // Handle touch events for virtual buttons
-    document.querySelectorAll('.dpad-btn, .action-btn').forEach(btn => {
-      btn.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const key = btn.dataset.key;
-        
-        if (key === 'up') keys['ArrowUp'] = true;
-        else if (key === 'down') keys['ArrowDown'] = true;
-        else if (key === 'left') keys['ArrowLeft'] = true;
-        else if (key === 'right') keys['ArrowRight'] = true;
-        else if (key === 'action') {
-          keys[' '] = true;
-          spacePressed = true;
-          
-          // Handle title screen start on mobile
-          if (game.state === 'title') {
-            startIntroStory();
-          }
+  // Handle touch events for virtual buttons
+  document.querySelectorAll('.dpad-btn, .action-btn').forEach(btn => {
+    btn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const key = btn.dataset.key;
+
+      if (key === 'up') keys['ArrowUp'] = true;
+      else if (key === 'down') keys['ArrowDown'] = true;
+      else if (key === 'left') keys['ArrowLeft'] = true;
+      else if (key === 'right') keys['ArrowRight'] = true;
+      else if (key === 'action') {
+        keys[' '] = true;
+        spacePressed = true;
+
+        if (game.state === 'title') {
+          startIntroStory();
         }
-        else if (key === 'menu') keys['Escape'] = true;
-      });
-      
-      btn.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const key = btn.dataset.key;
-        
-        if (key === 'up') keys['ArrowUp'] = false;
-        else if (key === 'down') keys['ArrowDown'] = false;
-        else if (key === 'left') keys['ArrowLeft'] = false;
-        else if (key === 'right') keys['ArrowRight'] = false;
-        else if (key === 'action') {
-          keys[' '] = false;
-          spacePressed = false;
-        }
-        else if (key === 'menu') keys['Escape'] = false;
-      });
-      
-      btn.addEventListener('touchcancel', (e) => {
-        const key = btn.dataset.key;
-        
-        if (key === 'up') keys['ArrowUp'] = false;
-        else if (key === 'down') keys['ArrowDown'] = false;
-        else if (key === 'left') keys['ArrowLeft'] = false;
-        else if (key === 'right') keys['ArrowRight'] = false;
-        else if (key === 'action') {
-          keys[' '] = false;
-          spacePressed = false;
-        }
-        else if (key === 'menu') keys['Escape'] = false;
-      });
+      }
+      else if (key === 'menu') keys['Escape'] = true;
     });
-    
-    // Prevent scrolling only on the control area
-    document.getElementById('mobile-controls').addEventListener('touchmove', (e) => {
+
+    btn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const key = btn.dataset.key;
+
+      if (key === 'up') keys['ArrowUp'] = false;
+      else if (key === 'down') keys['ArrowDown'] = false;
+      else if (key === 'left') keys['ArrowLeft'] = false;
+      else if (key === 'right') keys['ArrowRight'] = false;
+      else if (key === 'action') {
+        keys[' '] = false;
+        spacePressed = false;
+      }
+      else if (key === 'menu') keys['Escape'] = false;
+    });
+
+    btn.addEventListener('touchcancel', () => {
+      const key = btn.dataset.key;
+
+      if (key === 'up') keys['ArrowUp'] = false;
+      else if (key === 'down') keys['ArrowDown'] = false;
+      else if (key === 'left') keys['ArrowLeft'] = false;
+      else if (key === 'right') keys['ArrowRight'] = false;
+      else if (key === 'action') {
+        keys[' '] = false;
+        spacePressed = false;
+      }
+      else if (key === 'menu') keys['Escape'] = false;
+    });
+  });
+
+  if (mobileControls) {
+    mobileControls.addEventListener('touchmove', (e) => {
       e.preventDefault();
     }, { passive: false });
   }
 
-  updateTitleControlsText();
+  updateMobileMode();
+  window.addEventListener('resize', updateMobileMode);
+  window.addEventListener('orientationchange', updateMobileMode);
+
+  if (typeof window.matchMedia === 'function') {
+    const coarsePointerQuery = window.matchMedia('(pointer: coarse)');
+    if (typeof coarsePointerQuery.addEventListener === 'function') {
+      coarsePointerQuery.addEventListener('change', updateMobileMode);
+    } else if (typeof coarsePointerQuery.addListener === 'function') {
+      coarsePointerQuery.addListener(updateMobileMode);
+    }
+  }
 
   document.addEventListener('keydown', (e) => {
     if (e.key === ' ') {
