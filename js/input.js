@@ -61,6 +61,9 @@ export function setupInputHandlers() {
   };
 
   const startIntroStory = () => {
+    const mobileMode = refreshMobileDetection();
+    const introActionText = mobileMode ? 'A Button' : 'SPACE';
+
     if (game.musicEnabled) {
       startBackgroundMusic();
     }
@@ -71,7 +74,7 @@ export function setupInputHandlers() {
         'As a student hero, you must explore\nIowa City, complete quests, and\ngrow stronger.',
         'Visit Kinnick Stadium, the Ped Mall,\nthe Old Capitol, Coralville Lake,\nthe mysterious Beer Caves, and more!',
         'Clear the Beer Caves, then reach\nLevel 10 to face the Corrupted\nAdministrator and save Iowa City!',
-        'Good luck, hero!\nPress SPACE to begin your adventure!'
+        `Good luck, hero!\nPress ${introActionText} to begin your adventure!`
       ], {
       type: 'story',
       afterDialogue: () => {

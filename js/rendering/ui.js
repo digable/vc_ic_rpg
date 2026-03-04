@@ -417,7 +417,7 @@ export function drawMenu() {
 
       ctx.fillStyle = COLORS.gray;
       ctx.font = '5px "Press Start 2P"';
-      ctx.fillText('UP/DOWN + SPACE', 86, 166);
+      ctx.fillText(`UP/DOWN + ${getButtonLabel()}`, 86, 166);
       ctx.fillText('ESC OR <-/-> TO CANCEL', 64, 176);
     } else {
       saveTab.actions.forEach((action, i) => {
@@ -432,7 +432,7 @@ export function drawMenu() {
 
       ctx.fillStyle = COLORS.gray;
       ctx.font = '5px "Press Start 2P"';
-      ctx.fillText('UP/DOWN + SPACE', 86, 166);
+      ctx.fillText(`UP/DOWN + ${getButtonLabel()}`, 86, 166);
     }
   } else if (game.menuTab === 5) {
     const settingsTab = getSettingsTabModel();

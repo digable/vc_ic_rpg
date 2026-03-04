@@ -3,6 +3,7 @@ import { maps } from '../../maps.js';
 import { questDatabase } from '../quests/ui.js';
 import { getSaveCount, getSaveSlots, MAX_LOCAL_SAVES } from '../../save.js';
 import { getExpForNextLevel } from '../../leveling.js';
+import { isMobile } from '../../constants.js';
 
 const MAX_IN_PROGRESS_SHOWN = 1;
 const MAX_COMPLETED_SHOWN = 3;
@@ -282,6 +283,6 @@ export function getSettingsTabModel() {
       knobY,
       knobSize
     },
-    hint: 'UP/DOWN + SPACE'
+    hint: isMobile ? 'UP/DOWN + A' : 'UP/DOWN + SPACE'
   };
 }
