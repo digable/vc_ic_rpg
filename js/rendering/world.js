@@ -269,13 +269,15 @@ export function drawNPCs() {
       const appearance = getNpcAppearance(npc);
       // Compact, high-contrast Cambus sign
       // Post
-      ctx.fillStyle = COLORS.darkGray;
-      ctx.fillRect(npc.x - 1, npc.y - 2, 2, 10);
+      ctx.fillStyle = COLORS.orange;
+      ctx.fillRect(npc.x - 2, npc.y - 2, 4, 10);
+      ctx.fillStyle = COLORS.black;
+      ctx.fillRect(npc.x - 1, npc.y - 1, 2, 8);
 
       // Sign plate
       ctx.fillStyle = COLORS.white;
       ctx.fillRect(npc.x - 5, npc.y - 12, 10, 8);
-      ctx.strokeStyle = COLORS.black;
+      ctx.strokeStyle = COLORS.orange;
       ctx.lineWidth = 1;
       ctx.strokeRect(npc.x - 5, npc.y - 12, 10, 8);
 
