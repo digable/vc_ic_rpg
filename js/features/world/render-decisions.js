@@ -1,6 +1,7 @@
 import { game } from '../../game-state.js';
 import { maps } from '../../maps.js';
 import { questDatabase, canCompleteQuest } from '../quests/ui.js';
+import { getLegendVisitorNpcForCurrentMap } from '../quests/input.js';
 
 export function getVisibleNpcsForCurrentMap() {
   const map = maps[game.map];
@@ -8,7 +9,13 @@ export function getVisibleNpcsForCurrentMap() {
     return [];
   }
 
-  return map.npcs.filter(npc => !(npc.type === 'boss' && game.caveSovereignDefeated));
+  const visibleNpcs = map.npcs.filter(npc => !(npc.type === 'boss' && game.caveSovereignDefeated));
+  const legendVisitor = getLegendVisitorNpcForCurrentMap();
+  if (legendVisitor) {
+    visibleNpcs.push(legendVisitor);
+  }
+
+  return visibleNpcs;
 }
 
 export function getQuestMarkerForNpc(npc) {

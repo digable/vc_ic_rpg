@@ -68,6 +68,7 @@ Complete Iowa City-themed quests:
 - **Camping Supplies** - Help a camper at Coralville Lake
 - **Cemetery Cleansing** - Defeat restless undead and spirits in Oakland Cemetery
 - **Source of Corruption** - Main story quest to clear the Beer Caves and save Iowa City
+- **Hidden Final Encounter** - A mysterious local can appear at random with Iowa City advice; after all main + side quests are complete, talking to them grants a special reward
 
 ### 🍕 Unique Food Vendors
 28+ food items across 4 vendors with distinct mechanics:

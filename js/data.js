@@ -123,6 +123,7 @@ export const consumableItems = [
   { name: 'Music Note', price: 0, effect: 'healBoth', hpAmount: 40, mpAmount: 20, description: 'Restore 40 HP & 20 MP' },
   { name: 'Lake Trophy', price: 0, effect: 'buffVitality', amount: 15, turns: 6, description: 'Temp +15 Vitality (6 turns)' },
   { name: 'Camping Tent', price: 0, effect: 'healHP', amount: 60, description: 'Restores 60 HP' },
+  { name: 'Swagger Sigil', price: 0, effect: 'swagger_equip', description: 'A hidden charm of Iowa City confidence. Keep it equipped to guarantee successful escapes. Never used up.' },
   { name: 'Hero\'s Medal', price: 0, effect: 'heroBonus', description: 'Permanent +10 to all stats!' }
 ];
 

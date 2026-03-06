@@ -16,7 +16,7 @@ import {
 } from '../../interactions.js';
 import { advanceDialogue, startDialogue } from '../../dialogue.js';
 import { executeBattleAction, startBattle, executeSpell, useItemFromMenu, useItemInBattle } from '../battle/input.js';
-import { checkNPCInteraction, updateQuestProgress } from '../quests/input.js';
+import { checkNPCInteraction, maybeSpawnLegendVisitor, updateQuestProgress } from '../quests/input.js';
 import { openFoodCart } from '../world/input.js';
 import { commitPlayerMovement } from '../world/map-transition-service.js';
 import { clearLocalSave, loadGameFromLocal, MAX_LOCAL_SAVES, saveGameToLocal } from '../../save.js';
@@ -162,6 +162,7 @@ export function handleExploreState({ keys, now, lastKeyTime, keyDelay, setLastKe
       setLastKeyTime(now);
 
       updateQuestProgress('visit_location', game.map);
+      maybeSpawnLegendVisitor();
 
       const caveEncountersDisabled = game.caveSovereignDefeated && CAVE_MAPS.includes(game.map);
       if (!caveEncountersDisabled && game.enemyEncounterSteps > 10 && Math.random() < 0.15) {

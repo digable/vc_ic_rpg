@@ -7,7 +7,173 @@ import { startDialogue } from '../../dialogue.js';
 import { addExperience } from '../../leveling.js';
 import { CAVE_MAPS } from '../../constants.js';
 
+const LEGEND_VISITOR_NAME = 'Digable';
+const SWAGGER_RELIC_NAME = 'Swagger Sigil';
+
+const LEGEND_ADVICE_DIALOGUE = [
+  [
+    'A local legend says the Black Angel listens when the city gets quiet.',
+    'If you stand still long enough in Oakland Cemetery, you can feel it.',
+    'Iowa City always rewards patient explorers.'
+  ],
+  [
+    'Downtown at dusk has stories in every alley and food cart line.',
+    'Talk to everyone. People here hide good advice in plain sight.',
+    'The best routes are learned one block at a time.'
+  ],
+  [
+    'The river carries old campus myths from one side of town to the other.',
+    'When things feel overwhelming, the Pentacrest usually has your next clue.',
+    'Trust your curiosity.'
+  ],
+  [
+    'Kinnick roars, the Ped Mall hums, and the caves whisper.',
+    'Every corner of Iowa City has a different kind of courage test.',
+    'Keep moving and keep listening.'
+  ]
+];
+
+function hasConsumable(itemName) {
+  return game.consumables.some(item => item.name === itemName);
+}
+
+function clearLegendVisitor(nextSpawnDelayMs = 18000) {
+  actions.gameStatePatched({
+    legendVisitor: {
+      active: false,
+      map: null,
+      x: 0,
+      y: 0
+    },
+    legendVisitorNextSpawnAt: Date.now() + nextSpawnDelayMs
+  }, 'legendVisitorCleared');
+}
+
+export function hasCompletedAllKnownQuests() {
+  const questIds = Object.keys(questDatabase);
+  if (questIds.length === 0) return false;
+
+  return questIds.every(questId =>
+    game.quests.some(activeQuest => activeQuest.id === questId && activeQuest.status === 'completed')
+  );
+}
+
+export function maybeSpawnLegendVisitor() {
+  if (game.state !== 'explore') return;
+  if (game.legendVisitor?.active) return;
+
+  if (!game.legendFirstAreaEncountered) {
+    const firstSpawnX = Math.max(16, Math.min(240, game.player.x + 16));
+    const firstSpawnY = Math.max(32, Math.min(224, game.player.y + 16));
+
+    actions.gameStatePatched({
+      legendVisitor: {
+        active: true,
+        map: game.map,
+        x: firstSpawnX,
+        y: firstSpawnY
+      },
+      legendFirstAreaEncountered: true,
+      legendVisitorNextSpawnAt: Date.now() + 25000
+    }, 'legendVisitorFirstAreaSpawned');
+    return;
+  }
+
+  const now = Date.now();
+  if (now < (game.legendVisitorNextSpawnAt || 0)) return;
+
+  const readyForFinalReward = hasCompletedAllKnownQuests() && !game.legendRewardGiven;
+  const spawnChance = readyForFinalReward ? 0.22 : 0.08;
+
+  if (Math.random() >= spawnChance) {
+    actions.gameStatePatched({
+      legendVisitorNextSpawnAt: now + 5000
+    }, 'legendVisitorSpawnMissed');
+    return;
+  }
+
+  const xOffset = Math.random() < 0.5 ? -16 : 16;
+  const yOffset = Math.random() < 0.5 ? -16 : 16;
+  const spawnX = Math.max(16, Math.min(240, game.player.x + xOffset));
+  const spawnY = Math.max(32, Math.min(224, game.player.y + yOffset));
+
+  actions.gameStatePatched({
+    legendVisitor: {
+      active: true,
+      map: game.map,
+      x: spawnX,
+      y: spawnY
+    },
+    legendVisitorNextSpawnAt: now + 25000
+  }, 'legendVisitorSpawned');
+}
+
+export function getLegendVisitorNpcForCurrentMap() {
+  const visitor = game.legendVisitor;
+  if (!visitor || !visitor.active || visitor.map !== game.map) {
+    return null;
+  }
+
+  return {
+    x: visitor.x,
+    y: visitor.y,
+    name: LEGEND_VISITOR_NAME,
+    type: 'legend_visitor',
+    dialogue: ['A familiar local face appears out of nowhere.']
+  };
+}
+
+function handleLegendVisitorInteraction() {
+  const completedAllQuests = hasCompletedAllKnownQuests();
+  const nextSightings = (game.legendVisitorSightings || 0) + 1;
+
+  if (completedAllQuests && !game.legendRewardGiven) {
+    const swaggerRelic = consumableItems.find(item => item.name === SWAGGER_RELIC_NAME);
+    if (swaggerRelic && !hasConsumable(SWAGGER_RELIC_NAME)) {
+      addConsumable(swaggerRelic);
+    }
+
+    actions.gameStatePatched({
+      legendRewardGiven: true,
+      swaggerEquipped: true,
+      legendVisitorSightings: nextSightings
+    }, 'legendVisitorFinalRewardGranted');
+
+    startDialogue([
+      'You found me after finishing everything Iowa City could throw at you.',
+      'Take this Swagger Sigil.',
+      'Keep it equipped and you can run from any enemy, no matter how dangerous.',
+      'You earned this.'
+    ], {
+      afterDialogue: () => {
+        clearLegendVisitor(45000);
+      }
+    });
+    return;
+  }
+
+  const adviceSet = LEGEND_ADVICE_DIALOGUE[nextSightings % LEGEND_ADVICE_DIALOGUE.length];
+  actions.gameStatePatched({
+    legendVisitorSightings: nextSightings
+  }, 'legendVisitorAdviceSeen');
+  startDialogue(adviceSet, {
+    afterDialogue: () => {
+      clearLegendVisitor(18000);
+    }
+  });
+}
+
 export function checkNPCInteraction() {
+  const legendVisitor = getLegendVisitorNpcForCurrentMap();
+  if (legendVisitor) {
+    const legendDist = Math.sqrt((game.player.x - legendVisitor.x) ** 2 + (game.player.y - legendVisitor.y) ** 2);
+    if (legendDist < 24) {
+      updateQuestProgress('talk_to_npc', legendVisitor.name);
+      handleLegendVisitorInteraction();
+      return legendVisitor;
+    }
+  }
+
   const map = maps[game.map];
   for (let npc of map.npcs) {
     const dist = Math.sqrt((game.player.x - npc.x) ** 2 + (game.player.y - npc.y) ** 2);
@@ -184,6 +350,14 @@ export function updateQuestProgress(type, value) {
 }
 
 export function getNearbyNPC() {
+  const legendVisitor = getLegendVisitorNpcForCurrentMap();
+  if (legendVisitor) {
+    const legendDist = Math.sqrt((game.player.x - legendVisitor.x) ** 2 + (game.player.y - legendVisitor.y) ** 2);
+    if (legendDist < 24) {
+      return legendVisitor;
+    }
+  }
+
   const map = maps[game.map];
   for (let npc of map.npcs) {
     const dist = Math.sqrt((game.player.x - npc.x) ** 2 + (game.player.y - npc.y) ** 2);

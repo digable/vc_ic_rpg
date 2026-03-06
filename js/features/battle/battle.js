@@ -158,6 +158,14 @@ export function executeBattleAction() {
       }, 'battleItemMenuOpened');
     }
   } else if (action === 'Run') {
+    if (game.swaggerEquipped) {
+      setBattleMessage('Swagger activated! You escaped without effort.', 'battleRunSwaggerSuccessMessage');
+      setTimeout(() => {
+        actions.battleEnded('explore');
+      }, 1000);
+      return;
+    }
+
     const runSuccessChance = getRunSuccessChance(game.battleState.enemy);
     if (Math.random() < runSuccessChance) {
       setBattleMessage('You ran away!', 'battleRunSuccessMessage');
@@ -269,7 +277,7 @@ export function useItemInBattle() {
   applyItemEffect(item);
   
   // Remove item from inventory unless it's a permanent item
-  if (item.effect !== 'flashlight' && item.effect !== 'angel_dodge') {
+  if (item.effect !== 'flashlight' && item.effect !== 'angel_dodge' && item.effect !== 'swagger_equip') {
     removeConsumable(itemIndex);
   }
   
@@ -286,7 +294,7 @@ export function useItemFromMenu() {
   applyItemEffect(item);
   
   // Remove item from inventory unless it's a permanent item
-  if (item.effect !== 'flashlight' && item.effect !== 'angel_dodge') {
+  if (item.effect !== 'flashlight' && item.effect !== 'angel_dodge' && item.effect !== 'swagger_equip') {
     removeConsumable(game.itemMenuSelection);
   }
   
@@ -372,6 +380,24 @@ export function applyItemEffect(item) {
       startDialogue([
         `Failed to use ${item.name}!`,
         'The Black Angel whispers: I\'m sorry but you\'re not ready for this power.'
+      ]);
+    }
+  } else if (item.effect === 'swagger_equip') {
+    const nowEquipped = !game.swaggerEquipped;
+    actions.gameStatePatched({ swaggerEquipped: nowEquipped }, 'swaggerEquipToggled');
+
+    if (game.battleState) {
+      setBattleMessage(
+        nowEquipped
+          ? `Equipped ${item.name}! Run now succeeds against all enemies.`
+          : `Unequipped ${item.name}. Run chance returned to normal.`,
+        'itemSwaggerToggleMessage'
+      );
+    } else {
+      startDialogue([
+        nowEquipped
+          ? `${item.name} equipped! Your swagger now guarantees escape from any enemy.`
+          : `${item.name} unequipped. Escape chance is no longer guaranteed.`
       ]);
     }
   } else if (item.effect === 'heroBonus') {

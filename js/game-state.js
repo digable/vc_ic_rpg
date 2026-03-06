@@ -97,9 +97,20 @@ export const game = {
   itemMenuSelection: 0,
   activeBuff: null, // { type: 'attack'/'defense'/'magic', amount: 5, turnsLeft: 3 }
   angelWardDodgeCharges: 0,
+  swaggerEquipped: false,
   flashlightOn: false,
   caveSovereignDefeated: false,
   caveSovereignIntroSeen: false,
+  legendRewardGiven: false,
+  legendFirstAreaEncountered: true,
+  legendVisitorSightings: 0,
+  legendVisitor: {
+    active: true,
+    map: 'downtown',
+    x: 136,
+    y: 136
+  },
+  legendVisitorNextSpawnAt: 0,
   quests: [], // Active and completed quests
   textBox: null,
   systemMessage: null,
@@ -377,9 +388,20 @@ export function resetGameState() {
   game.itemMenuSelection = 0;
   game.activeBuff = null;
   game.angelWardDodgeCharges = 0;
+  game.swaggerEquipped = false;
   game.flashlightOn = false;
   game.caveSovereignDefeated = false;
   game.caveSovereignIntroSeen = false;
+  game.legendRewardGiven = false;
+  game.legendFirstAreaEncountered = true;
+  game.legendVisitorSightings = 0;
+  game.legendVisitor = {
+    active: true,
+    map: 'downtown',
+    x: 136,
+    y: 136
+  };
+  game.legendVisitorNextSpawnAt = 0;
   game.quests = [];
   game.textBox = null;
   game.systemMessage = null;

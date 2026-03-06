@@ -214,7 +214,7 @@ export function getItemsTabModel(formatButtonLabel = (label) => label) {
   const items = game.consumables.map((item, index) => ({
     name: item.name,
     description: item.description,
-    countText: item.count && item.count > 1 ? ` (x${item.count})` : '',
+    countText: `${item.count && item.count > 1 ? ` (x${item.count})` : ''}${item.effect === 'swagger_equip' && game.swaggerEquipped ? ' (EQUIPPED)' : ''}`,
     selected: index === game.itemMenuSelection,
     y: 75 + index * 15
   }));

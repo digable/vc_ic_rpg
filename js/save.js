@@ -114,9 +114,17 @@ function buildSaveData() {
     enemyEncounterSteps: game.enemyEncounterSteps,
     activeBuff: game.activeBuff,
     angelWardDodgeCharges: game.angelWardDodgeCharges,
+    swaggerEquipped: !!game.swaggerEquipped,
     flashlightOn: game.flashlightOn,
     caveSovereignDefeated: game.caveSovereignDefeated,
     caveSovereignIntroSeen: game.caveSovereignIntroSeen,
+    legendRewardGiven: !!game.legendRewardGiven,
+    legendFirstAreaEncountered: !!game.legendFirstAreaEncountered,
+    legendVisitorSightings: typeof game.legendVisitorSightings === 'number' ? game.legendVisitorSightings : 0,
+    legendVisitor: game.legendVisitor && typeof game.legendVisitor === 'object'
+      ? { ...game.legendVisitor }
+      : { active: false, map: null, x: 0, y: 0 },
+    legendVisitorNextSpawnAt: typeof game.legendVisitorNextSpawnAt === 'number' ? game.legendVisitorNextSpawnAt : 0,
     quests: game.quests,
     currentVendor: game.currentVendor,
     animFrame: game.animFrame,
@@ -258,9 +266,24 @@ export function loadGameFromLocal(index = null) {
       enemyEncounterSteps: typeof data.enemyEncounterSteps === 'number' ? data.enemyEncounterSteps : 0,
       activeBuff: data.activeBuff || null,
       angelWardDodgeCharges: typeof data.angelWardDodgeCharges === 'number' ? data.angelWardDodgeCharges : 0,
+      swaggerEquipped: !!data.swaggerEquipped,
       flashlightOn: !!data.flashlightOn,
       caveSovereignDefeated: !!data.caveSovereignDefeated,
       caveSovereignIntroSeen: !!data.caveSovereignIntroSeen,
+      legendRewardGiven: !!data.legendRewardGiven,
+      legendFirstAreaEncountered: typeof data.legendFirstAreaEncountered === 'boolean'
+        ? data.legendFirstAreaEncountered
+        : true,
+      legendVisitorSightings: typeof data.legendVisitorSightings === 'number' ? data.legendVisitorSightings : 0,
+      legendVisitor: data.legendVisitor && typeof data.legendVisitor === 'object'
+        ? {
+          active: !!data.legendVisitor.active,
+          map: typeof data.legendVisitor.map === 'string' ? data.legendVisitor.map : null,
+          x: typeof data.legendVisitor.x === 'number' ? data.legendVisitor.x : 0,
+          y: typeof data.legendVisitor.y === 'number' ? data.legendVisitor.y : 0
+        }
+        : { active: false, map: null, x: 0, y: 0 },
+      legendVisitorNextSpawnAt: typeof data.legendVisitorNextSpawnAt === 'number' ? data.legendVisitorNextSpawnAt : 0,
       quests: Array.isArray(data.quests) ? [...data.quests] : [],
       currentVendor: data.currentVendor || 'Food Cart Vendor',
       animFrame: typeof data.animFrame === 'number' ? data.animFrame : 0
