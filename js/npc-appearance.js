@@ -1,3 +1,5 @@
+import { ENTITY_CLASSIFICATIONS } from './constants.js';
+
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
@@ -33,14 +35,27 @@ function darkenHex(hexColor, amount) {
 }
 
 const skinTones = ['#f1c27d', '#e0ac69', '#c68642', '#8d5524', '#ffdbac', '#d4a574'];
-const DIGABLE_NPC_NAME = 'Digable';
+const LEGENDARY_NPC_NAME = 'Digable';
+const LEGENDARY_ID = 'digable';
 const DIGABLE_AUBURN_HAIR = '#a14b2b';
 const DIGABLE_LIGHT_SKIN = '#ffdbac';
 const DIGABLE_SHORTS_COLOR = '#2d6fcd';
 const DIGABLE_FLIP_FLOP_COLOR = '#2b2b2b';
 
+function isDigableNpc(npc) {
+  if (!npc) return false;
+  if (
+    npc.classification === ENTITY_CLASSIFICATIONS.LEGENDARY_CHARACTER &&
+    npc.legendaryId === LEGENDARY_ID
+  ) {
+    return true;
+  }
+  return npc.type === 'legendary_npc' || npc.name === LEGENDARY_NPC_NAME;
+}
+
 export function getNpcAppearance(npc) {
-  const baseKey = `${npc.name || ''}|${npc.type || ''}|${npc.vendorName || ''}|${npc.hasQuest || ''}`;
+  const npcClassification = npc?.classification || ENTITY_CLASSIFICATIONS.NPC;
+  const baseKey = `${npc.name || ''}|${npc.type || ''}|${npc.vendorName || ''}|${npc.hasQuest || ''}|${npcClassification}`;
   const seedA = hashString(baseKey);
   const seedB = hashString(`${baseKey}|b`);
   const seedC = hashString(`${baseKey}|c`);
@@ -62,7 +77,7 @@ export function getNpcAppearance(npc) {
     accessorySide: seedC % 2 === 0 ? 'left' : 'right'
   };
 
-  if (npc?.type === 'digable_npc' || npc?.name === DIGABLE_NPC_NAME) {
+  if (isDigableNpc(npc)) {
     // Keep Digable recognizable: custom face/hair and beach-casual legend outfit.
     return {
       ...appearance,

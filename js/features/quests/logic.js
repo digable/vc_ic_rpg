@@ -5,9 +5,10 @@ import { consumableItems } from '../../data.js';
 import { maps } from '../../maps.js';
 import { startDialogue } from '../../dialogue.js';
 import { addExperience } from '../../leveling.js';
-import { CAVE_MAPS } from '../../constants.js';
+import { CAVE_MAPS, ENTITY_CLASSIFICATIONS } from '../../constants.js';
 
-const DIGABLE_NPC_NAME = 'Digable';
+const LEGENDARY_NPC_NAME = 'Digable';
+const LEGENDARY_ID = 'digable';
 const SWAGGER_RELIC_NAME = 'Swagger Sigil';
 
 const DIGABLE_ADVICE_DIALOGUE = [
@@ -117,8 +118,10 @@ export function getDigableNpcForCurrentMap() {
   return {
     x: digableNpc.x,
     y: digableNpc.y,
-    name: DIGABLE_NPC_NAME,
-    type: 'digable_npc',
+    name: LEGENDARY_NPC_NAME,
+    type: 'legendary_npc',
+    classification: ENTITY_CLASSIFICATIONS.LEGENDARY_CHARACTER,
+    legendaryId: LEGENDARY_ID,
     dialogue: ['A familiar local face appears out of nowhere.']
   };
 }

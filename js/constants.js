@@ -73,3 +73,10 @@ export const CAVE_MAPS = [
   'beer_caves_depths_2',
   'beer_caves_depths_3'
 ];
+
+// Shared entity taxonomy for NPC/enemy metadata and future classification rules.
+export const ENTITY_CLASSIFICATIONS = {
+  NPC: 'npc',
+  ENEMY: 'enemy',
+  LEGENDARY_CHARACTER: 'legendary_character'
+};

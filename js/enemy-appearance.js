@@ -1,3 +1,5 @@
+import { ENTITY_CLASSIFICATIONS } from './constants.js';
+
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
@@ -129,6 +131,7 @@ function inferArchetype(enemy) {
 }
 
 export function getEnemyAppearance(enemy) {
+  const enemyClassification = enemy?.classification || ENTITY_CLASSIFICATIONS.ENEMY;
   const key = `${enemy.name || ''}|${enemy.location || ''}|${enemy.specialAttack ? enemy.specialAttack.name : ''}|${enemy.isBoss ? 'boss' : 'mob'}`;
   const seedA = hashString(key);
   const seedB = hashString(`${key}|b`);
@@ -139,6 +142,7 @@ export function getEnemyAppearance(enemy) {
   const base = ENEMY_ARCHETYPES[archetype] || ENEMY_ARCHETYPES.urban;
 
   return {
+    classification: enemyClassification,
     archetype,
     auraColor: colorFromBase(base.aura, seedA, enemy.isBoss ? 16 : 22),
     sigilColor: colorFromBase(base.sigil, seedB, 20),
@@ -152,6 +156,7 @@ export function getEnemyAppearance(enemy) {
 export function getEnemyAppearanceSignature(enemy) {
   const appearance = getEnemyAppearance(enemy);
   return [
+    appearance.classification,
     appearance.archetype,
     appearance.auraColor,
     appearance.sigilColor,
