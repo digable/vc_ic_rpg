@@ -118,6 +118,7 @@ function buildSaveData() {
     flashlightOn: game.flashlightOn,
     caveSovereignDefeated: game.caveSovereignDefeated,
     caveSovereignIntroSeen: game.caveSovereignIntroSeen,
+    defeatedBosses: Array.isArray(game.defeatedBosses) ? [...game.defeatedBosses] : [],
     legendRewardGiven: !!game.legendRewardGiven,
     legendFirstAreaEncountered: !!game.legendFirstAreaEncountered,
     legendVisitorSightings: typeof game.legendVisitorSightings === 'number' ? game.legendVisitorSightings : 0,
@@ -250,6 +251,14 @@ export function loadGameFromLocal(index = null) {
       return { success: false, reason: 'invalid_data' };
     }
 
+    const loadedDefeatedBosses = Array.isArray(data.defeatedBosses)
+      ? data.defeatedBosses.filter(name => typeof name === 'string' && name.length > 0)
+      : [];
+    const defeatedBossSet = new Set(loadedDefeatedBosses);
+    if (data.caveSovereignDefeated) {
+      defeatedBossSet.add('Cave Sovereign');
+    }
+
     actions.gameStatePatched({ player: { ...game.player, ...normalizeLoadedPlayerExp(data.player) } }, 'playerHydratedFromSave');
     travelToMapDestination({
       toMap: data.map,
@@ -270,6 +279,7 @@ export function loadGameFromLocal(index = null) {
       flashlightOn: !!data.flashlightOn,
       caveSovereignDefeated: !!data.caveSovereignDefeated,
       caveSovereignIntroSeen: !!data.caveSovereignIntroSeen,
+      defeatedBosses: [...defeatedBossSet],
       legendRewardGiven: !!data.legendRewardGiven,
       legendFirstAreaEncountered: typeof data.legendFirstAreaEncountered === 'boolean'
         ? data.legendFirstAreaEncountered

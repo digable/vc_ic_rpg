@@ -9,6 +9,20 @@ import { updateQuestProgress, completeCaveDefeatQuests } from '../quests/logic.j
 import { addExperience } from '../../leveling.js';
 
 const BATTLE_ITEMS_PER_PAGE = 4;
+const LEGACY_BOSS_NAMES = ['Final Boss: Thesis'];
+const BOSS_ENEMY_NAMES = new Set([
+  ...enemies.filter(enemy => enemy.isBoss).map(enemy => enemy.name),
+  ...LEGACY_BOSS_NAMES
+]);
+
+function isBossEnemy(enemy) {
+  return !!enemy && !!enemy.name && (enemy.isBoss === true || BOSS_ENEMY_NAMES.has(enemy.name));
+}
+
+function isDefeatedBoss(enemy) {
+  if (!isBossEnemy(enemy)) return false;
+  return Array.isArray(game.defeatedBosses) && game.defeatedBosses.includes(enemy.name);
+}
 
 export function startBattle(enemyName) {
   // Determine which enemies can appear based on location
@@ -19,25 +33,26 @@ export function startBattle(enemyName) {
   // Beer Caves has unique enemies
   if (enemyName) {
     const matched = enemies.find(e => e.name === enemyName);
-    if (matched) {
+    if (matched && !isDefeatedBoss(matched)) {
       enemy = JSON.parse(JSON.stringify(matched));
     }
   }
 
   if (!enemy) {
-    const mapSpecificEnemies = enemies.filter(e => e.location === game.map && !e.isBoss);
+    const mapSpecificEnemies = enemies.filter(e => e.location === game.map && !isBossEnemy(e));
 
     if (mapSpecificEnemies.length > 0) {
       const enemyIndex = Math.min(Math.floor(game.player.level / 2), mapSpecificEnemies.length - 1);
       enemy = JSON.parse(JSON.stringify(mapSpecificEnemies[enemyIndex]));
     } else if (CAVE_MAPS.includes(game.map)) {
-      const beerCavesEnemies = enemies.filter(e => e.location === 'beer_caves');
+      const beerCavesEnemies = enemies.filter(e => e.location === 'beer_caves' && !isBossEnemy(e));
       const enemyIndex = Math.min(Math.floor(game.player.level / 2), beerCavesEnemies.length - 1);
       enemy = JSON.parse(JSON.stringify(beerCavesEnemies[enemyIndex]));
     } else {
       const isOutdoor = map.grassWalkable; // Pentacrest and Riverside are outdoor
       
       let availableEnemies = enemies.filter(e => {
+        if (isBossEnemy(e)) return false;
         if (e.location) return false; // Skip location-specific enemies for non-matching maps
         if (e.outdoor && !isOutdoor) return false; // Parking meters only outside
         if (!e.outdoor && e.outdoor !== undefined) return true; // Indoor enemies
@@ -52,6 +67,10 @@ export function startBattle(enemyName) {
         enemy = JSON.parse(JSON.stringify(availableEnemies[enemyIndex]));
       }
     }
+  }
+
+  if (!enemy) {
+    return;
   }
   
   actions.battleStarted(enemy);
@@ -509,19 +528,26 @@ export function enemyTurn() {
 export function victoryBattle() {
   const exp = game.battleState.enemy.exp;
   const gold = game.battleState.enemy.gold;
+  const enemy = game.battleState.enemy;
   actions.playerPatched({ gold: game.player.gold + gold }, 'battleGoldAwarded');
   
   // Update quest progress for enemy defeats
-  updateQuestProgress('defeat_enemy', game.battleState.enemy.name);
+  updateQuestProgress('defeat_enemy', enemy.name);
   updateQuestProgress('collect_gold', game.player.gold);
 
-  if (game.battleState.enemy.name === 'Cave Sovereign' && !game.caveSovereignDefeated) {
+  if (isBossEnemy(enemy) && !isDefeatedBoss(enemy)) {
+    actions.gameStatePatched({
+      defeatedBosses: [...(Array.isArray(game.defeatedBosses) ? game.defeatedBosses : []), enemy.name]
+    }, 'bossMarkedDefeated');
+  }
+
+  if (enemy.name === 'Cave Sovereign' && !game.caveSovereignDefeated) {
     actions.gameStatePatched({ caveSovereignDefeated: true }, 'caveSovereignDefeatedInBattle');
     completeCaveDefeatQuests();
     appendBattleMessage(' The caves fall silent.', 'battleSovereignSilenceMessage');
   }
   
-  const isSovereign = game.battleState.enemy.name === 'Cave Sovereign';
+  const isSovereign = enemy.name === 'Cave Sovereign';
   if (isSovereign) {
     setBattleMessage('Sovereign: The cave... grows still. You: Rest now. Victory is ours.', 'battleSovereignVictoryMessage');
   } else {

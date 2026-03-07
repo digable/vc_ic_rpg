@@ -230,6 +230,7 @@ vc_ic_rpg/
 - 12+ interconnected locations including Oakland Cemetery and Beer Caves Depths I-III
 - Unique NPCs and quest hubs across surface zones and cave depths
 - Random encounters (caves fall silent after the Cave Sovereign is defeated)
+- Boss persistence (defeated bosses stay defeated and will not return in random battles)
 - Location-specific enemies and bosses (Cave Sovereign, Lake Monster, Corrupted Administrator)
 
 ## � Character Classes & Leveling

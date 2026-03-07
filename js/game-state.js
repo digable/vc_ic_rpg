@@ -101,6 +101,7 @@ export const game = {
   flashlightOn: false,
   caveSovereignDefeated: false,
   caveSovereignIntroSeen: false,
+  defeatedBosses: [],
   legendRewardGiven: false,
   legendFirstAreaEncountered: true,
   legendVisitorSightings: 0,
@@ -392,6 +393,7 @@ export function resetGameState() {
   game.flashlightOn = false;
   game.caveSovereignDefeated = false;
   game.caveSovereignIntroSeen = false;
+  game.defeatedBosses = [];
   game.legendRewardGiven = false;
   game.legendFirstAreaEncountered = true;
   game.legendVisitorSightings = 0;
