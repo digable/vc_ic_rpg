@@ -321,9 +321,15 @@ export function drawNPC(npc) {
 
   if (npc.name !== 'Cave Sovereign' && npc.name !== 'Black Angel') {
     const appearance = getNpcAppearance(npc);
+    const heightBoost = appearance.heightBoost || 0;
+    const bodyTop = y - 4 - heightBoost;
+    const bodyHeight = 10 + heightBoost;
+    const headTop = y - 13 - heightBoost;
+    const headHeight = 9 + heightBoost;
+    const eyeY = y - 9 - heightBoost;
 
     ctx.fillStyle = appearance.outfitColor;
-    ctx.fillRect(x - 6, y - 4, 12, 10);
+    ctx.fillRect(x - 6, bodyTop, 12, bodyHeight);
 
     if (npc.type === 'food_cart') {
       ctx.fillStyle = appearance.accentColor;
@@ -342,24 +348,31 @@ export function drawNPC(npc) {
     }
 
     ctx.fillStyle = appearance.skinColor;
-    ctx.fillRect(x - 5, y - 13, 10, 9);
+    ctx.fillRect(x - 5, headTop, 10, headHeight);
 
     ctx.fillStyle = appearance.hairColor;
-    ctx.fillRect(x - 5, y - 13, 10, 3);
+    ctx.fillRect(x - 5, headTop, 10, 3);
 
-    if (appearance.accessoryType === 0) {
+    if (appearance.accessoryType === 'glasses') {
+      ctx.fillStyle = COLORS.black;
+      ctx.strokeStyle = COLORS.black;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x - 4, eyeY - 1, 3, 3);
+      ctx.strokeRect(x + 1, eyeY - 1, 3, 3);
+      ctx.fillRect(x - 1, eyeY, 2, 1);
+    } else if (appearance.accessoryType === 0) {
       ctx.fillStyle = appearance.accentColor;
-      ctx.fillRect(x - 6, y - 14, 12, 1);
+      ctx.fillRect(x - 6, headTop - 1, 12, 1);
     } else if (appearance.accessoryType === 1) {
       ctx.fillStyle = appearance.accentColor;
-      ctx.fillRect(x + (appearance.accessorySide === 'left' ? -7 : 5), y - 11, 2, 5);
+      ctx.fillRect(x + (appearance.accessorySide === 'left' ? -7 : 5), y - 11 - heightBoost, 2, 5);
     } else if (appearance.accessoryType === 2) {
       ctx.fillStyle = appearance.accentColor;
-      ctx.fillRect(x - 2, y - 7, 4, 1);
+      ctx.fillRect(x - 2, y - 7 - heightBoost, 4, 1);
     } else if (appearance.accessoryType === 3) {
       ctx.fillStyle = appearance.accentColor;
-      ctx.fillRect(x - 5, y - 5, 2, 2);
-      ctx.fillRect(x + 3, y - 5, 2, 2);
+      ctx.fillRect(x - 5, y - 5 - heightBoost, 2, 2);
+      ctx.fillRect(x + 3, y - 5 - heightBoost, 2, 2);
     } else if (appearance.accessoryType === 4) {
       ctx.fillStyle = appearance.accentColor;
       ctx.fillRect(x - 7, y, 2, 4);
@@ -369,8 +382,38 @@ export function drawNPC(npc) {
     }
 
     ctx.fillStyle = appearance.eyeColor;
-    ctx.fillRect(x - 3, y - 9, 2, 1);
-    ctx.fillRect(x + 1, y - 9, 2, 1);
+    ctx.fillRect(x - 3, eyeY, 2, 1);
+    ctx.fillRect(x + 1, eyeY, 2, 1);
+
+    if (appearance.clothingStyle === 'tie_dye_casual') {
+      // Digable outfit: tie-dye shirt, shorts, and flip flops.
+      ctx.fillStyle = appearance.outfitColor;
+      ctx.fillRect(x - 6, bodyTop, 12, bodyHeight - 3);
+      ctx.fillStyle = appearance.accentColor;
+      ctx.fillRect(x - 4, bodyTop + 1, 3, 2);
+      ctx.fillRect(x + 1, bodyTop + 3, 3, 2);
+      ctx.fillStyle = '#ffd34d';
+      ctx.fillRect(x - 1, bodyTop + 4, 2, 2);
+
+      const shortsColor = appearance.shortsColor || appearance.legColor;
+      const flipFlopColor = appearance.flipFlopColor || COLORS.black;
+
+      ctx.fillStyle = shortsColor;
+      ctx.fillRect(x - 5, y + 6, 4, 3);
+      ctx.fillRect(x + 1, y + 6, 4, 3);
+
+      ctx.fillStyle = appearance.skinColor;
+      ctx.fillRect(x - 5, y + 9, 4, 3);
+      ctx.fillRect(x + 1, y + 9, 4, 3);
+
+      ctx.fillStyle = flipFlopColor;
+      ctx.fillRect(x - 5, y + 12, 4, 1);
+      ctx.fillRect(x + 1, y + 12, 4, 1);
+      ctx.fillStyle = '#f0f0f0';
+      ctx.fillRect(x - 3, y + 11, 1, 1);
+      ctx.fillRect(x + 2, y + 11, 1, 1);
+      return;
+    }
 
     ctx.fillStyle = appearance.legColor;
     ctx.fillRect(x - 5, y + 6, 4, 6);

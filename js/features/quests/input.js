@@ -1,9 +1,9 @@
 export {
   checkNPCInteraction,
   getNearbyNPC,
-  getLegendVisitorNpcForCurrentMap,
+  getDigableNpcForCurrentMap,
   hasCompletedAllKnownQuests,
-  maybeSpawnLegendVisitor,
+  maybeSpawnDigableNpc,
   updateQuestProgress,
   offerQuest,
   canCompleteQuest,

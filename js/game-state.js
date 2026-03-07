@@ -102,16 +102,16 @@ export const game = {
   caveSovereignDefeated: false,
   caveSovereignIntroSeen: false,
   defeatedBosses: [],
-  legendRewardGiven: false,
-  legendFirstAreaEncountered: true,
-  legendVisitorSightings: 0,
-  legendVisitor: {
+  digableRewardGiven: false,
+  digableFirstAreaEncountered: true,
+  digableNpcSightings: 0,
+  digableNpc: {
     active: true,
     map: 'downtown',
     x: 136,
     y: 136
   },
-  legendVisitorNextSpawnAt: 0,
+  digableNpcNextSpawnAt: 0,
   quests: [], // Active and completed quests
   textBox: null,
   systemMessage: null,
@@ -394,16 +394,16 @@ export function resetGameState() {
   game.caveSovereignDefeated = false;
   game.caveSovereignIntroSeen = false;
   game.defeatedBosses = [];
-  game.legendRewardGiven = false;
-  game.legendFirstAreaEncountered = true;
-  game.legendVisitorSightings = 0;
-  game.legendVisitor = {
+  game.digableRewardGiven = false;
+  game.digableFirstAreaEncountered = true;
+  game.digableNpcSightings = 0;
+  game.digableNpc = {
     active: true,
     map: 'downtown',
     x: 136,
     y: 136
   };
-  game.legendVisitorNextSpawnAt = 0;
+  game.digableNpcNextSpawnAt = 0;
   game.quests = [];
   game.textBox = null;
   game.systemMessage = null;

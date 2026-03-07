@@ -119,13 +119,13 @@ function buildSaveData() {
     caveSovereignDefeated: game.caveSovereignDefeated,
     caveSovereignIntroSeen: game.caveSovereignIntroSeen,
     defeatedBosses: Array.isArray(game.defeatedBosses) ? [...game.defeatedBosses] : [],
-    legendRewardGiven: !!game.legendRewardGiven,
-    legendFirstAreaEncountered: !!game.legendFirstAreaEncountered,
-    legendVisitorSightings: typeof game.legendVisitorSightings === 'number' ? game.legendVisitorSightings : 0,
-    legendVisitor: game.legendVisitor && typeof game.legendVisitor === 'object'
-      ? { ...game.legendVisitor }
+    digableRewardGiven: !!game.digableRewardGiven,
+    digableFirstAreaEncountered: !!game.digableFirstAreaEncountered,
+    digableNpcSightings: typeof game.digableNpcSightings === 'number' ? game.digableNpcSightings : 0,
+    digableNpc: game.digableNpc && typeof game.digableNpc === 'object'
+      ? { ...game.digableNpc }
       : { active: false, map: null, x: 0, y: 0 },
-    legendVisitorNextSpawnAt: typeof game.legendVisitorNextSpawnAt === 'number' ? game.legendVisitorNextSpawnAt : 0,
+    digableNpcNextSpawnAt: typeof game.digableNpcNextSpawnAt === 'number' ? game.digableNpcNextSpawnAt : 0,
     quests: game.quests,
     currentVendor: game.currentVendor,
     animFrame: game.animFrame,
@@ -280,20 +280,33 @@ export function loadGameFromLocal(index = null) {
       caveSovereignDefeated: !!data.caveSovereignDefeated,
       caveSovereignIntroSeen: !!data.caveSovereignIntroSeen,
       defeatedBosses: [...defeatedBossSet],
-      legendRewardGiven: !!data.legendRewardGiven,
-      legendFirstAreaEncountered: typeof data.legendFirstAreaEncountered === 'boolean'
-        ? data.legendFirstAreaEncountered
-        : true,
-      legendVisitorSightings: typeof data.legendVisitorSightings === 'number' ? data.legendVisitorSightings : 0,
-      legendVisitor: data.legendVisitor && typeof data.legendVisitor === 'object'
+      digableRewardGiven: typeof data.digableRewardGiven === 'boolean'
+        ? data.digableRewardGiven
+        : !!data.legendRewardGiven,
+      digableFirstAreaEncountered: typeof data.digableFirstAreaEncountered === 'boolean'
+        ? data.digableFirstAreaEncountered
+        : (typeof data.legendFirstAreaEncountered === 'boolean' ? data.legendFirstAreaEncountered : true),
+      digableNpcSightings: typeof data.digableNpcSightings === 'number'
+        ? data.digableNpcSightings
+        : (typeof data.legendVisitorSightings === 'number' ? data.legendVisitorSightings : 0),
+      digableNpc: data.digableNpc && typeof data.digableNpc === 'object'
         ? {
-          active: !!data.legendVisitor.active,
-          map: typeof data.legendVisitor.map === 'string' ? data.legendVisitor.map : null,
-          x: typeof data.legendVisitor.x === 'number' ? data.legendVisitor.x : 0,
-          y: typeof data.legendVisitor.y === 'number' ? data.legendVisitor.y : 0
+          active: !!data.digableNpc.active,
+          map: typeof data.digableNpc.map === 'string' ? data.digableNpc.map : null,
+          x: typeof data.digableNpc.x === 'number' ? data.digableNpc.x : 0,
+          y: typeof data.digableNpc.y === 'number' ? data.digableNpc.y : 0
         }
-        : { active: false, map: null, x: 0, y: 0 },
-      legendVisitorNextSpawnAt: typeof data.legendVisitorNextSpawnAt === 'number' ? data.legendVisitorNextSpawnAt : 0,
+        : (data.legendVisitor && typeof data.legendVisitor === 'object'
+          ? {
+            active: !!data.legendVisitor.active,
+            map: typeof data.legendVisitor.map === 'string' ? data.legendVisitor.map : null,
+            x: typeof data.legendVisitor.x === 'number' ? data.legendVisitor.x : 0,
+            y: typeof data.legendVisitor.y === 'number' ? data.legendVisitor.y : 0
+          }
+          : { active: false, map: null, x: 0, y: 0 }),
+      digableNpcNextSpawnAt: typeof data.digableNpcNextSpawnAt === 'number'
+        ? data.digableNpcNextSpawnAt
+        : (typeof data.legendVisitorNextSpawnAt === 'number' ? data.legendVisitorNextSpawnAt : 0),
       quests: Array.isArray(data.quests) ? [...data.quests] : [],
       currentVendor: data.currentVendor || 'Food Cart Vendor',
       animFrame: typeof data.animFrame === 'number' ? data.animFrame : 0

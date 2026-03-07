@@ -7,10 +7,10 @@ import { startDialogue } from '../../dialogue.js';
 import { addExperience } from '../../leveling.js';
 import { CAVE_MAPS } from '../../constants.js';
 
-const LEGEND_VISITOR_NAME = 'Digable';
+const DIGABLE_NPC_NAME = 'Digable';
 const SWAGGER_RELIC_NAME = 'Swagger Sigil';
 
-const LEGEND_ADVICE_DIALOGUE = [
+const DIGABLE_ADVICE_DIALOGUE = [
   [
     'A local legend says the Black Angel listens when the city gets quiet.',
     'If you stand still long enough in Oakland Cemetery, you can feel it.',
@@ -37,16 +37,16 @@ function hasConsumable(itemName) {
   return game.consumables.some(item => item.name === itemName);
 }
 
-function clearLegendVisitor(nextSpawnDelayMs = 18000) {
+function clearDigableNpc(nextSpawnDelayMs = 18000) {
   actions.gameStatePatched({
-    legendVisitor: {
+    digableNpc: {
       active: false,
       map: null,
       x: 0,
       y: 0
     },
-    legendVisitorNextSpawnAt: Date.now() + nextSpawnDelayMs
-  }, 'legendVisitorCleared');
+    digableNpcNextSpawnAt: Date.now() + nextSpawnDelayMs
+  }, 'digableNpcCleared');
 }
 
 export function hasCompletedAllKnownQuests() {
@@ -58,37 +58,37 @@ export function hasCompletedAllKnownQuests() {
   );
 }
 
-export function maybeSpawnLegendVisitor() {
+export function maybeSpawnDigableNpc() {
   if (game.state !== 'explore') return;
-  if (game.legendVisitor?.active) return;
+  if (game.digableNpc?.active) return;
 
-  if (!game.legendFirstAreaEncountered) {
+  if (!game.digableFirstAreaEncountered) {
     const firstSpawnX = Math.max(16, Math.min(240, game.player.x + 16));
     const firstSpawnY = Math.max(32, Math.min(224, game.player.y + 16));
 
     actions.gameStatePatched({
-      legendVisitor: {
+      digableNpc: {
         active: true,
         map: game.map,
         x: firstSpawnX,
         y: firstSpawnY
       },
-      legendFirstAreaEncountered: true,
-      legendVisitorNextSpawnAt: Date.now() + 25000
-    }, 'legendVisitorFirstAreaSpawned');
+      digableFirstAreaEncountered: true,
+      digableNpcNextSpawnAt: Date.now() + 25000
+    }, 'digableNpcFirstAreaSpawned');
     return;
   }
 
   const now = Date.now();
-  if (now < (game.legendVisitorNextSpawnAt || 0)) return;
+  if (now < (game.digableNpcNextSpawnAt || 0)) return;
 
-  const readyForFinalReward = hasCompletedAllKnownQuests() && !game.legendRewardGiven;
+  const readyForFinalReward = hasCompletedAllKnownQuests() && !game.digableRewardGiven;
   const spawnChance = readyForFinalReward ? 0.22 : 0.08;
 
   if (Math.random() >= spawnChance) {
     actions.gameStatePatched({
-      legendVisitorNextSpawnAt: now + 5000
-    }, 'legendVisitorSpawnMissed');
+      digableNpcNextSpawnAt: now + 5000
+    }, 'digableNpcSpawnMissed');
     return;
   }
 
@@ -98,46 +98,46 @@ export function maybeSpawnLegendVisitor() {
   const spawnY = Math.max(32, Math.min(224, game.player.y + yOffset));
 
   actions.gameStatePatched({
-    legendVisitor: {
+    digableNpc: {
       active: true,
       map: game.map,
       x: spawnX,
       y: spawnY
     },
-    legendVisitorNextSpawnAt: now + 25000
-  }, 'legendVisitorSpawned');
+    digableNpcNextSpawnAt: now + 25000
+  }, 'digableNpcSpawned');
 }
 
-export function getLegendVisitorNpcForCurrentMap() {
-  const visitor = game.legendVisitor;
-  if (!visitor || !visitor.active || visitor.map !== game.map) {
+export function getDigableNpcForCurrentMap() {
+  const digableNpc = game.digableNpc;
+  if (!digableNpc || !digableNpc.active || digableNpc.map !== game.map) {
     return null;
   }
 
   return {
-    x: visitor.x,
-    y: visitor.y,
-    name: LEGEND_VISITOR_NAME,
-    type: 'legend_visitor',
+    x: digableNpc.x,
+    y: digableNpc.y,
+    name: DIGABLE_NPC_NAME,
+    type: 'digable_npc',
     dialogue: ['A familiar local face appears out of nowhere.']
   };
 }
 
-function handleLegendVisitorInteraction() {
+function handleDigableInteraction() {
   const completedAllQuests = hasCompletedAllKnownQuests();
-  const nextSightings = (game.legendVisitorSightings || 0) + 1;
+  const nextSightings = (game.digableNpcSightings || 0) + 1;
 
-  if (completedAllQuests && !game.legendRewardGiven) {
+  if (completedAllQuests && !game.digableRewardGiven) {
     const swaggerRelic = consumableItems.find(item => item.name === SWAGGER_RELIC_NAME);
     if (swaggerRelic && !hasConsumable(SWAGGER_RELIC_NAME)) {
       addConsumable(swaggerRelic);
     }
 
     actions.gameStatePatched({
-      legendRewardGiven: true,
+      digableRewardGiven: true,
       swaggerEquipped: true,
-      legendVisitorSightings: nextSightings
-    }, 'legendVisitorFinalRewardGranted');
+      digableNpcSightings: nextSightings
+    }, 'digableNpcFinalRewardGranted');
 
     startDialogue([
       'You found me after finishing everything Iowa City could throw at you.',
@@ -146,31 +146,31 @@ function handleLegendVisitorInteraction() {
       'You earned this.'
     ], {
       afterDialogue: () => {
-        clearLegendVisitor(45000);
+        clearDigableNpc(45000);
       }
     });
     return;
   }
 
-  const adviceSet = LEGEND_ADVICE_DIALOGUE[nextSightings % LEGEND_ADVICE_DIALOGUE.length];
+  const adviceSet = DIGABLE_ADVICE_DIALOGUE[nextSightings % DIGABLE_ADVICE_DIALOGUE.length];
   actions.gameStatePatched({
-    legendVisitorSightings: nextSightings
-  }, 'legendVisitorAdviceSeen');
+    digableNpcSightings: nextSightings
+  }, 'digableNpcAdviceSeen');
   startDialogue(adviceSet, {
     afterDialogue: () => {
-      clearLegendVisitor(18000);
+      clearDigableNpc(18000);
     }
   });
 }
 
 export function checkNPCInteraction() {
-  const legendVisitor = getLegendVisitorNpcForCurrentMap();
-  if (legendVisitor) {
-    const legendDist = Math.sqrt((game.player.x - legendVisitor.x) ** 2 + (game.player.y - legendVisitor.y) ** 2);
-    if (legendDist < 24) {
-      updateQuestProgress('talk_to_npc', legendVisitor.name);
-      handleLegendVisitorInteraction();
-      return legendVisitor;
+  const digableNpc = getDigableNpcForCurrentMap();
+  if (digableNpc) {
+    const digableDist = Math.sqrt((game.player.x - digableNpc.x) ** 2 + (game.player.y - digableNpc.y) ** 2);
+    if (digableDist < 24) {
+      updateQuestProgress('talk_to_npc', digableNpc.name);
+      handleDigableInteraction();
+      return digableNpc;
     }
   }
 
@@ -350,11 +350,11 @@ export function updateQuestProgress(type, value) {
 }
 
 export function getNearbyNPC() {
-  const legendVisitor = getLegendVisitorNpcForCurrentMap();
-  if (legendVisitor) {
-    const legendDist = Math.sqrt((game.player.x - legendVisitor.x) ** 2 + (game.player.y - legendVisitor.y) ** 2);
-    if (legendDist < 24) {
-      return legendVisitor;
+  const digableNpc = getDigableNpcForCurrentMap();
+  if (digableNpc) {
+    const digableDist = Math.sqrt((game.player.x - digableNpc.x) ** 2 + (game.player.y - digableNpc.y) ** 2);
+    if (digableDist < 24) {
+      return digableNpc;
     }
   }
 

@@ -33,6 +33,11 @@ function darkenHex(hexColor, amount) {
 }
 
 const skinTones = ['#f1c27d', '#e0ac69', '#c68642', '#8d5524', '#ffdbac', '#d4a574'];
+const DIGABLE_NPC_NAME = 'Digable';
+const DIGABLE_AUBURN_HAIR = '#a14b2b';
+const DIGABLE_LIGHT_SKIN = '#ffdbac';
+const DIGABLE_SHORTS_COLOR = '#2d6fcd';
+const DIGABLE_FLIP_FLOP_COLOR = '#2b2b2b';
 
 export function getNpcAppearance(npc) {
   const baseKey = `${npc.name || ''}|${npc.type || ''}|${npc.vendorName || ''}|${npc.hasQuest || ''}`;
@@ -46,7 +51,7 @@ export function getNpcAppearance(npc) {
   const accentColor = colorFromSeed(seedC, 80, 240);
   const legColor = darkenHex(outfitColor, 55);
 
-  return {
+  const appearance = {
     skinColor: skinTones[seedA % skinTones.length],
     hairColor,
     outfitColor,
@@ -56,6 +61,25 @@ export function getNpcAppearance(npc) {
     accessoryType: seedD % 6,
     accessorySide: seedC % 2 === 0 ? 'left' : 'right'
   };
+
+  if (npc?.type === 'digable_npc' || npc?.name === DIGABLE_NPC_NAME) {
+    // Keep Digable recognizable: custom face/hair and beach-casual legend outfit.
+    return {
+      ...appearance,
+      skinColor: DIGABLE_LIGHT_SKIN,
+      hairColor: DIGABLE_AUBURN_HAIR,
+      outfitColor: '#7bdc78',
+      accentColor: '#ff5ca8',
+      legColor: DIGABLE_SHORTS_COLOR,
+      accessoryType: 'glasses',
+      heightBoost: 2,
+      clothingStyle: 'tie_dye_casual',
+      shortsColor: DIGABLE_SHORTS_COLOR,
+      flipFlopColor: DIGABLE_FLIP_FLOP_COLOR
+    };
+  }
+
+  return appearance;
 }
 
 export function getNpcAppearanceSignature(npc) {
