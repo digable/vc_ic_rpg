@@ -204,7 +204,13 @@ export function handleInput() {
   };
 
   pruneSystemMessage(now);
-  
+
+  if (game.licenseOpen && keys['Escape'] && now - lastKeyTime > keyDelay) {
+    actions.gameStatePatched({ licenseOpen: false }, 'licenseOverlayClosed');
+    setLastKeyTime(now);
+    return;
+  }
+
   if (game.state === 'cambus') {
     handleCambusState(ctx);
     return;

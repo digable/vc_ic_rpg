@@ -4,7 +4,7 @@ import { game } from '../game-state.js';
 
 // Import all rendering functions
 import { drawMap, drawPlayer, drawNPCs, drawNPC } from './world.js';
-import { drawHUD, drawDialogue, drawMenu } from './ui.js';
+import { drawHUD, drawDialogue, drawMenu, drawLicenseOverlay } from './ui.js';
 import { drawBattle, drawEnemySprite } from './battle.js';
 import { drawShop, drawMagicTrainer, drawYoga, drawCambus, drawFoodCart } from './vendors.js';
 import { drawGameOver } from './gamestate.js';
@@ -52,7 +52,7 @@ export function setupCanvas() {
 
 // Re-export all rendering functions for backward compatibility
 export { drawMap, drawPlayer, drawNPCs, drawNPC };
-export { drawHUD, drawDialogue, drawMenu };
+export { drawHUD, drawDialogue, drawMenu, drawLicenseOverlay };
 export { drawBattle, drawEnemySprite };
 export { drawShop, drawMagicTrainer, drawYoga, drawCambus, drawFoodCart };
 export { drawGameOver };

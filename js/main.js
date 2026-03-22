@@ -28,7 +28,8 @@ import {
   drawYoga, 
   drawCambus, 
   drawFoodCart,
-  drawGameOver 
+  drawGameOver,
+  drawLicenseOverlay
 } from './rendering/index.js';
 
 // Make game modules available to tests
@@ -120,6 +121,9 @@ function gameLoop() {
     
     if (game.menuOpen) {
       drawMenu();
+    }
+    if (game.licenseOpen) {
+      drawLicenseOverlay();
     }
   } else if (game.state === 'battle') {
     drawBattle();

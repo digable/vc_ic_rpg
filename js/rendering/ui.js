@@ -442,10 +442,10 @@ export function drawMenu() {
     ctx.fillText(settingsTab.title, 88, 62);
 
     ctx.fillStyle = COLORS.black;
-    ctx.fillRect(38, 78, 180, 64);
+    ctx.fillRect(38, 78, 180, 80);
     ctx.strokeStyle = COLORS.gray;
     ctx.lineWidth = 1;
-    ctx.strokeRect(38, 78, 180, 64);
+    ctx.strokeRect(38, 78, 180, 80);
 
     if (settingsTab.selectedIndex === 0) {
       ctx.fillStyle = COLORS.yellow;
@@ -478,15 +478,82 @@ export function drawMenu() {
     ctx.fillStyle = settingsTab.graphicsValue === 'HIGH' ? COLORS.white : COLORS.gray;
     ctx.fillText(settingsTab.graphicsValue, 166, 118);
 
+    if (settingsTab.selectedIndex === 2) {
+      ctx.fillStyle = COLORS.yellow;
+      ctx.fillText('>', 44, 133);
+    }
+
+    ctx.fillStyle = COLORS.sky;
+    ctx.fillText(settingsTab.licenseLabel, 54, 133);
+
     ctx.fillStyle = COLORS.gray;
     ctx.font = '5px "Press Start 2P"';
-    ctx.fillText(settingsTab.hint, 82, 132);
+    ctx.fillText(settingsTab.hint, 82, 147);
   }
   
   ctx.fillStyle = COLORS.gray;
   ctx.font = '5px "Press Start 2P"';
   ctx.fillText('<- -> Switch tabs', 60, 200);
   ctx.fillText(getMenuLabel(), 90, 190);
+}
+
+export function drawLicenseOverlay() {
+  const ctx = setCtx();
+
+  // Background overlay
+  ctx.fillStyle = COLORS.black;
+  ctx.fillRect(0, 0, 256, 240);
+  ctx.strokeStyle = COLORS.sky;
+  ctx.lineWidth = 2;
+  ctx.strokeRect(4, 4, 248, 232);
+
+  // Title
+  ctx.fillStyle = COLORS.sky;
+  ctx.font = '6px "Press Start 2P"';
+  ctx.fillText('MIT LICENSE', 76, 18);
+
+  // Divider
+  ctx.fillStyle = COLORS.gray;
+  ctx.fillRect(8, 22, 240, 1);
+
+  // License paragraphs
+  const paragraphs = [
+    'Copyright (c) 2024 Iowa City Quest',
+    'Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:',
+    'The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.',
+    'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE.'
+  ];
+
+  ctx.fillStyle = COLORS.white;
+  ctx.font = '4px "Press Start 2P"';
+  const lineH = 7;
+  const margin = 10;
+  const maxW = 256 - margin * 2;
+  let y = 32;
+
+  for (const para of paragraphs) {
+    wrapText(para, margin, y, maxW, lineH);
+    // Estimate next y by counting words to approximate lines used
+    const words = para.split(' ');
+    let line = '';
+    let lineCount = 1;
+    for (const word of words) {
+      const test = line + word + ' ';
+      if (ctx.measureText(test).width > maxW && line !== '') {
+        line = word + ' ';
+        lineCount++;
+      } else {
+        line = test;
+      }
+    }
+    y += lineCount * lineH + 4;
+  }
+
+  // Hint
+  ctx.fillStyle = COLORS.gray;
+  ctx.font = '5px "Press Start 2P"';
+  const closeHint = isMobile ? 'M Button: Close' : 'ESC: Close';
+  ctx.fillText(closeHint, 76, 232);
 }
 
 

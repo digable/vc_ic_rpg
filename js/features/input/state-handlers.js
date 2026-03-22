@@ -301,7 +301,7 @@ export function handleExploreState({ keys, now, lastKeyTime, keyDelay, setLastKe
       setLastKeyTime(now);
     }
     if (keys['ArrowDown'] && game.menuTab === 5) {
-      patchInputState({ settingsSelection: Math.min(1, game.settingsSelection + 1) }, 'settingsSelectionMovedDown');
+      patchInputState({ settingsSelection: Math.min(2, game.settingsSelection + 1) }, 'settingsSelectionMovedDown');
       setLastKeyTime(now);
     }
     if (keys['ArrowUp'] && game.menuTab === 2) {
@@ -387,10 +387,12 @@ export function handleExploreState({ keys, now, lastKeyTime, keyDelay, setLastKe
             stopBackgroundMusic();
             showSystemMessage('Music: OFF');
           }
-        } else {
+        } else if (game.settingsSelection === 1) {
           const nextQuality = game.graphicsQuality === 'low' ? 'high' : 'low';
           actions.graphicsQualitySet(nextQuality);
           showSystemMessage(`Graphics: ${nextQuality.toUpperCase()}`);
+        } else if (game.settingsSelection === 2) {
+          actions.gameStatePatched({ licenseOpen: true }, 'licenseOverlayOpened');
         }
         setLastKeyTime(now);
       }

@@ -274,6 +274,7 @@ export function getSettingsTabModel() {
     musicEnabled: !!game.musicEnabled,
     graphicsLabel: 'GRAPHICS',
     graphicsValue: game.graphicsQuality === 'high' ? 'HIGH' : 'LOW',
+    licenseLabel: 'MIT LICENSE',
     slider: {
       x: sliderX,
       y: sliderY,

@@ -76,7 +76,8 @@ export const game = {
   saveMenuMode: 'actions', // actions, slots
   saveMenuAction: null, // save, load, delete
   saveSlotSelection: 0,
-  settingsSelection: 0, // 0=music, 1=graphics
+  settingsSelection: 0, // 0=music, 1=graphics, 2=license
+  licenseOpen: false,
   shopOpen: false,
   shopSelection: 0,
   shopPage: 0, // For pagination

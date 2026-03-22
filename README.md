@@ -5,6 +5,7 @@ A retro NES-style RPG adventure set in Iowa City! Explore campus, complete quest
 ![Game Type](https://img.shields.io/badge/Type-RPG-blue)
 ![Platform](https://img.shields.io/badge/Platform-Web-green)
 ![Mobile](https://img.shields.io/badge/Mobile-Supported-brightgreen)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## 📖 Story
 
